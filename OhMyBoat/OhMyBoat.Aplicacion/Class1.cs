@@ -2,5 +2,5 @@
 
 public class Class1
 {
-    private int num;
+    private int H4CK34D0;
 }

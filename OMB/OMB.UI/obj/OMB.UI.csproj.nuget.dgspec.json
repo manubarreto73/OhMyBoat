@@ -1,0 +1,196 @@
+{
+  "format": 1,
+  "restore": {
+    "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj": {}
+  },
+  "projects": {
+    "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+        "projectName": "OMB.Aplication",
+        "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
+        "projectName": "OMB.Repositories",
+        "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
+                "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj",
+        "projectName": "OMB.UI",
+        "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj",
+        "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
+                "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj"
+              },
+              "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj": {
+                "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

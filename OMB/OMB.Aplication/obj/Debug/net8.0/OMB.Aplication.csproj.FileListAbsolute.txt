@@ -1,0 +1,11 @@
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\bin\Debug\net8.0\OMB.Aplication.deps.json
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\bin\Debug\net8.0\OMB.Aplication.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\bin\Debug\net8.0\OMB.Aplication.pdb
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.AssemblyInfoInputs.cache
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.AssemblyInfo.cs
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.csproj.CoreCompileInputs.cache
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\refint\OMB.Aplication.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.pdb
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\ref\OMB.Aplication.dll

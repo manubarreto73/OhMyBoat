@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "OMB.Repositories/1.0.0": {
+        "dependencies": {
+          "OMB.Aplication": "1.0.0"
+        },
+        "runtime": {
+          "OMB.Repositories.dll": {}
+        }
+      },
+      "OMB.Aplication/1.0.0": {
+        "runtime": {
+          "OMB.Aplication.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "OMB.Repositories/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "OMB.Aplication/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\Proyecto\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OMB.UI.bundle.scp.css",
+      "PackagePath": "staticwebassets\\OMB.UI.bundle.scp.css"
+    },
+    {
+      "Id": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\Proyecto\\OMB\\OMB.UI\\wwwroot\\app.css",
+      "PackagePath": "staticwebassets\\app.css"
+    },
+    {
+      "Id": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\Proyecto\\OMB\\OMB.UI\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\Proyecto\\OMB\\OMB.UI\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\Proyecto\\OMB\\OMB.UI\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.OMB.UI.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.OMB.UI.props",
+      "PackagePath": "build\\OMB.UI.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.OMB.UI.props",
+      "PackagePath": "buildMultiTargeting\\OMB.UI.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.OMB.UI.props",
+      "PackagePath": "buildTransitive\\OMB.UI.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

@@ -1,0 +1,15 @@
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\bin\Debug\net8.0\OMB.Repositories.deps.json
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\bin\Debug\net8.0\OMB.Repositories.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\bin\Debug\net8.0\OMB.Repositories.pdb
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\bin\Debug\net8.0\OMB.Aplication.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\bin\Debug\net8.0\OMB.Aplication.pdb
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.csproj.AssemblyReference.cache
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.AssemblyInfoInputs.cache
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.AssemblyInfo.cs
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.csproj.CoreCompileInputs.cache
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repo.66957435.Up2Date
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\refint\OMB.Repositories.dll
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.pdb
+C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Repositories\obj\Debug\net8.0\ref\OMB.Repositories.dll

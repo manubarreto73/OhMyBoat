@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Administrator\\.nuget\\packages\\": {}
+    "C:\\Users\\ide08\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+      "projectUniqueName": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
       "projectName": "OMB.Aplication",
-      "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
-      "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\obj\\",
+      "projectPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+      "packagesPath": "C:\\Users\\ide08\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\ide08\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

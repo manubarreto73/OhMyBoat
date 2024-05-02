@@ -9,3 +9,15 @@ C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\De
 C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\refint\OMB.Aplication.dll
 C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.pdb
 C:\Users\ide08\Desktop\Uni\5th_Semester\Inge2\Proyecto\OMB\OMB.Aplication\obj\Debug\net8.0\ref\OMB.Aplication.dll
+C:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\bin\Debug\net8.0\OMB.Aplication.deps.json
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\bin\Debug\net8.0\OMB.Aplication.dll
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\bin\Debug\net8.0\OMB.Aplication.pdb
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.AssemblyInfoInputs.cache
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.AssemblyInfo.cs
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.csproj.CoreCompileInputs.cache
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.sourcelink.json
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.dll
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\refint\OMB.Aplication.dll
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.pdb
+C:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\ref\OMB.Aplication.dll

@@ -31,24 +31,24 @@ public class UserRepository : IUserRepository {
             }
         }
     }
-    public void deleteUser (string userName){
+    public void deleteUser (int userId){
         List<Ship> ships = new List<Ship>();
         List<Vehicle> vehicles = new List<Vehicle>();
         using(OMBContext context = new OMBContext()){
-            var exists = context.Users.Include(U => U.Ships).Include(U => U.Vehicles).Where(U => U.userName == userName).SingleOrDefault();
+            var exists = context.Users.Include(U => U.Ships).Include(U => U.Vehicles).Where(U => U.Id == userId).SingleOrDefault();
             if(exists != null){
                 ships = exists.Ships;
                 vehicles = exists.Vehicles;
             }
         }
         foreach(Ship s in ships){
-            this.SRep.deleteShip(s.plate);
+            this.SRep.deleteShip(s.Id);
         }
         foreach(Vehicle v in vehicles){
-            this.VRep.deleteVehicle(v.plate);
+            this.VRep.deleteVehicle(v.Id);
         }
         using(OMBContext context = new OMBContext()){
-            var exists = context.Users.Where(U => U.userName == userName).SingleOrDefault();
+            var exists = context.Users.Where(U => U.Id == userId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
             }
@@ -56,20 +56,29 @@ public class UserRepository : IUserRepository {
     }
     public void modifyUser (User user){
         using(OMBContext context = new OMBContext()){
-            var exists = context.Users.Where(U => U.userName == user.userName).SingleOrDefault();
+            var exists = context.Users.Where(U => U.Id == user.Id).SingleOrDefault();
+            var aux = context.Users.Where(U => U.userName == user.userName).SingleOrDefault();
             if(exists != null){
-                exists.mail = user.mail;
-                exists.name = user.name;
-                exists.surname = user.surname;
-                exists.number = user.number;
-                exists.userName = user.userName;
-                exists.birthDate = user.birthDate;
-                exists.password = user.password;
-                exists.banned = user.banned;
-                context.SaveChanges();
-            }
-            else{
-                throw new Exception("This user doesn't seem to exist :(");
+                if(aux == null){
+                    aux = context.Users.Where(U => U.mail == user.mail).SingleOrDefault();
+                    if(aux == null){
+                        exists.mail = user.mail;
+                        exists.name = user.name;
+                        exists.surname = user.surname;
+                        exists.number = user.number;
+                        exists.userName = user.userName;
+                        exists.birthDate = user.birthDate;
+                        exists.password = user.password;
+                        exists.banned = user.banned;
+                        context.SaveChanges();
+                    }
+                    else{
+                        throw new Exception("This mail is already in use");
+                    }
+                }
+                else{
+                    throw new Exception("This username is taken");
+                }
             }
         }
     }

@@ -5,7 +5,7 @@ using OMB.Aplication.ClasesBase;
 public interface IVehicleRepository {
 
     public void addVehicle (Vehicle vehicle);
-    public void deleteVehicle (string plate);
+    public void deleteVehicle (int vehicleId);
     public void modifyVehicle (Vehicle vehicle); 
     public List<Vehicle> VehicleList ();
 

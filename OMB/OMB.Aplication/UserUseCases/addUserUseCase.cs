@@ -1,7 +1,7 @@
 namespace OMB.Aplication.UserUseCases;
 
-using OMB.Aplication.ClasesBase.User;
-using OMB.Aplication.Interfaces.IUserRepository;
+using OMB.Aplication.ClasesBase;
+using OMB.Aplication.Interfaces;
 
 public class addUserUseCase {
 
@@ -11,7 +11,7 @@ public class addUserUseCase {
         this.repository = repository;
     }
 
-    public void Ejecutar (User user) {
+    public void Execute (User user) {
         repository.addUser(user);
     }
 

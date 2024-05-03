@@ -1,6 +1,6 @@
 namespace OMB.Aplication.ShipUseCases;
 
-using OMB.Aplication.Interfaces.IShipRepository;
+using OMB.Aplication.Interfaces;
 
 public class deleteShipUseCase {
 
@@ -10,8 +10,8 @@ public class deleteShipUseCase {
         this.repository = repository;
     }
 
-    public void Ejecutar (string matricula) {
-        repository.deleteShip(matricula);
+    public void Execute (string plate) {
+        repository.deleteShip(plate);
     }
 
 }

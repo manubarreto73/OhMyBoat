@@ -1,7 +1,7 @@
 namespace OMB.Aplication.ShipUseCases;
 
-using OMB.Aplication.ClasesBase.Ship;
-using OMB.Aplication.Interfaces.IShipRepository;
+using OMB.Aplication.ClasesBase;
+using OMB.Aplication.Interfaces;
 
 public class modifyShipUseCase {
 
@@ -11,7 +11,7 @@ public class modifyShipUseCase {
         this.repository = repository;
     }
 
-    public void Ejecutar (Ship ship) {
+    public void Execute (Ship ship) {
         repository.modifyShip(ship);
     }
 

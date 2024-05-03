@@ -1,7 +1,7 @@
 namespace OMB.Aplication.UserUseCases;
 
-using OMB.Aplication.ClasesBase.User;
-using OMB.Aplication.Interfaces.IUserRepository;
+using OMB.Aplication.ClasesBase;
+using OMB.Aplication.Interfaces;
 
 public class userListUseCase {
 
@@ -11,7 +11,7 @@ public class userListUseCase {
         this.repository = repository;
     }
 
-    public List<User> Ejecutar () {
+    public List<User> Execute () {
         return repository.userList();
     }
 

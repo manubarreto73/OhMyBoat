@@ -1,6 +1,6 @@
 namespace OMB.Aplication.UserUseCases;
 
-using OMB.Aplication.Interfaces.IUserRepository;
+using OMB.Aplication.Interfaces;
 
 public class deleteUserUseCase {
 
@@ -10,8 +10,8 @@ public class deleteUserUseCase {
         this.repository = repository;
     }
 
-    public void Ejecutar (string username) {
-        repository.deleteUser(username);
+    public void Execute (string userName) {
+        repository.deleteUser(userName);
     }
 
 }

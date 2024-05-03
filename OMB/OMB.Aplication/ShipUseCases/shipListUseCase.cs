@@ -1,7 +1,7 @@
 namespace OMB.Aplication.ShipUseCases;
 
-using OMB.Aplication.ClasesBase.Ship;
-using OMB.Aplication.Interfaces.IShipRepository;
+using OMB.Aplication.ClasesBase;
+using OMB.Aplication.Interfaces;
 
 public class shipListUseCase {
 
@@ -11,7 +11,7 @@ public class shipListUseCase {
         this.repository = repository;
     }
 
-    public List<Ship> Ejecutar () {
+    public List<Ship> Execute () {
         return repository.ShipList();
     }
 

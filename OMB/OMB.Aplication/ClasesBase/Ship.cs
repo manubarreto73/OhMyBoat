@@ -1,29 +1,20 @@
-namespace OMB.Aplication.ClasesBase.Ship;
+namespace OMB.Aplication.ClasesBase;
 
 using System.Drawing;
 
-public class Ship {
+public class Ship : Transport {
     
     public double eslora {get; set;}
-    
     public double manga {get; set;}
-    
     public double calado {get; set;}
+    public bool hasEngine {get; set;}
+    public List<ShipPost>? ShipPosts {get; set;};
 
-    public string matricula {get; set;}
-
-    public Boolean tieneMotor {get; set;}
-
-    //public List<Image> photos {get; set;}
-    //supuestamente asi se agregaba imagenes pero no estaría workeando, lo resuelvo después
-    //la lista de las imagenes no debería ser dinámica porque genera problemas en la BD, había una cantidad minima o maxima?
-
-    public Ship (double eslora, double manga, double calado, string matricula, Boolean tieneMotor) {
+    public Ship (int UserId, string type, string plate, string description, double eslora, double manga, double calado, bool hasEngine) : base(UserId, type, plate, description){
         this.eslora = eslora;
         this.manga = manga;
         this.calado = calado;
-        this.matricula = matricula;
-        this.tieneMotor = tieneMotor;
+        this.hasEngine = hasEngine;
     }
 
 }

@@ -10,8 +10,8 @@ public class deleteUserUseCase {
         this.repository = repository;
     }
 
-    public void Execute (string userName) {
-        repository.deleteUser(userName);
+    public void Execute (int id) {
+        repository.deleteUser(id);
     }
 
 }

@@ -10,7 +10,7 @@ public class deleteVehicleUseCase {
         this.repository = repository;
     }
 
-    public void Execute (string plate) {
-        repository.deleteVehicle(plate);
+    public void Execute (int id) {
+        repository.deleteVehicle(id);
     }
 }

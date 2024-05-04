@@ -10,8 +10,8 @@ public class deleteShipUseCase {
         this.repository = repository;
     }
 
-    public void Execute (string plate) {
-        repository.deleteShip(plate);
+    public void Execute (int id) {
+        repository.deleteShip(id);
     }
 
 }

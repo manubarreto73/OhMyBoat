@@ -12,7 +12,7 @@ public class shipListUseCase {
     }
 
     public List<Ship> Execute () {
-        return repository.ShipList();
+        return repository.shipList();
     }
 
 }

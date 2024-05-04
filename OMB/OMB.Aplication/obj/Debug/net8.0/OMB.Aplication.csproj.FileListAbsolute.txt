@@ -21,3 +21,11 @@ c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\refint\OMB.Aplication.dll
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.pdb
 C:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Aplication\obj\Debug\net8.0\ref\OMB.Aplication.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.AssemblyInfoInputs.cache
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.AssemblyInfo.cs
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.csproj.CoreCompileInputs.cache
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.sourcelink.json
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\refint\OMB.Aplication.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Aplication\obj\Debug\net8.0\OMB.Aplication.pdb

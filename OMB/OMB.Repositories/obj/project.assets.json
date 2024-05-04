@@ -1202,19 +1202,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ide08\\.nuget\\packages\\": {}
+    "C:\\Users\\JoacoPC\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
+      "projectUniqueName": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
       "projectName": "OMB.Repositories",
-      "projectPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
-      "packagesPath": "C:\\Users\\ide08\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Repositories\\obj\\",
+      "projectPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
+      "packagesPath": "C:\\Users\\JoacoPC\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Repositories\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\ide08\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\JoacoPC\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -1226,8 +1226,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
-              "projectPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj"
+            "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
+              "projectPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj"
             }
           }
         }

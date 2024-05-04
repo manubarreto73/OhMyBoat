@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OMB.Repositories")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d74f6fcc79e562d8073c0793798bee10343dcfff")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c23c6bdf96f59a2eb347a10f44bb995fa6a612e9")]
 [assembly: System.Reflection.AssemblyProductAttribute("OMB.Repositories")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OMB.Repositories")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

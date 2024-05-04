@@ -1,10 +1,22 @@
 using OMB.UI.Components;
+using OMB.Aplication.UserUseCases;
+using OMB.Repositories;
+using OMB.Aplication.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+
+// ACA ESTA LO QUE AGREGAMOS NOSOTROS
+
+builder.Services.AddTransient<addUserUseCase>();
+builder.Services.AddTransient<deleteUserUseCase>();
+builder.Services.AddTransient<modifyUserUseCase>();
+builder.Services.AddTransient<userListUseCase>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 var app = builder.Build();
 

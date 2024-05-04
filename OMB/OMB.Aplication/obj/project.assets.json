@@ -8,19 +8,19 @@
     "net8.0": []
   },
   "packageFolders": {
-    "C:\\Users\\ide08\\.nuget\\packages\\": {}
+    "C:\\Users\\JoacoPC\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+      "projectUniqueName": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
       "projectName": "OMB.Aplication",
-      "projectPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
-      "packagesPath": "C:\\Users\\ide08\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.Aplication\\obj\\",
+      "projectPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+      "packagesPath": "C:\\Users\\JoacoPC\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\ide08\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\JoacoPC\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"

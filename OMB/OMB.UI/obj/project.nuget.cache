@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YnKP+L1IW/MdRjHoCXkwF2O8CM8M2Xb63sKQHPpB0nKijDh5sHPO0Pls710LKfnMxhufcQKpooaz7dtYpD6NsQ==",
+  "dgSpecHash": "NopLjXcA11nkRiBo3pDMyQ2Lc9fiO7D/G+Mt3fP8Aiu2TqD6gNcNOgrMNhPndA0ZXPLS1J6e76hH1jcUu5LlfQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.UI\\OMB.UI.csproj",
+  "projectFilePath": "c:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.UI\\OMB.UI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\JoacoPC\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.4\\microsoft.data.sqlite.core.8.0.4.nupkg.sha512",
     "C:\\Users\\JoacoPC\\.nuget\\packages\\microsoft.entityframeworkcore\\8.0.4\\microsoft.entityframeworkcore.8.0.4.nupkg.sha512",

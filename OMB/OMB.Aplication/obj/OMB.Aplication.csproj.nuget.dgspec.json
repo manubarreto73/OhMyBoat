@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {}
+    "c:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {}
   },
   "projects": {
-    "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
+    "c:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+        "projectUniqueName": "c:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
         "projectName": "OMB.Aplication",
-        "projectPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+        "projectPath": "c:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
         "packagesPath": "C:\\Users\\JoacoPC\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\obj\\",
+        "outputPath": "c:\\Users\\JoacoPC\\Bunker\\College\\Tercer Año\\1er Semestre\\Ingeniería de Software II\\OhMyBoat\\OMB\\OMB.Aplication\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\JoacoPC\\AppData\\Roaming\\NuGet\\NuGet.Config"

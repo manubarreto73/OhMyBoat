@@ -29,3 +29,6 @@ c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Repositories\obj\Debug\net8.0\O
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Repositories\obj\Debug\net8.0\refint\OMB.Repositories.dll
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.pdb
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.Repositories\obj\Debug\net8.0\ref\OMB.Repositories.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Repositories\obj\Debug\net8.0\refint\OMB.Repositories.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.Repositories\obj\Debug\net8.0\OMB.Repositories.pdb

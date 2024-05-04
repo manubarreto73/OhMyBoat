@@ -112,15 +112,15 @@ a:hover{
     outline: none;
 }
 
-#user{
-    margin-bottom: 10px;
-}
-
 .label{
     position: absolute;
     top: 15px;
     left: 20px;
     transition: .2s;
+}
+
+.has_account{
+    text-align: center;
 }
 
 .input_field:focus ~ .label,

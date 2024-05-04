@@ -69,3 +69,6 @@ c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\refint\OMB.
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\OMB.UI.pdb
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\OMB.UI.genruntimeconfig.cache
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\ref\OMB.UI.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.UI\obj\Debug\net8.0\OMB.UI.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.UI\obj\Debug\net8.0\refint\OMB.UI.dll
+c:\Users\JoacoPC\Bunker\College\Tercer Año\1er Semestre\Ingeniería de Software II\OhMyBoat\OMB\OMB.UI\obj\Debug\net8.0\OMB.UI.pdb

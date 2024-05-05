@@ -10,11 +10,11 @@ public class User {
     public string mail {get; set;}
     public string number {get; set;}
     public bool banned {get; set;} = false;
-    public DateTime birthDate {get; set;}
+    public DateOnly birthDate {get; set;}
     public List<Vehicle>? Vehicles {get; set;}
     public List<Ship>? Ships {get; set;}
 
-    public User(string name, string surname, string userName, string password, string mail, string number, DateTime birthDate) {
+    public User(string name, string surname, string userName, string password, string mail, string number, DateOnly birthDate) {
         this.name = name;
         this.surname = surname;
         this.userName = userName;

@@ -201,3 +201,49 @@ main[b-uqihxzx8ft] {
         overflow-y: auto;
     }
 }
+/* _content/OMB.UI/Components/Pages/DialogoConfirmacion.razor.rz.scp.css */
+.dialogo-contenedor[b-w4suw2jnwx] {
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom:0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialogo-contenido[b-w4suw2jnwx]{
+    width: 50%;
+    padding: 20px;
+    background-color: white;
+} 
+/* _content/OMB.UI/Components/Pages/DialogoError.razor.rz.scp.css */
+.dialogo-contenedor[b-nqye7q8qf1] {
+    position: fixed;
+    top:0;
+    left: 0;
+    right: 0;
+    bottom:0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dialogo-contenido[b-nqye7q8qf1]{
+    width: 50%;
+    padding: 20px;
+    background-color: white;
+} 
+/* _content/OMB.UI/Components/Pages/Login.razor.rz.scp.css */
+.form-control[b-98n36mekzf] {
+    margin-bottom: 10px;
+   }
+/* _content/OMB.UI/Components/Pages/Register.razor.rz.scp.css */
+.form-control[b-w0zegyt62y] {
+    margin-bottom: 10px;
+   }

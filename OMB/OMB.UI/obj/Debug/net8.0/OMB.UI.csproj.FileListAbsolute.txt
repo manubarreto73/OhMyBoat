@@ -101,3 +101,7 @@ c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\bin\Debug\net8.0\runtimes\wi
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\scopedcss\Components\Pages\Login.razor.rz.scp.css
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\scopedcss\Components\Pages\DialogoConfirmacion.razor.rz.scp.css
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\scopedcss\Components\Pages\DialogoError.razor.rz.scp.css
+c:\Users\Administrator\Desktop\ohMyBoat!\OMB\OMB.UI\obj\Debug\net8.0\scopedcss\Components\Pages\Register.razor.rz.scp.css

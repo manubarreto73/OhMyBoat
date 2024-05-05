@@ -1226,11 +1226,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj",
+      "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj",
       "projectName": "OMB.UI",
-      "projectPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj",
+      "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\OMB.UI.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\",
+      "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1248,8 +1248,8 @@
             "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
               "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj"
             },
-            "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj": {
-              "projectPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj"
+            "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj": {
+              "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj"
             }
           }
         }

@@ -1,28 +1,47 @@
 @page "/login"
+@inject NavigationManager NavigationManager
 @inject userListUseCase userListUseCase
+@inject IHttpContextAccessor? HttpContextAccessor
 
-<PageTitle>Log In</PageTitle>
+<DialogoError @ref=dialogo Mensaje="A ver si con esto dejas de joder"/>
 
-<h1>Log In</h1>
+<PageTitle>Login</PageTitle>
 
-<input placeholder="Nombre (obligatorio)" @bind="mail" class="form-control">
-<input placeholder="Nombre (obligatorio)" @bind="password" class="form-control">
+<h1>Ingresá tus datos para loggearte!</h1>
+
+<input placeholder="Correo" @bind="mail" class="form-control">
+<input placeholder="Contraseña" @bind="password" class="form-control">
 <button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
 
 @code {
-    private string mail;
-    private string password;
-    private User usuario;
+    string mail = "";
+    string password = "";
+    User? usuario;
+    DialogoError dialogo = null!;
 
     void Aceptar() {
+        
+        if (validarDatos()) {
+            dialogo.Mensaje = "Complete los campos";
+            dialogo.Mostrar();
+            return;
+        }
         
         //Busco un usuario que tenga el mail y clave ingresados
         usuario = userListUseCase.Execute().Where(user => user.mail == mail && user.password == password).SingleOrDefault();
         
         if (usuario != null) {
 
-            //Si el usuario existe, la sesión iniciada actual debe ser la de ese usuario
+            //Esto crea una tupla en HttpContext.Session, en la que indico el id de la sesión iniciada
+            if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null) {
+                HttpContextAccessor.HttpContext.Session.SetString("UserId", usuario.Id.ToString());
+            }
 
         }
+    }
+
+    //Si los datos tienen algún problema devuelve TRUE
+    bool validarDatos () { 
+        return (string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password));
     }
 }

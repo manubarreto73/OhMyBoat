@@ -1,0 +1,84 @@
+@page "/register"
+@inject NavigationManager NavigationManager
+@inject userListUseCase userListUseCase
+@inject addUserUseCase addUserUseCase
+@inject IHttpContextAccessor HttpContextAccessor
+
+<DialogoError @ref="dialogo"/>
+
+<PageTitle>Register</PageTitle>
+
+<h1>Ingresá tus datos y registrate ya!</h1>
+
+<input placeholder="Username" @bind="userName" class="form-control">
+<input placeholder="Mail" @bind="mail" class="form-control">
+<input placeholder="Name" @bind="name" class="form-control">
+<input placeholder="Surname" @bind="surname" class="form-control">
+<input placeholder="Password" @bind="password" class="form-control">
+<input placeholder="Birthdate" @bind="birthDate" class="form-control">
+<input placeholder="Number" @bind="number" class="form-control">
+<button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+<a href="login" class="btn btn-primary">Ya tenés una cuenta?</a>
+
+@code {
+    string userName = "";
+    string mail = "";
+    string name = "";
+    string surname = "";
+    string password = "";
+    DateOnly birthDate;
+    string number = "";
+    User? usuarioLeido;
+    DialogoError dialogo;
+    void Aceptar() {
+        
+        //La comparación del día no funciona, después habría que resolver. Además no sé cómo ingresar fechas, debe haber frames para eso
+        if (!validarDatos()) {
+            return;
+        }
+        
+        usuarioLeido = new User(name, surname, userName, password, mail, number, birthDate);
+
+        try {
+            addUserUseCase.Execute(usuarioLeido);
+        }
+        catch (Exception ex) {
+            if (ex.Message == "Mail already in use!") {
+                dialogo.Mensaje = "El mail ingresado ya corresponde con una cuenta";
+                dialogo.Mostrar();
+                return;
+            }
+            if (ex.Message == "This username's already taken!") {
+                dialogo.Mensaje = "El nombre de usuario ya se encuentra en uso, podrías probar con " + usuarioLeido.userName + "777";
+                dialogo.Mostrar();
+                return;
+            }
+        }
+
+        User? usuarioAgregado = userListUseCase.Execute().Find(user => user.userName == usuarioLeido.userName);
+        if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null) {
+                HttpContextAccessor.HttpContext.Session.SetString("UserId", usuarioAgregado.Id.ToString());
+        }
+        //cartel de que se loggeo con exito
+        
+    }
+
+    bool validarDatos() {
+        if (userName == "" || name == "" || surname == "" || mail == "" || password == "" || birthDate != null || number == "") {
+            dialogo.Mensaje = "Ingrese todos los datos para loggearse";
+            dialogo.Mostrar();
+            return false;
+        }
+        if (DateOnly.FromDateTime(DateTime.Today) > birthDate.AddYears(18)) {
+            dialogo.Mensaje = "Usted debe ser mayor de edad para crear una cuenta";
+            dialogo.Mostrar();
+            return false;
+        }
+        if (password.Length <= 8) {
+            dialogo.Mensaje = "La contraseña debe tener como mínimo 8 dígitos";
+            dialogo.Mostrar();
+            return false;
+        }
+        return true;
+    }
+}

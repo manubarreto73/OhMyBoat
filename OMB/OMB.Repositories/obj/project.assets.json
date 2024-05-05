@@ -1207,11 +1207,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
+      "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
       "projectName": "OMB.Repositories",
-      "projectPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
+      "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\OMB.Repositories.csproj",
       "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\obj\\",
+      "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Repositories\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"

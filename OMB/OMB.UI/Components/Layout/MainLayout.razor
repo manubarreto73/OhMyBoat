@@ -1,23 +1,38 @@
 ﻿@inherits LayoutComponentBase
+@inject IHttpContextAccessor HttpContextAccessor
 
 <div class="page">
+
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
-        </div>
+        @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") == null) {
+
+            <div class="top-row px-4">
+                <a href="login" class="btn btn-primary">Login</a>
+                <a href="register" class="btn btn-primary">Sign up</a>
+            </div>
+
+        }
+        else {
+
+            <div class="top-row px-4">
+            <a href="profile" class="btn btn-primary">Mi perfil</a>
+            </div>
+
+        }
 
         <article class="content px-4">
             @Body
         </article>
     </main>
+
 </div>
 
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
+    qué rompimo muchacho
+    <a href="" class="reload">recargar</a>
     <a class="dismiss">🗙</a>
 </div>

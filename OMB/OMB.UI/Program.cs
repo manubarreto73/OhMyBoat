@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-
+using(OMBContext context = new OMBContext()){
+    context.Database.EnsureCreated();
+}
 // ACA ESTA LO QUE AGREGAMOS NOSOTROS
 
 //ESTO ES PARA AGREGAR EL SERVICIO DE MIDDLEWARE DE SESIÓN

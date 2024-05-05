@@ -3,7 +3,7 @@
 @inject userListUseCase userListUseCase
 @inject IHttpContextAccessor? HttpContextAccessor
 
-<DialogoError @ref=dialogo Mensaje="A ver si con esto dejas de joder"/>
+<DialogoError @ref="dialogo" Mensaje="@miMensaje"/>
 
 <PageTitle>Login</PageTitle>
 
@@ -18,15 +18,15 @@
     string password = "";
     User? usuario;
     DialogoError dialogo = null!;
+    string miMensaje = "";
 
     void Aceptar() {
         
         if (validarDatos()) {
-            dialogo.Mensaje = "Complete los campos";
+            miMensaje = "Complete los campos";
             dialogo.Mostrar();
             return;
         }
-        
         //Busco un usuario que tenga el mail y clave ingresados
         usuario = userListUseCase.Execute().Where(user => user.mail == mail && user.password == password).SingleOrDefault();
         

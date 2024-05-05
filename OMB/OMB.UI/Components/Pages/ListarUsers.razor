@@ -1,0 +1,39 @@
+@page "/userlist"
+@inject NavigationManager Navegador
+@inject userListUseCase userListUseCase
+
+<table width="100%" class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>SURNAME</th>
+            <th>USERNAME</th>
+            <th>MAIL</th>
+            <th>PASSWORD</th>
+            <th>NUMBER</th>
+            <th>BIRTHDAY</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in _lista) {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.name</td>
+                <td>@user.surname</td>
+                <td>@user.userName</td>
+                <td>@user.mail</td>
+                <td>@user.number</td>
+                <td>@user.birthDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+   List<User> _lista = new List<User>();
+   protected override void OnInitialized()
+   {
+       _lista = userListUseCase.Execute();
+   }
+
+}

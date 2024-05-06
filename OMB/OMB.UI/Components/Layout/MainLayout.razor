@@ -1,5 +1,6 @@
-﻿@inherits LayoutComponentBase
-@inject IHttpContextAccessor HttpContextAccessor
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inherits LayoutComponentBase
+@inject ProtectedSessionStorage sessionStorage
 
 <div class="page">
 
@@ -8,7 +9,7 @@
     </div>
 
     <main>
-        @if (HttpContextAccessor.HttpContext.Session.GetString("UserId") == null) {
+        @if (userId == 0) {
 
             <div class="top-row px-4">
                 <a href="login" class="btn btn-primary">Login</a>
@@ -36,3 +37,14 @@
     <a href="" class="reload">recargar</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+
+    //Esto no funciona pq read no se ejecuta, no encontre la forma de que se ejecute, después hay que ver por qué
+    int userId;
+    public async Task Read() {
+        var result = await sessionStorage.GetAsync<int>("userId");
+        userId = result.Success ? result.Value : 0;
+    }
+
+}

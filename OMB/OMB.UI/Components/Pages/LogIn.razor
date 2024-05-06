@@ -1,10 +1,12 @@
 @page "/login"
-@inject NavigationManager NavigationManager
+@inject NavigationManager navegador
 @inject userListUseCase userListUseCase
-@inject IHttpContextAccessor? HttpContextAccessor
 @rendermode InteractiveServer
 
-<DialogoError @ref=dialogo Mensaje=@miMensaje/>
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+
+<DialogoError @ref=dialogo/>
 
 <h1>Ingresá tus datos para loggearte!</h1>
 
@@ -17,27 +19,33 @@
     string password = "";
     User? usuario;
     DialogoError dialogo = null!;
-    string miMensaje = "";
 
-    void Aceptar(){
+    public async Task Save() {
+        if (usuario != null)
+            await sessionStorage.SetAsync("userId", usuario.Id);
+    }
+    async void Aceptar(){
         if (validarDatos()) {
-            miMensaje = "Complete los campos";
-            dialogo.Mostrar();
+            dialogo.Mostrar("Complete los campos");
             return;
         }
+
         //Busco un usuario que tenga el mail y clave ingresados
         usuario = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
-        if(usuario == null){
-            miMensaje = "El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente";
-            dialogo.Mostrar();
+
+        if (usuario == null) {
+            dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");
             return;
         }
-        else{
-            //Esto crea una tupla en HttpContext.Session, en la que indico el id de la sesión iniciada
-            if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null) {
-                HttpContextAccessor.HttpContext.Session.SetString("UserId", usuario.Id.ToString());
-            }
+
+        if (usuario.banned) {
+            dialogo.Mostrar("Está cuenta ha sido banneada. Para más información presentese en alguna de las sucursales.");
+            return;
         }
+        
+        await Save();
+
+        navegador.NavigateTo("/");
     }
 
     //Si los datos tienen algún problema devuelve TRUE

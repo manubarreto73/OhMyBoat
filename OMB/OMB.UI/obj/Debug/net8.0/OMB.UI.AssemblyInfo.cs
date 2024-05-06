@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("OMB.UI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3e7c4bd3d14f8c6d156c9c3da8d785c675415f1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e7f4ff7a032ce09a29946abe91d3d9acbcabd2fd")]
 [assembly: System.Reflection.AssemblyProductAttribute("OMB.UI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("OMB.UI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

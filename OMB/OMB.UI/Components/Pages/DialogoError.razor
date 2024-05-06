@@ -10,11 +10,11 @@
 
 @code{
     private bool visible = false;
-    [Parameter] 
-    public string Mensaje {get;set;}="";
+    private string Mensaje = "";
 
-    public void Mostrar()
+    public void Mostrar(string Mensaje)
     {
+        this.Mensaje = Mensaje;
         visible=true;
         StateHasChanged();
     }

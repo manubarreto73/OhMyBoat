@@ -17,6 +17,10 @@ public class OMBContext : DbContext{
 
     public DbSet<ShipPost> ShipPosts {get; set;}
 
+    public DbSet<ShipImage> ShipImages {get; set;}
+    
+    public DbSet<VehicleImage> VehicleImages {get; set;}
+
     #nullable restore
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){

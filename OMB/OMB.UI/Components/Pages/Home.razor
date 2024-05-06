@@ -1,3 +1,26 @@
 ﻿@page "/"
+@using OMB.Repositories
+@rendermode InteractiveServer
 
-Acá deberían ir las publicaciones en un futuro
+<h1>Acá deberían ir las publicaciones en un futuro</h1>
+<button class="btn btn-primary" @onclick="ShowMe">Aceptar</button>
+@if(visible){
+    <img src="@imageDataURL"/>
+}
+
+
+
+@code {
+    OMBContext context = new OMBContext();
+    byte[]? imageBytes;
+    bool visible = false;
+    string? imageDataURL;
+
+    private void ShowMe(){
+        imageBytes = context.ShipImages.Where(s => s.Id == 1).SingleOrDefault().Image;
+        var imagesrc= Convert.ToBase64String(imageBytes);
+        imageDataURL = string.Format("data:image/jpeg;base64,{0}", imagesrc);
+        visible = true;
+    }
+}
+

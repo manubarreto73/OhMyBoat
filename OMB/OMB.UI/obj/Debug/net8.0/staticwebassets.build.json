@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "HXwL1kHkvUadHIbQ0OHPltVwxvwZmj2ZB5VX/gg3+eI=",
+  "Hash": "+a3ZyOeEJLeEEOMHhD3aKWwOnpr4x/VM6/fdNVigua4=",
   "Source": "OMB.UI",
   "BasePath": "_content/OMB.UI",
   "Mode": "Default",
@@ -10,17 +10,17 @@
     {
       "Name": "OMB.UI\\wwwroot",
       "Source": "OMB.UI",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\",
       "BasePath": "_content/OMB.UI",
       "Pattern": "**"
     }
   ],
   "Assets": [
     {
-      "Identity": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\bundle\\OMB.UI.styles.css",
+      "Identity": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\bundle\\OMB.UI.styles.css",
       "SourceId": "OMB.UI",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
+      "ContentRoot": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\bundle\\",
       "BasePath": "_content/OMB.UI",
       "RelativePath": "OMB.UI.styles.css",
       "AssetKind": "All",
@@ -33,13 +33,13 @@
       "AssetTraitValue": "ApplicationBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\bundle\\OMB.UI.styles.css"
+      "OriginalItemSpec": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\bundle\\OMB.UI.styles.css"
     },
     {
-      "Identity": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OMB.UI.bundle.scp.css",
+      "Identity": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OMB.UI.bundle.scp.css",
       "SourceId": "OMB.UI",
       "SourceType": "Computed",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
+      "ContentRoot": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\",
       "BasePath": "_content/OMB.UI",
       "RelativePath": "OMB.UI.bundle.scp.css",
       "AssetKind": "All",
@@ -52,13 +52,13 @@
       "AssetTraitValue": "ProjectBundle",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OMB.UI.bundle.scp.css"
+      "OriginalItemSpec": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\obj\\Debug\\net8.0\\scopedcss\\projectbundle\\OMB.UI.bundle.scp.css"
     },
     {
-      "Identity": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\app.css",
+      "Identity": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\app.css",
       "SourceId": "OMB.UI",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\",
       "BasePath": "_content/OMB.UI",
       "RelativePath": "app.css",
       "AssetKind": "All",
@@ -74,10 +74,10 @@
       "OriginalItemSpec": "wwwroot\\app.css"
     },
     {
-      "Identity": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\bootstrap\\bootstrap.min.css",
+      "Identity": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\bootstrap\\bootstrap.min.css",
       "SourceId": "OMB.UI",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\",
       "BasePath": "_content/OMB.UI",
       "RelativePath": "bootstrap/bootstrap.min.css",
       "AssetKind": "All",
@@ -93,10 +93,10 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css"
     },
     {
-      "Identity": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\bootstrap\\bootstrap.min.css.map",
+      "Identity": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\bootstrap\\bootstrap.min.css.map",
       "SourceId": "OMB.UI",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\",
       "BasePath": "_content/OMB.UI",
       "RelativePath": "bootstrap/bootstrap.min.css.map",
       "AssetKind": "All",
@@ -112,10 +112,10 @@
       "OriginalItemSpec": "wwwroot\\bootstrap\\bootstrap.min.css.map"
     },
     {
-      "Identity": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\favicon.png",
+      "Identity": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\favicon.png",
       "SourceId": "OMB.UI",
       "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\ide08\\Desktop\\Uni\\5th_Semester\\Inge2\\GitProject\\OhMyBoat\\OMB\\OMB.UI\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.UI\\wwwroot\\",
       "BasePath": "_content/OMB.UI",
       "RelativePath": "favicon.png",
       "AssetKind": "All",

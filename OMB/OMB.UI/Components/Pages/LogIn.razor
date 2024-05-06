@@ -6,8 +6,6 @@
 
 <DialogoError @ref=dialogo Mensaje=@miMensaje/>
 
-<PageTitle>Login</PageTitle>
-
 <h1>Ingresá tus datos para loggearte!</h1>
 
 <input placeholder="Correo" @bind="mail" class="form-control">
@@ -20,7 +18,8 @@
     User? usuario;
     DialogoError dialogo = null!;
     string miMensaje = "";
-    private void Aceptar(){
+
+    void Aceptar(){
         if (validarDatos()) {
             miMensaje = "Complete los campos";
             dialogo.Mostrar();
@@ -30,12 +29,10 @@
         usuario = userListUseCase.Execute().Where(user => user.mail == mail && user.password == password).SingleOrDefault();
         
         if (usuario != null) {
-
             //Esto crea una tupla en HttpContext.Session, en la que indico el id de la sesión iniciada
             if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null) {
                 HttpContextAccessor.HttpContext.Session.SetString("UserId", usuario.Id.ToString());
             }
-
         }
     }
 

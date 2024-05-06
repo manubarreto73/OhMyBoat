@@ -4,12 +4,9 @@
 @inject addUserUseCase addUserUseCase
 @inject IHttpContextAccessor HttpContextAccessor
 @rendermode InteractiveServer
-@using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 
 <DialogoError @ref="dialogo" Mensaje=@miMensaje/>
-
-<PageTitle>Register</PageTitle>
 
 <h1>Ingresá tus datos y registrate ya!</h1>
 
@@ -58,7 +55,7 @@
         }
 
         User? usuarioAgregado = userListUseCase.Execute().Where(user => user.userName == usuarioLeido.userName).SingleOrDefault();
-        if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null) {
+        if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null && usuarioAgregado != null) {
                 HttpContextAccessor.HttpContext.Session.SetString("UserId", usuarioAgregado.Id.ToString());
         }
         //cartel de que se loggeo con exito

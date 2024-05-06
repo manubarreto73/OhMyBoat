@@ -1,7 +1,11 @@
+using OMB.UI;
 using OMB.UI.Components;
 using OMB.Aplication.UserUseCases;
 using OMB.Repositories;
 using OMB.Aplication.Interfaces;
+//Cosas para la sesión
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,7 @@ builder.Services.AddRazorComponents()
 
 using(OMBContext context = new OMBContext()){
     context.Database.EnsureCreated();
+    //Testing.Initialize(context);
 }
 // ACA ESTA LO QUE AGREGAMOS NOSOTROS
 
@@ -18,7 +23,13 @@ using(OMBContext context = new OMBContext()){
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSession();
+builder.Services.AddSession(options =>
+{
+    options.Cookie.Name = ".OMB.Session"; // Cambia el nombre de la cookie según tus preferencias
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Establece el tiempo de expiración de la sesión
+});
 
 builder.Services.AddTransient<addUserUseCase>();
 builder.Services.AddTransient<deleteUserUseCase>();

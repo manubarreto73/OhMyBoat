@@ -2,8 +2,9 @@
 @inject NavigationManager NavigationManager
 @inject userListUseCase userListUseCase
 @inject IHttpContextAccessor? HttpContextAccessor
+@rendermode InteractiveServer
 
-<DialogoError @ref="dialogo" Mensaje="@miMensaje"/>
+<DialogoError @ref=dialogo Mensaje=@miMensaje/>
 
 <PageTitle>Login</PageTitle>
 
@@ -19,9 +20,7 @@
     User? usuario;
     DialogoError dialogo = null!;
     string miMensaje = "";
-
-    void Aceptar() {
-        
+    private void Aceptar(){
         if (validarDatos()) {
             miMensaje = "Complete los campos";
             dialogo.Mostrar();
@@ -41,7 +40,7 @@
     }
 
     //Si los datos tienen algún problema devuelve TRUE
-    bool validarDatos () { 
+    private bool validarDatos () { 
         return (string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password));
     }
 }

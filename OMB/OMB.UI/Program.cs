@@ -15,7 +15,7 @@ builder.Services.AddRazorComponents()
 
 using(OMBContext context = new OMBContext()){
     context.Database.EnsureCreated();
-    //Testing.Initialize(context);
+    Testing.Initialize(context);
 }
 // ACA ESTA LO QUE AGREGAMOS NOSOTROS
 

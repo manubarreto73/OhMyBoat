@@ -5,8 +5,9 @@ namespace OMB.UI;
 
 public class Testing{
 
-    public static void Initialize(OMBContext context){
+    public static void Initialize(){
         DateOnly birthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-21));
+        using(OMBContext context = new OMBContext()){
         if(context.Users.Count() == 0){
             context.Add(new User("Manu", "Barreto", "manubarreto", "manuel123", "manubarreto@gmail.com", "221123123", birthDate)); //1
             context.Add(new User("Luis", "González", "luisgonzalez", "luiss123", "luisgonzalez@gmail.com", "221456456", birthDate)); //2
@@ -18,6 +19,8 @@ public class Testing{
             context.Add(new User("Laura", "López", "lauralopez", "laura123", "lauralopez@gmail.com", "221555666", birthDate)); //8
         }
         context.SaveChanges();
+        }
+        using(OMBContext context = new OMBContext()){
         if(context.Vehicles.Count() == 0){
             context.Add(new Vehicle(3, "Auto", "ABC123", "En buen estado", "Fiat", 90000, 3));
             context.Add(new Vehicle(5, "Moto", "DEF456", "Pocos kms", "Honda", 5000, 0));
@@ -40,6 +43,8 @@ public class Testing{
             context.Add(new Ship(5, "Lacha", "ABC139", "Es aburrido", 7, 6, 23, false));
         }
         context.SaveChanges();
+        }
+        using(OMBContext context = new OMBContext()){
         if(context.VehiclePosts.Count() == 0){
             context.Add(new VehiclePost(2));
             context.Add(new VehiclePost(3));
@@ -60,6 +65,7 @@ public class Testing{
             context.Add(new ShipPost(8));
         }
         context.SaveChanges();
+        }
     }
 
 }

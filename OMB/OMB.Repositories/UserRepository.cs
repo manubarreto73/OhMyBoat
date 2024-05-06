@@ -29,6 +29,7 @@ public class UserRepository : IUserRepository {
             else{
                 throw new Exception("This username's already taken!");
             }
+            context.SaveChanges();
         }
     }
     public void deleteUser (int userId){

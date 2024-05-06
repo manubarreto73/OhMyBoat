@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {}
+    "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
+    "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+        "projectUniqueName": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
         "projectName": "OMB.Aplication",
-        "projectPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
+        "projectPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\OMB.Aplication.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\obj\\",
+        "outputPath": "c:\\Users\\Administrator\\Desktop\\ohMyBoat!\\OMB\\OMB.Aplication\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config"

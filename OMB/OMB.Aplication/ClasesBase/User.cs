@@ -24,4 +24,15 @@ public class User {
         this.birthDate = birthDate;
     }
 
+    public User() {
+        this.name = "";
+        this.surname = "";
+        this.userName = "";
+        this.password = "";
+        this.mail = "";
+        this.number = "";
+        this.birthDate = DateOnly.FromDateTime(DateTime.Now);
+    }
+
+
 }

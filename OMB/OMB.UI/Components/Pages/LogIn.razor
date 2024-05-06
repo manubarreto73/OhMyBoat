@@ -26,9 +26,13 @@
             return;
         }
         //Busco un usuario que tenga el mail y clave ingresados
-        usuario = userListUseCase.Execute().Where(user => user.mail == mail && user.password == password).SingleOrDefault();
-        
-        if (usuario != null) {
+        usuario = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+        if(usuario == null){
+            miMensaje = "El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente";
+            dialogo.Mostrar();
+            return;
+        }
+        else{
             //Esto crea una tupla en HttpContext.Session, en la que indico el id de la sesión iniciada
             if (HttpContextAccessor != null && HttpContextAccessor.HttpContext != null) {
                 HttpContextAccessor.HttpContext.Session.SetString("UserId", usuario.Id.ToString());

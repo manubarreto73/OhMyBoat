@@ -1,0 +1,33 @@
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio files
+.vs/
+.vscode/
+.idea/
+.fleet/
+
+# Various cache/temporary files
+*.log
+*.bak
+*.swp
+*.*~
+project.lock.json
+.DS_Store
+*.pyc
+nupkg/

@@ -3,6 +3,8 @@
 @inject NavigationManager navegador
 @inject ProtectedSessionStorage sessionStorage
 
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="CerrarSesion"/>
+
 <div class="page">
 
     <div class="sidebar">
@@ -21,12 +23,11 @@
         else {
   
             <div class="top-row px-4">
-                  <a href="profile"></a>
                 <div class="dropdown">
                     <i class='bx bxs-user-circle' style="font-size: 40px;cursor:pointer;color:#0d6efd;" data-bs-toggle="dropdown" aria-expanded="false"></i>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="profile">Mi perfil</a></li>
-                        <li><a class="dropdown-item" href="#" @onclick="CerrarSesion">Cerrar sesión</a></li>
+                        <li><a class="dropdown-item" href="#" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
                     </ul>
                 </div>
             </div>
@@ -47,12 +48,17 @@
 
 @code {
     int userId;
+    DialogoConfirmacion dialogo = null!;
     protected override async Task OnInitializedAsync() {
         var result = await sessionStorage.GetAsync<int>("userId");
         userId = result.Success ? result.Value : 0;
     }
 
+    private void ConfirmarCerrarSesion() {
+        dialogo.Mostrar("¿Seguro que deseas cerrar la sesión?");
+    }
     public async Task CerrarSesion() {
+
         await sessionStorage.DeleteAsync("userId");
         navegador.NavigateTo("/", true);
     }

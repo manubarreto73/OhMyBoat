@@ -20,23 +20,22 @@ public class VehicleImageRepository{
         }
     }
 
-    public List<byte[]> listVehicleImages(){
+    public List<VehicleImage> listVehicleImages(){
         using(OMBContext context = new OMBContext()){
-            List<byte[]> ret = new List<byte[]>();
+            List<VehicleImage> ret = new List<VehicleImage>();
             List<VehicleImage> ori = context.VehicleImages.ToList();
             foreach(VehicleImage v in ori){
-                ret.Add(Clone(v.Image));
+                ret.Add(Clone(v));
             }
-            return ret;
+            return context.VehicleImages.ToList();
         }
     }
 
-    private byte[] Clone(byte[] a){
-        byte[] res = new byte[a.Count()];
-        int fin = a.Count();
-        for(int i = 0; i < fin; i++){
-            res[i] = a[i];
+    private VehicleImage Clone(VehicleImage ve){
+        byte[] aux = new byte[ve.Image.Count()];
+        for(int i = 0; i < ve.Image.Count(); i++){
+            aux[i] = ve.Image[i];
         }
-        return res;
+        return new VehicleImage(ve.VehicleId, aux){Id = ve.Id};
     }
 }

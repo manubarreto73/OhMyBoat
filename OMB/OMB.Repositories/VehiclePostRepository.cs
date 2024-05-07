@@ -9,6 +9,7 @@ public class VehiclePostRepository : IVehiclePostRepository {
             var exists = context.VehiclePosts.Where(VP => VP.VehicleId == vehiclePost.VehicleId).SingleOrDefault();
             if(exists == null){
                 context.Add(Clone(vehiclePost));
+                context.SaveChanges();
             }
             else{
                 throw new Exception("Vehicle already posted");
@@ -27,7 +28,8 @@ public class VehiclePostRepository : IVehiclePostRepository {
         using(OMBContext context = new OMBContext()){
             var exists = context.VehiclePosts.Where(VP => VP.Id == vehiclePost.Id).SingleOrDefault();
             if(exists != null){
-                //Modifications, nothing yet
+                exists.Title = vehiclePost.Title;
+                context.SaveChanges();
             }
         }
     }
@@ -43,6 +45,6 @@ public class VehiclePostRepository : IVehiclePostRepository {
     }
 
     private VehiclePost Clone(VehiclePost vehiclePost){
-        return new VehiclePost(vehiclePost.VehicleId){posted = vehiclePost.posted, Id = vehiclePost.Id};
+        return new VehiclePost(vehiclePost.VehicleId, vehiclePost.Title){posted = vehiclePost.posted, Id = vehiclePost.Id};
     }
 }

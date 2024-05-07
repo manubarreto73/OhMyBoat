@@ -9,6 +9,7 @@ public class ShipPostRepository : IShipPostRepository {
             var exists = context.ShipPosts.Where(SP => SP.ShipId == shipPost.ShipId).SingleOrDefault();
             if(exists == null){
                 context.Add(Clone(shipPost));
+                context.SaveChanges();
             }
             else{
                 throw new Exception("Ship already posted");
@@ -20,6 +21,7 @@ public class ShipPostRepository : IShipPostRepository {
             var exists = context.ShipPosts.Where(SP => SP.Id == shipPostId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
+                context.SaveChanges();
             }
         }
     }
@@ -27,7 +29,8 @@ public class ShipPostRepository : IShipPostRepository {
         using(OMBContext context = new OMBContext()){
             var exists = context.ShipPosts.Where(SP => SP.Id == shipPost.Id).SingleOrDefault();
             if(exists != null){
-                //Modifications, nothing yet
+                exists.Title = shipPost.Title;
+                context.SaveChanges();
             }
         }
     }
@@ -43,6 +46,6 @@ public class ShipPostRepository : IShipPostRepository {
     }
 
     private ShipPost Clone(ShipPost shipPost){
-        return new ShipPost(shipPost.ShipId){posted = shipPost.posted, Id = shipPost.Id};
+        return new ShipPost(shipPost.ShipId, shipPost.Title){posted = shipPost.posted, Id = shipPost.Id};
     }
 }

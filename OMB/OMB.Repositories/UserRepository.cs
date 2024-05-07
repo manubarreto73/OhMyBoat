@@ -52,16 +52,22 @@ public class UserRepository : IUserRepository {
             var exists = context.Users.Where(U => U.Id == userId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
+                context.SaveChanges();
             }
         }
     }
     public void modifyUser (User user){
         using(OMBContext context = new OMBContext()){
             var exists = context.Users.Where(U => U.Id == user.Id).SingleOrDefault();
-            var aux = context.Users.Where(U => U.userName == user.userName).SingleOrDefault();
+            User? aux = null;
             if(exists != null){
+                if(exists.userName != user.userName){
+                    aux = context.Users.Where(U => U.userName == user.userName).SingleOrDefault();
+                }
                 if(aux == null){
-                    aux = context.Users.Where(U => U.mail == user.mail).SingleOrDefault();
+                    if(exists.userName != user.userName){
+                        aux = context.Users.Where(U => U.mail == user.mail).SingleOrDefault();
+                    }
                     if(aux == null){
                         exists.mail = user.mail;
                         exists.name = user.name;

@@ -17,16 +17,18 @@
     byte[]? imageBytes;
     bool visible = false;
     string? imageDataURL;
+
     List<ShipPost> posts = new List<ShipPost>();
     List<byte[]> images = new List<byte[]>();
-    private void ShowMe(){
+
+    private void ShowMe() {
         imageBytes = context.ShipImages.Where(s => s.Id == 1).SingleOrDefault().Image;
         var imagesrc= Convert.ToBase64String(imageBytes);
         imageDataURL = string.Format("data:image/jpeg;base64,{0}", imagesrc);
         visible = true;
     }
-    protected override void OnInitialized()
-   {
+
+    protected override void OnInitialized() {
        posts = shipPostListUseCase.Execute();
    }
 }

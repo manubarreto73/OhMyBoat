@@ -1,4 +1,4 @@
-namespace OMB.Aplication.shipPostUseCases;
+namespace OMB.Aplication.ShipPostUseCases;
 
 using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;

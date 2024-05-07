@@ -24,6 +24,7 @@
         if (usuario != null)
             await sessionStorage.SetAsync("userId", usuario.Id);
     }
+    
     async void Aceptar(){
         if (validarDatos()) {
             dialogo.Mostrar("Complete los campos");
@@ -45,7 +46,7 @@
         
         await Save();
 
-        navegador.NavigateTo("/");
+        navegador.NavigateTo("/", true);
     }
 
     //Si los datos tienen algún problema devuelve TRUE

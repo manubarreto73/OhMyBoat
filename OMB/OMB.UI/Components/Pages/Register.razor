@@ -28,6 +28,7 @@
         if (user != null)
             await sessionStorage.SetAsync("userId", user.Id);
     }
+
     async void Aceptar() {
         if (!validarDatos()) {
             return;
@@ -47,7 +48,7 @@
             }
         }
 
-        user = userListUseCase.Execute().Where(user => user.userName == user.userName).SingleOrDefault();
+        user = userListUseCase.Execute().Where(elem => user.userName == elem.userName).SingleOrDefault();
 
         await Save();
         

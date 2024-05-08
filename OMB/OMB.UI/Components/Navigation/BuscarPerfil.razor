@@ -18,7 +18,7 @@
     User? user;
     Employee? employee;
     string searchTerm = "";
-    private void SubmitForm() {
+    private void SubmitForm() {         // Este proceso busca el usuario que matchee con el termino buscado, arrancando por users, dsp employees y luego el admin.
 
         user = userListUseCase.Execute().Find(user => user.userName == searchTerm);
 
@@ -28,7 +28,11 @@
                 dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
                 return;
             } else {
-                Navegador.NavigateTo("/profileemployee/" + employee.Id, true);    
+                if (employee.Id == 1) {
+                    Navegador.NavigateTo("/profileadmin/" + employee.Id, true);            
+                } else {
+                    Navegador.NavigateTo("/profileemployee/" + employee.Id, true);    
+                }
             }
         } else {
             Navegador.NavigateTo("/profile/" + user.Id, true);

@@ -4,19 +4,33 @@ form {
     padding: 20px;
 }
 
-input[type="text"] {
-    width: 200px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
 }
 
-input[type="submit"] {
-    margin-left: 10px;
-    padding: 10px 20px;
-    border-radius: 5px;
+input {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 15px;
+    padding: 10px;
+    padding-left: 10px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+button {
     border: none;
-    background-color: #007BFF;
+    border-radius: 10px;
     color: white;
+    padding: 10px 30px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 20px;
+    margin: 4px 2px;
     cursor: pointer;
 }

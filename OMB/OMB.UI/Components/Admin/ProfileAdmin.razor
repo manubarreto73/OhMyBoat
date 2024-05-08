@@ -1,4 +1,4 @@
-@page "/profileadmin/{adminId:int?}"
+@page "/profileadmin/{adminUsername?}"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
 
@@ -48,11 +48,11 @@
 
 @code {
   Employee? admin = new Employee();
-  [Parameter] public int? adminId { get; set; }
+  [Parameter] public string? adminUsername { get; set; }
 
   protected override async Task OnInitializedAsync() {
 
-      var foundAdmin = await Task.Run(() => employeeListUseCase.Execute().Find(admin => admin.Id == adminId));
+      var foundAdmin = await Task.Run(() => employeeListUseCase.Execute().Find(admin => admin.userName == adminUsername));
 
       admin = foundAdmin ?? new Employee();
 

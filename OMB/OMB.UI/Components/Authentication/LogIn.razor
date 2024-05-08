@@ -27,11 +27,10 @@
     string password = "";
     DialogoError dialogo = null!;
 
-    async Task Save(bool isEmployee, int? userId) {
-        if (userId != null) {
-            await sessionStorage.SetAsync("userId", userId);
-            await sessionStorage.SetAsync("isEmployee", isEmployee);
-        }
+    async Task Save(bool isEmployee, int? userId, string username) {
+        await sessionStorage.SetAsync("userId", userId);
+        await sessionStorage.SetAsync("isEmployee", isEmployee);
+        await sessionStorage.SetAsync("userName", username);
     }
 
 
@@ -43,21 +42,18 @@
             return;
         }
 
-        Employee? employee = employeeListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+        Employee? employee = employeeListUseCase.Execute().Find(employee => (employee.mail == mail && employee.password == password));
 
         if (employee != null) {
             await esEmpleado(employee);
+        } else {
+            User? user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+            await esCliente(user);
         }
-
-        User? user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
-        
-        await esCliente(user);
-        
-
     }
 
     async Task esEmpleado(Employee employee) {
-        await Save(true, employee.Id);
+        await Save(true, employee.Id, employee.userName);
         navegador.NavigateTo("/homeemployee", true);
     }
 
@@ -73,7 +69,7 @@
             return;
         }
 
-        await Save(false, user.Id);
+        await Save(false, user.Id, user.userName);
         navegador.NavigateTo("/", true);
     }
 }

@@ -11,7 +11,7 @@ public class addVehicleImageUseCase {
         this.repository = repository;
     }
 
-    public void Execute (int Id, Image img) {
+    public void Execute (int Id, byte[] img) {
         repository.addVehicleImage(Id, img);
     }
 

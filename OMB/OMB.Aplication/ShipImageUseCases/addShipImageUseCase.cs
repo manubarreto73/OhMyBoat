@@ -12,7 +12,7 @@ public class addShipImageUseCase {
         this.repository = repository;
     }
 
-    public void Execute (int Id, Image img) {
+    public void Execute (int Id, byte[] img) {
         repository.addShipImage(Id, img);
     }
 

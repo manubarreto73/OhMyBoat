@@ -34,3 +34,5 @@ nupkg/
 
 # Database files
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal

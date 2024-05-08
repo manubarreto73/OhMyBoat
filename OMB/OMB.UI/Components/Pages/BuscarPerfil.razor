@@ -1,0 +1,24 @@
+@page "/buscarperfil"
+@inject NavigationManager Navegador
+@inject userListUseCase userListUseCase
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+
+<DialogoError @ref=dialogo/>
+
+<body>
+    <InputText placeholder="Search..." @bind-Value="searchTerm"></InputText>
+    <button @onclick="SubmitForm">Search</button>
+</body>
+
+@code {
+    DialogoError dialogo = null!;
+    string searchTerm = "";
+    bool mostrar = false;
+
+    private void SubmitForm()
+    {
+        dialogo.Mostrar("buscaste" + " " + searchTerm);
+    }
+}

@@ -16,10 +16,10 @@ public class UserRepository : IUserRepository {
 
     public void addUser (User user){
         using(OMBContext context = new OMBContext()){
-            var exists = context.Users.Where(U => U.userName == user.userName).SingleOrDefault();
-            if(exists == null){
-                exists = context.Users.Where(U => U.mail == user.mail).SingleOrDefault();
-                if(exists == null){
+            bool exists = (context.Users.Where(U => U.userName == user.userName).SingleOrDefault() != null) || (context.Employees.Where(E => E.userName == user.userName).SingleOrDefault() != null);
+            if(!exists){
+                exists = (context.Users.Where(U => U.mail == user.mail).SingleOrDefault() != null) || (context.Employees.Where(E => E.mail == user.mail).SingleOrDefault() != null);
+                if(!exists){
                     context.Add(Clone(user));
                 }
                 else{
@@ -59,16 +59,16 @@ public class UserRepository : IUserRepository {
     public void modifyUser (User user){
         using(OMBContext context = new OMBContext()){
             var exists = context.Users.Where(U => U.Id == user.Id).SingleOrDefault();
-            User? aux = null;
+            bool aux = true;
             if(exists != null){
                 if(exists.userName != user.userName){
-                    aux = context.Users.Where(U => U.userName == user.userName).SingleOrDefault();
+                    aux = (context.Users.Where(U => U.userName == user.userName).SingleOrDefault() != null) || (context.Employees.Where(E => E.userName == user.userName).SingleOrDefault() != null);
                 }
-                if(aux == null){
-                    if(exists.userName != user.userName){
-                        aux = context.Users.Where(U => U.mail == user.mail).SingleOrDefault();
+                if(!aux){
+                    if(exists.mail != user.mail){
+                        aux = (context.Users.Where(U => U.mail == user.mail).SingleOrDefault() != null) || (context.Employees.Where(E => E.userName == user.userName).SingleOrDefault() != null);
                     }
-                    if(aux == null){
+                    if(!aux){
                         exists.mail = user.mail;
                         exists.name = user.name;
                         exists.surname = user.surname;

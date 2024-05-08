@@ -1,9 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits LayoutComponentBase
-@inject NavigationManager navegador
-@inject ProtectedSessionStorage sessionStorage
 
+@inject NavigationManager Navegador
+@inject ProtectedSessionStorage sessionStorage
+@inject addVehicleUseCase addVehicleUseCase
+@inject IWebHostEnvironment Environment
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="CerrarSesion"/>
+
+@inject ILogger<MainLayout> Logger
 
 <div class="page">
 
@@ -28,7 +32,9 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="profile/@userId">Mi perfil</a></li>
                         <li><a class="dropdown-item" href="cambiarcontraseña">Cambiar contraseña</a></li>
-                        <li><a class="dropdown-item" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" @onclick="ReiniciarTipo" 
+                            data-bs-target="#cargarVehiculoModal">Cargar vehículo</a></li>
+                        <li><a class="dropdown-item" href="#" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
                     </ul>
                 </div>
             </div>
@@ -38,6 +44,96 @@
             @Body
         </article>
     </main>
+
+    <div class="modal fade" id="cargarVehiculoModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Cargar vehículo</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form>
+                    <div class="modal-body form-body">
+                        <div>
+                            <label class="form-label">Tipo de vehículo</label>
+                            <select @bind="tipoVehiculo" class="form-select">
+                                <option style="display:none"></option>
+                                <option value="camioneta">Camioneta</option>
+                                <option value="auto">Auto</option>
+                                <option value="ciclomotor">Ciclomotor</option>
+                            </select>
+                        </div>
+
+                        @if (tipoVehiculo == "") {
+                            <div>
+                                <label for="validationTooltip01" class="form-label">Modelo</label>
+                                <input type="text" class="form-control" id="validationTooltip01" required disabled>
+                            </div>
+                            <div>
+                                <label class="form-label">Fotos</label>
+                                <input class="form-control" accept=".jpeg" type="file" multiple disabled>
+                            </div>
+                            <div>
+                                <label class="form-label">Kilometraje</label>
+                                <input type="number" min=0 class="form-control" required disabled>
+                            </div>
+                            <div >
+                                <label class="form-label">Patente</label>
+                                <input type="text" class="form-control" required disabled>
+                            </div>
+                            <div >
+                                <label class="form-label">Cantidad de puertas</label>
+                                <input type="text" class="form-control" required disabled>
+                            </div>
+                        } else if (tipoVehiculo == "ciclomotor") {
+                            <div>
+                                <label for="validationTooltip01" class="form-label">Modelo</label>
+                                <input type="text" class="form-control" id="validationTooltip01" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Fotos</label>
+                                <input class="form-control" accept=".jpeg" type="file" multiple>
+                            </div>
+                            <div>
+                                <label class="form-label">Kilometraje</label>
+                                <input type="number" min=0 class="form-control" required>
+                            </div>
+                            <div >
+                                <label class="form-label">Patente</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        } else {
+                            <div>
+                                <label for="validationTooltip01" class="form-label">Modelo</label>
+                                <input type="text" class="form-control" id="validationTooltip01" required>
+                            </div>
+                            <div>
+                                <label class="form-label">Fotos (1 a 3)</label>
+                                <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpeg" OnChange="LoadFiles" multiple required/>
+                            </div>
+                            <div>
+                                <label class="form-label">Kilometraje</label>
+                                <input type="number" min=0 class="form-control" required>
+                            </div>
+                            <div >
+                                <label class="form-label">Patente</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                            <div >
+                                <label class="form-label">Cantidad de puertas</label>
+                                <input type="text" class="form-control" required>
+                            </div>
+                        }
+                
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success" @onclick="CargarVehiculo">Cargar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
 
@@ -50,6 +146,14 @@
 @code {
     int userId;
     DialogoConfirmacion dialogo = null!;
+
+    string tipoVehiculo = "";
+    Vehicle vehiculo;
+
+    private int maxAllowedFiles = 3; // Cantidad máxima de fotos que permite ingresar
+    private List<byte[]> fileBytesList = new List<byte[]>(); // Lista de arrays de bytes para las fotos
+    private string _inputFileId = Guid.NewGuid().ToString(); // Se usa para limpiar el input
+
     protected override async Task OnInitializedAsync() {
         var result = await sessionStorage.GetAsync<int>("userId");
         userId = result.Success ? result.Value : 0;
@@ -58,9 +162,44 @@
     private void ConfirmarCerrarSesion() {
         dialogo.Mostrar("¿Seguro que deseas cerrar la sesión?");
     }
-    public async Task CerrarSesion() {
 
+    public async Task CerrarSesion() {
         await sessionStorage.DeleteAsync("userId");
-        navegador.NavigateTo("/", true);
+        Navegador.NavigateTo("/", true);
+    }
+
+    // Pone el tipoVehiculo en vacio para que se reinicie el formulario
+    public void ReiniciarTipo() {
+        tipoVehiculo = "";
+    }
+
+    // No pregunten mucho que hace, lo importante es que funciona :)
+    private async Task LoadFiles(InputFileChangeEventArgs e) {
+        try {
+            foreach (var file in e.GetMultipleFiles(maxAllowedFiles)) {
+                try {
+                    using (var memoryStream = new MemoryStream()) {
+                        using (var fileStream = file.OpenReadStream()) {
+                            await fileStream.CopyToAsync(memoryStream);
+                        }
+                        fileBytesList.Add(memoryStream.ToArray());
+                    }
+                } catch (Exception ex) {
+                    // Handle any errors that occur during file processing
+                    Console.WriteLine($"Error reading file: {ex.Message}");
+                }
+            }
+        } catch (Exception ex) {
+            // Si se meten más fotos que maxAlloweFiles entrá acá
+            Console.WriteLine($"Error reading file: {ex.Message}");
+
+            // Actualiza algo del input y lo vuelve a generar, haciendo que 
+            // desaparezcan los archivos que había cargado
+             _inputFileId = Guid.NewGuid().ToString(); 
+        }
+    }
+
+    public void CargarVehiculo() {
+        @* vehiculo = new Vehicle(userId, tipoVehiculo, ) *@
     }
 }

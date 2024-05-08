@@ -23,6 +23,7 @@ input {
 }
 
 button {
+    background-color: var(--second-color);
     border: none;
     border-radius: 10px;
     color: white;

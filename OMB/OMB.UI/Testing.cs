@@ -46,23 +46,23 @@ public class Testing{
         }
         using(OMBContext context = new OMBContext()){
         if(context.VehiclePosts.Count() == 0){
-            context.Add(new VehiclePost(2));
-            context.Add(new VehiclePost(3));
-            context.Add(new VehiclePost(4));
-            context.Add(new VehiclePost(5));
-            context.Add(new VehiclePost(6));
-            context.Add(new VehiclePost(7));
-            context.Add(new VehiclePost(8));
+            context.Add(new VehiclePost(2, "Holis!"));
+            context.Add(new VehiclePost(3, "Título!"));
+            context.Add(new VehiclePost(4, ">:3"));
+            context.Add(new VehiclePost(5, "Son las 12:52"));
+            context.Add(new VehiclePost(6, "Mañana tengo EMT!"));
+            context.Add(new VehiclePost(7, "No, frfr"));
+            context.Add(new VehiclePost(8, "Help"));
         }
         context.SaveChanges();
         if(context.ShipPosts.Count() == 0){
-            context.Add(new ShipPost(2));
-            context.Add(new ShipPost(3));
-            context.Add(new ShipPost(4));
-            context.Add(new ShipPost(5));
-            context.Add(new ShipPost(6));
-            context.Add(new ShipPost(7));
-            context.Add(new ShipPost(8));
+            context.Add(new ShipPost(2, "Holis!"));
+            context.Add(new ShipPost(3, "Hola"));
+            context.Add(new ShipPost(4, "Hola 2"));
+            context.Add(new ShipPost(5, "Hola: The Return"));
+            context.Add(new ShipPost(6, "The end of Hola"));
+            context.Add(new ShipPost(7, "Hola, back from the dead"));
+            context.Add(new ShipPost(8, "Hola Endgame"));
         }
         context.SaveChanges();
         }

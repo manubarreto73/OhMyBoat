@@ -2,7 +2,6 @@
 @inject NavigationManager navegador
 @inject userListUseCase userListUseCase
 @rendermode InteractiveServer
-
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
 
@@ -10,9 +9,16 @@
 
 <h1>Ingresá tus datos para loggearte!</h1>
 
-<input placeholder="Correo" @bind="mail" class="form-control">
-<input type="password" placeholder="Contraseña" @bind="password" class="form-control">
-<button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+<form>
+    <div class="form-group">
+        <input placeholder="Correo" @bind="mail" class="form-control">
+    </div>
+    <div class="form-group">
+        <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
+    </div>
+    <button class="btn btn-primary" @onclick="Aceptar">Iniciar sesión</button>
+</form>
+
 
 @code {
     string mail = "";
@@ -24,8 +30,10 @@
         if (usuario != null)
             await sessionStorage.SetAsync("userId", usuario.Id);
     }
+    
     async void Aceptar(){
-        if (validarDatos()) {
+
+        if ((string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password))) {
             dialogo.Mostrar("Complete los campos");
             return;
         }
@@ -45,11 +53,7 @@
         
         await Save();
 
-        navegador.NavigateTo("/");
-    }
+        navegador.NavigateTo("/", true);
 
-    //Si los datos tienen algún problema devuelve TRUE
-    private bool validarDatos () { 
-        return (string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password));
     }
 }

@@ -1,6 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits LayoutComponentBase
+@inject NavigationManager navegador
 @inject ProtectedSessionStorage sessionStorage
+
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="CerrarSesion"/>
 
 <div class="page">
 
@@ -18,11 +21,16 @@
 
         }
         else {
-
+  
             <div class="top-row px-4">
-            <a href="profile" class="btn btn-primary">Mi perfil</a>
+                <div class="dropdown">
+                    <i class='bx bxs-user-circle' style="font-size: 40px;cursor:pointer;color:#0d6efd;" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="profile">Mi perfil</a></li>
+                        <li><a class="dropdown-item" href="#" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
+                    </ul>
+                </div>
             </div>
-
         }
 
         <article class="content px-4">
@@ -39,12 +47,19 @@
 </div>
 
 @code {
-
-    //Esto no funciona pq read no se ejecuta, no encontre la forma de que se ejecute, después hay que ver por qué
     int userId;
-    public async Task Read() {
+    DialogoConfirmacion dialogo = null!;
+    protected override async Task OnInitializedAsync() {
         var result = await sessionStorage.GetAsync<int>("userId");
         userId = result.Success ? result.Value : 0;
     }
 
+    private void ConfirmarCerrarSesion() {
+        dialogo.Mostrar("¿Seguro que deseas cerrar la sesión?");
+    }
+    public async Task CerrarSesion() {
+
+        await sessionStorage.DeleteAsync("userId");
+        navegador.NavigateTo("/", true);
+    }
 }

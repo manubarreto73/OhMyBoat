@@ -16,6 +16,7 @@ public class ShipRepository : IShipRepository{
             var exists = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
             if(exists == null){
                 context.Add(Clone(ship));
+                context.SaveChanges();
             }
             else{
                 throw new Exception("Plate number already registered");
@@ -37,15 +38,19 @@ public class ShipRepository : IShipRepository{
             var exists = context.Ships.Where(S => S.Id == shipId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
+                context.SaveChanges();
             }
         }
     }
     public void modifyShip (Ship ship){
         using(OMBContext context = new OMBContext()){
             var exists = context.Ships.Where(S => S.Id == ship.Id).SingleOrDefault();
-            var aux = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
+            Ship? aux = null;
             if(exists != null){
-                if(aux != null){
+                if(ship.plate != exists.plate){
+                    aux = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
+                }
+                if(aux == null){
                     exists.eslora = ship.eslora;
                     exists.manga = ship.manga;
                     exists.calado = ship.calado;

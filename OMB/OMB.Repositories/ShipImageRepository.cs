@@ -20,23 +20,22 @@ public class ShipImageRepository{
         }
     }
 
-    public List<byte[]> listShipImages(){
+    public List<ShipImage> listShipImages(){
         using(OMBContext context = new OMBContext()){
-            List<byte[]> ret = new List<byte[]>();
+            List<ShipImage> ret = new List<ShipImage>();
             List<ShipImage> ori = context.ShipImages.ToList();
             foreach(ShipImage s in ori){
-                ret.Add(Clone(s.Image));
+                ret.Add(Clone(s));
             }
-            return ret;
+            return context.ShipImages.ToList();
         }
     }
 
-    private byte[] Clone(byte[] a){
-        byte[] res = new byte[a.Count()];
-        int fin = a.Count();
-        for(int i = 0; i < fin; i++){
-            res[i] = a[i];
+    private ShipImage Clone(ShipImage sh){
+        byte[] aux = new byte[sh.Image.Count()];
+        for(int i = 0; i < sh.Image.Count(); i++){
+            aux[i] = sh.Image[i];
         }
-        return res;
+        return new ShipImage(sh.ShipId, aux){Id = sh.Id};
     }
 }

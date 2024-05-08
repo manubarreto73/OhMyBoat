@@ -1,2 +1,63 @@
-@page "/profile"
+@page "/profile/{id:int?}"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@rendermode InteractiveServer
 
+@inject ProtectedSessionStorage sessionStorage
+@inject userListUseCase userListUseCase
+
+<div class="container">
+  <div class="profile_card">
+    <div class="profile_details">
+      <div class="intro">
+        <h2>@user.name @user.surname</h2>
+      </div>
+   
+      <div class="contact_info">
+        <div class="row">
+          <div class="icon">
+            <i class="bx bx-user icon" ></i>
+          </div>
+          <div class="content">
+            <span>Phone</span>
+            <h5>@user.number</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icon">
+            <i class="bx bx-user icon"></i>
+          </div>
+          <div class="content">
+            <span>Email</span>
+            <h5>@user.mail</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icon">
+            <i class="bx bx-user icon"></i>
+          </div>
+          <div class="content">
+            <span>UserName</span>
+            <h5>@user.userName</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+@code {
+  int userId;
+  string name = "";
+  User user = new User();
+
+  protected override async Task OnInitializedAsync() {
+    var result = await sessionStorage.GetAsync<int>("userId");
+    userId = result.Success ? result.Value : 0;
+
+    GetUser();
+  }
+
+  private void GetUser() {
+    user = userListUseCase.Execute().Find(user => user.Id == userId);
+  }
+}

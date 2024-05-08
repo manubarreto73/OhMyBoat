@@ -16,6 +16,7 @@ public class VehicleRepository : IVehicleRepository{
             var exists = context.Vehicles.Where(V => V.plate == vehicle.plate).SingleOrDefault();
             if(exists == null){
                 context.Add(Clone(vehicle));
+                context.SaveChanges();
             }
             else{
                 throw new Exception("Plate number already registered");
@@ -37,15 +38,19 @@ public class VehicleRepository : IVehicleRepository{
             var exists = context.Vehicles.Where(V => V.Id == vehicleId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
+                context.SaveChanges();
             }
         }
     }
     public void modifyVehicle (Vehicle vehicle){
         using(OMBContext context = new OMBContext()){
             var exists = context.Vehicles.Where(V => V.Id == vehicle.Id).SingleOrDefault();
-            var aux = context.Vehicles.Where(V => V.plate == vehicle.plate).SingleOrDefault();
+            Vehicle? aux = null;
             if(exists != null){
-                if(aux != null){
+                if(vehicle.plate != exists.plate){
+                    aux = context.Vehicles.Where(V => V.plate == vehicle.plate).SingleOrDefault();
+                }
+                if(aux == null){
                     exists.doors = vehicle.doors;
                     exists.kms = vehicle.kms;
                     exists.model = vehicle.model;

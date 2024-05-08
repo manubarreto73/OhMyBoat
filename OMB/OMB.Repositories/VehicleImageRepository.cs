@@ -5,17 +5,14 @@ using OMB.Aplication.Interfaces;
 namespace OMB.Repositories;
 
 public class VehicleImageRepository : IVehicleImageRepository{
-    public void addVehicleImage(int Id, Image img){
+    public void addVehicleImage(int Id, byte[] img){
         using(OMBContext context = new OMBContext()){
             Vehicle? v = context.Vehicles.Where(ve => ve.Id == Id).SingleOrDefault();
             if(v != null){
                 int i = context.VehicleImages.Where(im => im.VehicleId == Id).Count();
                 if (i < 3){
-                    using(var ms = new MemoryStream()){
-                        (new Bitmap(img)).Save(ms, img.RawFormat);
-                        context.Add(new VehicleImage(Id, ms.ToArray()));
-                        context.SaveChanges();
-                    }
+                    context.Add(new VehicleImage(Id, img));
+                    context.SaveChanges();
                 }
             }
         }

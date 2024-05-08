@@ -5,17 +5,14 @@ using OMB.Aplication.Interfaces;
 namespace OMB.Repositories;
 
 public class ShipImageRepository : IShipImageRepository{
-    public void addShipImage(int Id, Image img){
+    public void addShipImage(int Id, byte[] img){
         using(OMBContext context = new OMBContext()){
             Ship? s = context.Ships.Where(sh => sh.Id == Id).SingleOrDefault();
             if(s != null){
                 int i = context.ShipImages.Where(im => im.ShipId == Id).Count();
                 if (i < 3){
-                    using(var ms = new MemoryStream()){
-                        (new Bitmap(img)).Save(ms, img.RawFormat);
-                        context.Add(new ShipImage(Id, ms.ToArray()));
+                        context.Add(new ShipImage(Id, img));
                         context.SaveChanges();
-                    }
                 }
             }
         }

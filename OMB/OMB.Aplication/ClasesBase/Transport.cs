@@ -19,4 +19,6 @@ public class Transport {
         this.description = description;
     }
 
+    public Transport() {}
+
 }

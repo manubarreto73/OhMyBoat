@@ -13,4 +13,6 @@ public class Vehicle : Transport {
         this.doors = doors;
     }
 
+    public Vehicle() : base() {}
+
 }

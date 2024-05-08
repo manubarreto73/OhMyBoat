@@ -25,9 +25,6 @@ public class User{
         this.banned = false;
     }
 
-    public User(){
-        
-    }
-
+    public User() {}
 
 }

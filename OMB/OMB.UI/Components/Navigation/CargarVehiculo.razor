@@ -1,4 +1,11 @@
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+@inject addVehicleUseCase addVehicleUseCase
+@inject addVehicleImageUseCase addVehicleImageUseCase
+
 @rendermode InteractiveServer
+
+<DialogoError @ref="dialogo"/>
 
 <div class="modal fade" id="cargarVehiculoModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -18,70 +25,61 @@
                   <option value="ciclomotor">Ciclomotor</option>
               </select>
           </div>
-            @if (tipoVehiculo == "") {
-                <div>
-                    <label for="validationTooltip01" class="form-label">Modelo</label>
-                    <input type="text" class="form-control" id="validationTooltip01" required disabled>
-                </div>
-                <div>
-                    <label class="form-label">Fotos</label>
-                    <input class="form-control" accept=".jpeg" type="file" multiple disabled>
-                </div>
-                <div>
-                    <label class="form-label">Kilometraje</label>
-                    <input type="number" min=0 class="form-control" required disabled>
-                </div>
-                <div >
-                    <label class="form-label">Patente</label>
-                    <input type="text" class="form-control" required disabled>
-                </div>
-                <div >
-                    <label class="form-label">Cantidad de puertas</label>
-                    <input type="text" class="form-control" required disabled>
-                </div>
-            } else if (tipoVehiculo == "ciclomotor") {
-                <div>
-                    <label for="validationTooltip01" class="form-label">Modelo</label>
-                    <input type="text" class="form-control" id="validationTooltip01" required>
-                </div>
-                <div>
-                    <label class="form-label">Fotos</label>
-                    <input class="form-control" accept=".jpeg" type="file" multiple>
-                </div>
-                <div>
-                    <label class="form-label">Kilometraje</label>
-                    <input type="number" min=0 class="form-control" required>
-                </div>
-                <div >
-                    <label class="form-label">Patente</label>
-                    <input type="text" class="form-control" required>
-                </div>
-            } else {
-                <div>
-                    <label for="validationTooltip01" class="form-label">Modelo</label>
-                    <input type="text" class="form-control" id="validationTooltip01" required>
-                </div>
-                <div>
-                    <label class="form-label">Fotos (1 a 3)</label>
-                    <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpeg" OnChange="LoadFiles" multiple required/>
-                </div>
-                <div>
-                    <label class="form-label">Kilometraje</label>
-                    <input type="number" min=0 class="form-control" required>
-                </div>
-                <div >
-                    <label class="form-label">Patente</label>
-                    <input type="text" class="form-control" required>
-                </div>
-                <div >
-                    <label class="form-label">Cantidad de puertas</label>
-                    <input type="text" class="form-control" required>
-                </div>
+
+          @if (tipoVehiculo == "") {
+            <div>
+                <label for="validationTooltip01" class="form-label">Modelo</label>
+                <input type="text" class="form-control" id="validationTooltip01" required disabled>
+            </div>
+            <div>
+                <label class="form-label">Fotos (1 a 3)</label>
+                <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpeg" OnChange="LoadFiles" multiple required/>
+            </div>
+            <div>
+                <label class="form-label">Kilometraje (Km)</label>
+                <input type="number" min=0 class="form-control" required disabled>
+            </div>
+            <div >
+                <label class="form-label">Patente</label>
+                <input type="text" class="form-control" required disabled>
+            </div>
+            <div >
+                <label class="form-label">Cantidad de puertas</label>
+                <input type="number" min=0 class="form-control" required disabled>
+            </div>
+          } else {
+            <div>
+              <label for="validationTooltip01" class="form-label">Modelo</label>
+              <input type="text" class="form-control" @bind=vehiculo.model required>
+            </div>
+            <div >
+              <label class="form-label">Descripcion</label>
+              <input type="text" class="form-control" @bind=vehiculo.description required>
+            </div>
+            <div>
+              <label class="form-label">Fotos (1 a 3)</label>
+              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpeg" OnChange="LoadFiles" multiple required/>
+            </div>
+            <div>
+              <label class="form-label">Kilometraje (Km)</label>
+              <input type="number" min=0 class="form-control" @bind=vehiculo.kms required>
+            </div>
+            <div >
+              <label class="form-label">Patente</label>
+              <input type="text" class="form-control" @bind=vehiculo.plate required>
+            </div>
+            @if (tipoVehiculo != "ciclomotor") {
+              <div >
+                <label class="form-label">Cantidad de puertas</label>
+                <input type="number" min=0 class="form-control" @bind=vehiculo.doors required>
+              </div>
             }
+          }
+
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-              <button type="submit" class="btn btn-success" @onclick="Aceptar ">Cargar</button>
+              <button type="button" class="btn btn-success" @onclick="Aceptar">Cargar</button>
           </div>
         </form>
       </div>
@@ -89,16 +87,28 @@
 </div>
 
 @code {
-    string tipoVehiculo = "";
-    Vehicle vehiculo = null;
+    int userId;
+    DialogoError dialogo = null!;
+
+    string tipoVehiculo = ""; // Uso esta variable para el input de cantidad de puertas
+    Vehicle vehiculo = new Vehicle();
+    Vehicle? newVehiculo;
 
     private int maxAllowedFiles = 3; // Cantidad máxima de fotos que permite ingresar
     private List<byte[]> fileBytesList = new List<byte[]>(); // Lista de arrays de bytes para las fotos
     private string _inputFileId = Guid.NewGuid().ToString(); // Se usa para limpiar el input
 
-      // Pone el tipoVehiculo en vacio para que se reinicie el formulario
-    public void ReiniciarTipo() {
+    
+    protected override async Task OnInitializedAsync() {
+        var result = await sessionStorage.GetAsync<int>("userId");
+        userId = result.Success ? result.Value : 0;
+    }
+
+    // Pone el tipoVehiculo en vacio para que se reinicie el formulario
+    public void ReiniciarForm() {
+        vehiculo = new Vehicle();
         tipoVehiculo = "";
+        fileBytesList = new List<byte[]>();
     }
 
     // Crea una lista de arrays de bytes con las fotos
@@ -121,14 +131,49 @@
       } catch (Exception ex) {
         // Si se meten más fotos que maxAlloweFiles entrá acá
         Console.WriteLine($"Error reading file: {ex.Message}");
+        dialogo.Mostrar("La cantidad máxima de fotos es 3.");
 
         // Actualiza algo del input y lo vuelve a generar, haciendo que 
         // desaparezcan los archivos que había cargado
-          _inputFileId = Guid.NewGuid().ToString(); 
+        _inputFileId = Guid.NewGuid().ToString();
       }
     }
 
     public void Aceptar() {
-      @* vehiculo = new Vehicle(userId, tipoVehiculo, ) *@
+      if (!ValidarDatos()) {
+        return;
+      }
+
+      newVehiculo = new Vehicle(userId, tipoVehiculo, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors);
+
+      if (AddVehicle()) {
+        SubirFotos();
+        ReiniciarForm();
+      } else {
+        return;
+      }
+    }
+
+    private bool ValidarDatos() {
+      return true;
+    }
+
+    private void SubirFotos() {
+      foreach (var img in fileBytesList) {
+        addVehicleImageUseCase.Execute(newVehiculo.Id, img);
+      }
+    }
+
+    private bool AddVehicle() {
+      try {
+        addVehicleUseCase.Execute(newVehiculo);
+        return true;
+      }
+      catch (Exception ex) {
+        if (ex.Message == "Plate number already registered") {
+          dialogo.Mostrar("La patente ingresada ya se encuentra registrada.");
+        }
+        return false;
+      }
     }
 }

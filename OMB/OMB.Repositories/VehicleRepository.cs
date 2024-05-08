@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 public class VehicleRepository : IVehicleRepository{
     
-        private IVehiclePostRepository VPRep;
+    private IVehiclePostRepository VPRep;
 
-        public VehicleRepository(IVehiclePostRepository VPRep){
-            this.VPRep = VPRep;
-        }
-        public void addVehicle (Vehicle vehicle){
+    public VehicleRepository(IVehiclePostRepository VPRep){
+        this.VPRep = VPRep;
+    }
+    public void addVehicle (Vehicle vehicle){
         using(OMBContext context = new OMBContext()){
             var exists = context.Vehicles.Where(V => V.plate == vehicle.plate).SingleOrDefault();
             if(exists == null){

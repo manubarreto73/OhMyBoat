@@ -2,10 +2,11 @@
 @inject NavigationManager navegador
 @inject userListUseCase userListUseCase
 @inject addUserUseCase addUserUseCase
-@rendermode InteractiveServer
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
+
+@rendermode InteractiveServer
 
 <DialogoError @ref="dialogo"/>
 

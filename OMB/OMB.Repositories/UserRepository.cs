@@ -59,7 +59,7 @@ public class UserRepository : IUserRepository {
     public void modifyUser (User user){
         using(OMBContext context = new OMBContext()){
             var exists = context.Users.Where(U => U.Id == user.Id).SingleOrDefault();
-            bool aux = true;
+            bool aux = false;
             if(exists != null){
                 if(exists.userName != user.userName){
                     aux = (context.Users.Where(U => U.userName == user.userName).SingleOrDefault() != null) || (context.Employees.Where(E => E.userName == user.userName).SingleOrDefault() != null);

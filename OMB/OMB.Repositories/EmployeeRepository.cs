@@ -36,7 +36,7 @@ public class EmployeeRepository {
     public void modifyEmployee (Employee employee){
         using(OMBContext context = new OMBContext()){
             var exists = context.Employees.Where(E => E.Id == employee.Id).SingleOrDefault();
-            bool aux = true;
+            bool aux = false;
             if(exists != null){
                 if(exists.userName != employee.userName){
                     aux = (context.Employees.Where(E => E.userName == employee.userName).SingleOrDefault() != null) || (context.Users.Where(U => U.userName == employee.userName).SingleOrDefault() != null);

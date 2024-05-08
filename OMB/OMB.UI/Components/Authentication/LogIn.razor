@@ -18,18 +18,18 @@
         <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
     </div>
     <button class="btn btn-primary" @onclick="Aceptar">Iniciar sesión</button>
+    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Olvidaste tu contraseña?</a>
 </form>
 
 
 @code {
     string mail = "";
     string password = "";
-    Employee? user;
     DialogoError dialogo = null!;
 
-    public async Task Save(bool isEmployee) {
-        if (user != null) {
-            await sessionStorage.SetAsync("userId", user.Id);
+    async Task Save(bool isEmployee, int? userId) {
+        if (userId != null) {
+            await sessionStorage.SetAsync("userId", userId);
             await sessionStorage.SetAsync("isEmployee", isEmployee);
         }
     }
@@ -43,35 +43,37 @@
             return;
         }
 
-        user = employeeListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+        Employee? employee = employeeListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
 
-        if (user != null) {
-            esEmpleado();
+        if (employee != null) {
+            await esEmpleado(employee);
         }
 
-        user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
-
-        if (user != null) {
-            esCliente();
-        }
+        User? user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+        
+        await esCliente(user);
+        
 
     }
 
-    async void esEmpleado() {
-        await Save(true);
+    async Task esEmpleado(Employee employee) {
+        await Save(true, employee.Id);
         navegador.NavigateTo("/homeemployee", true);
     }
 
-    async void esCliente() {
+    async Task esCliente(User? user) {
 
-        var user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
-
-        if (user != null && user.banned) {
+        if (user == null) {
             dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");
             return;
         }
 
-        await Save(false);
+        if (user.banned) {
+            dialogo.Mostrar("Tu cuenta se encuentra baneada");
+            return;
+        }
+
+        await Save(false, user.Id);
         navegador.NavigateTo("/", true);
     }
 }

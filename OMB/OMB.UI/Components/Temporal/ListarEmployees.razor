@@ -1,0 +1,40 @@
+@page "/employeelist"
+@inject NavigationManager Navegador
+@inject employeeListUseCase employeeListUseCase
+
+<table width="100%" class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>SURNAME</th>
+            <th>USERNAME</th>
+            <th>MAIL</th>
+            <th>PASSWORD</th>
+            <th>NUMBER</th>
+            <th>BIRTHDAY</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in _lista) {
+            <tr>
+                <td>@employee.Id</td>
+                <td>@employee.name</td>
+                <td>@employee.surname</td>
+                <td>@employee.userName</td>
+                <td>@employee.mail</td>
+                <td>@employee.password</td>
+                <td>@employee.number</td>
+                <td>@employee.birthDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+   List<Employee> _lista = new List<Employee>();
+   protected override void OnInitialized()
+   {
+       _lista = employeeListUseCase.Execute();
+   }
+
+}

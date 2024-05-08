@@ -38,6 +38,8 @@
             return;
         }
 
+        //BUSCAR EN LA LISTA DE EMPLEADOS Y COSAS EN CONSECUENCIA
+
         //Busco un usuario que tenga el mail y clave ingresados
         usuario = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
 

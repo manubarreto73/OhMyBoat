@@ -27,6 +27,7 @@
     public async Task Save() {
         if (user != null)
             await sessionStorage.SetAsync("userId", user.Id);
+        await sessionStorage.SetAsync("isEmployee", false);
     }
 
     async void Aceptar() {

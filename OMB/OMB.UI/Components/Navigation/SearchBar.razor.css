@@ -1,0 +1,29 @@
+/* SearchBar.css */
+
+form {
+    color: #001529;
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+}
+
+input[type="text"] {
+    border-color: #1890ff;
+    color: #001529;
+    border-radius: 10px;
+    font-size: 20px;
+    padding: 5px;
+}
+
+.btn-primary {
+    background-color: #1890ff;
+    border-color: #1890ff;
+    color: #ffffff;
+    margin-left: 10px;
+}
+
+.btn-primary:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+    color: #ffffff;
+}

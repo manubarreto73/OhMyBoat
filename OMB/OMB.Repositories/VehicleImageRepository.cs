@@ -1,9 +1,10 @@
 using System.Drawing;
 using OMB.Aplication.ClasesBase;
+using OMB.Aplication.Interfaces;
 
 namespace OMB.Repositories;
 
-public class VehicleImageRepository{
+public class VehicleImageRepository : IVehicleImageRepository{
     public void addVehicleImage(int Id, Image img){
         using(OMBContext context = new OMBContext()){
             Vehicle? v = context.Vehicles.Where(ve => ve.Id == Id).SingleOrDefault();

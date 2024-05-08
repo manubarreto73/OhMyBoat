@@ -1,9 +1,10 @@
 using System.Drawing;
 using OMB.Aplication.ClasesBase;
+using OMB.Aplication.Interfaces;
 
 namespace OMB.Repositories;
 
-public class ShipImageRepository{
+public class ShipImageRepository : IShipImageRepository{
     public void addShipImage(int Id, Image img){
         using(OMBContext context = new OMBContext()){
             Ship? s = context.Ships.Where(sh => sh.Id == Id).SingleOrDefault();

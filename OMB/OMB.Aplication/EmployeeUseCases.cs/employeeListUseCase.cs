@@ -3,11 +3,11 @@ namespace OMB.Aplication.EmployeeUseCases;
 using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;
 
-public class EmployeeListUseCase {
+public class employeeListUseCase {
 
     public readonly IEmployeeRepository repository;
 
-    public EmployeeListUseCase (IEmployeeRepository repository) {
+    public employeeListUseCase (IEmployeeRepository repository) {
         this.repository = repository;
     }
 

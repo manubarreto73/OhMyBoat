@@ -4,7 +4,7 @@ using OMB.Aplication.Interfaces;
 using OMB.Aplication.ClasesBase;
 using Microsoft.EntityFrameworkCore;
 
-public class EmployeeRepository {
+public class EmployeeRepository : IEmployeeRepository {
 
     public void addEmployee (Employee employee){
         using(OMBContext context = new OMBContext()){
@@ -66,7 +66,7 @@ public class EmployeeRepository {
         }
     }
 
-    public List<Employee> EmployeeList (){
+    public List<Employee> employeeList (){
         using(OMBContext context = new OMBContext()){
             List<Employee> Ret = new List<Employee>();
             List<Employee> Ori = context.Employees.ToList();

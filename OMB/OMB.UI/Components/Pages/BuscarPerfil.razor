@@ -7,18 +7,25 @@
 
 <DialogoError @ref=dialogo/>
 
-<body>
-    <InputText placeholder="Search..." @bind-Value="searchTerm"></InputText>
-    <button @onclick="SubmitForm">Search</button>
-</body>
+<form onsubmit="return false">
+    <input type="text" placeholder="Search..." @bind="searchTerm"></input>
+    <button @onclick="SubmitForm" class="btn btn-primary">Search</button>
+</form>
 
 @code {
     DialogoError dialogo = null!;
+    User? user;
     string searchTerm = "";
     bool mostrar = false;
-
+    int id;
     private void SubmitForm()
     {
-        dialogo.Mostrar("buscaste" + " " + searchTerm);
+        user = userListUseCase.Execute().Find(user => user.userName == searchTerm);
+        if (user == null){
+            dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
+        } else {
+            id = user.Id;
+            Navegador.NavigateTo("/profile/" + id, true);
+        }
     }
 }

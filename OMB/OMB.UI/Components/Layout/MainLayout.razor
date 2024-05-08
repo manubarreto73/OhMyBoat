@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits LayoutComponentBase
-@inject NavigationManager navegador
+@inject NavigationManager Navegador
 @inject ProtectedSessionStorage sessionStorage
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="CerrarSesion"/>
@@ -61,6 +61,6 @@
     public async Task CerrarSesion() {
 
         await sessionStorage.DeleteAsync("userId");
-        navegador.NavigateTo("/", true);
+        Navegador.NavigateTo("/", true);
     }
 }

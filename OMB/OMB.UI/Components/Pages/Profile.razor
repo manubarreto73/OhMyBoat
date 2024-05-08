@@ -1,4 +1,4 @@
-@page "/profile"
+@page "/profile/{userId:int?}"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
 
@@ -46,18 +46,11 @@
 </div>
 
 @code {
-  int userId;
-  string name = "";
-  User user = new User();
+  User? user;
+  [Parameter] public int? userId { get; set; }
 
   protected override async Task OnInitializedAsync() {
-    var result = await sessionStorage.GetAsync<int>("userId");
-    userId = result.Success ? result.Value : 0;
-
-    GetUser();
-  }
-
-  private void GetUser() {
     user = userListUseCase.Execute().Find(user => user.Id == userId);
   }
+
 }

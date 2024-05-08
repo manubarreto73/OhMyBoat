@@ -17,7 +17,7 @@
     <div class="form-group">
         <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
     </div>
-    <button class="btn btn-primary" @onclick="Aceptar">Iniciar sesión</button>
+   <button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault>Iniciar sesión</button>
     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Olvidaste tu contraseña?</a>
 </form>
 
@@ -35,14 +35,14 @@
 
 
     
-    async void Aceptar(){
+    async Task Aceptar(){
 
         if ((string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password))) {
             dialogo.Mostrar("Complete los campos");
             return;
         }
 
-        Employee? employee = employeeListUseCase.Execute().Find(employee => (employee.mail == mail && employee.password == password));
+        Employee? employee = employeeListUseCase.Execute().Find(employee => employee.mail == mail && employee.password == password);
 
         if (employee != null) {
             await esEmpleado(employee);
@@ -60,7 +60,7 @@
     async Task esCliente(User? user) {
 
         if (user == null) {
-            dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");
+            dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");    
             return;
         }
 

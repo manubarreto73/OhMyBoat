@@ -4,13 +4,6 @@ form {
     padding: 20px;
 }
 
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f0f0f0;
-}
-
 input {
     position: relative;
     display: flex;
@@ -23,7 +16,6 @@ input {
 }
 
 button {
-    background-color: var(--second-color);
     border: none;
     border-radius: 10px;
     color: white;
@@ -34,4 +26,8 @@ button {
     font-size: 20px;
     margin: 4px 2px;
     cursor: pointer;
+}
+
+button:hover {
+    text-decoration: underline;
 }

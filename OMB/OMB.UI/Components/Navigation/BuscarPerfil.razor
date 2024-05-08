@@ -1,6 +1,7 @@
 @page "/buscarperfil"
 @inject NavigationManager Navegador
 @inject userListUseCase userListUseCase
+@inject employeeListUseCase employeeListUseCase
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
@@ -15,17 +16,27 @@
 @code {
     DialogoError dialogo = null!;
     User? user;
+    Employee? employee;
     string searchTerm = "";
-    private void SubmitForm() {
+    private void SubmitForm() {         // Este proceso busca el usuario que matchee con el termino buscado, arrancando por users, dsp employees y luego el admin.
 
         user = userListUseCase.Execute().Find(user => user.userName == searchTerm);
 
         if (user == null){
-            dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
-            return;
+            employee = employeeListUseCase.Execute().Find(employee => employee.userName == searchTerm);
+            if (employee == null){
+                dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
+                return;
+            } else {
+                if (employee.Id == 1) {
+                    Navegador.NavigateTo("/profileadmin/" + employee.Id, true);            
+                } else {
+                    Navegador.NavigateTo("/profileemployee/" + employee.Id, true);    
+                }
+            }
+        } else {
+            Navegador.NavigateTo("/profile/" + user.Id, true);
         }
-
-        Navegador.NavigateTo("/profile/" + user.Id, true);
-
     }
+
 }

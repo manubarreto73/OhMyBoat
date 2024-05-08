@@ -1,7 +1,61 @@
-@page "/profileadmin/{userId:int?}"
+@page "/profileadmin/{adminId:int?}"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@rendermode InteractiveServer
+
+@inject ProtectedSessionStorage sessionStorage
+@inject employeeListUseCase employeeListUseCase
+
+<div class="container">
+  <div class="profile_card">
+    <div class="profile_details">
+        SOY EL MALDITO ADMIN
+      <div class="intro">
+        <h2>@admin?.name @admin?.surname</h2>
+      </div>
+   
+      <div class="contact_info">
+        <div class="row">
+          <div class="icon">
+            <i class="bx bx-user icon" ></i>
+          </div>
+          <div class="content">
+            <span>Phone</span>
+            <h5>@admin?.number</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icon">
+            <i class="bx bx-user icon"></i>
+          </div>
+          <div class="content">
+            <span>Email</span>
+            <h5>@admin?.mail</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="icon">
+            <i class="bx bx-user icon"></i>
+          </div>
+          <div class="content">
+            <span>UserName</span>
+            <h5>@admin?.userName</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
 @code {
+  Employee? admin = new Employee();
+  [Parameter] public int? adminId { get; set; }
 
-    // AUN NADA POR AQUI
+  protected override async Task OnInitializedAsync() {
+
+      var foundAdmin = await Task.Run(() => employeeListUseCase.Execute().Find(admin => admin.Id == adminId));
+
+      admin = foundAdmin ?? new Employee();
+
+  }
 
 }

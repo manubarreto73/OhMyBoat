@@ -16,16 +16,16 @@
     DialogoError dialogo = null!;
     User? user;
     string searchTerm = "";
-    bool mostrar = false;
-    int id;
-    private void SubmitForm()
-    {
+    private void SubmitForm() {
+
         user = userListUseCase.Execute().Find(user => user.userName == searchTerm);
+
         if (user == null){
             dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
-        } else {
-            id = user.Id;
-            Navegador.NavigateTo("/profile/" + id, true);
+            return;
         }
+
+        Navegador.NavigateTo("/profile/" + user.Id, true);
+
     }
 }

@@ -23,11 +23,13 @@
 
 @code {
     User user = new User();
+    User? newUser;
     DialogoError dialogo = null!;
     public async Task Save() {
-        if (user != null)
-            await sessionStorage.SetAsync("userId", user.Id);
-        await sessionStorage.SetAsync("isEmployee", false);
+        if (newUser != null) {
+            await sessionStorage.SetAsync("userId", newUser.Id);
+            await sessionStorage.SetAsync("isEmployee", false);
+        }
     }
 
     async void Aceptar() {
@@ -35,21 +37,9 @@
             return;
         }
 
-        try {
-            addUserUseCase.Execute(user);
-        }
-        catch (Exception ex) {
-            if (ex.Message == "Mail already in use!") {
-                dialogo.Mostrar("El mail ingresado ya corresponde con una cuenta");
-                return;
-            }
-            if (ex.Message == "This username's already taken!") {
-                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso, podrías probar con " + user.userName + "777");
-                return;
-            }
-        }
+        addUser();
 
-        user = userListUseCase.Execute().Where(elem => user.userName == elem.userName).SingleOrDefault();
+        newUser = userListUseCase.Execute().Where(elem => user.userName == elem.userName).SingleOrDefault();
 
         await Save();
         
@@ -72,5 +62,21 @@
             return false;
         }
         return true;
+    }
+
+    void addUser() {
+        try {
+            addUserUseCase.Execute(user);
+        }
+        catch (Exception ex) {
+            if (ex.Message == "Mail already in use!") {
+                dialogo.Mostrar("El mail ingresado ya corresponde con una cuenta");
+                return;
+            }
+            if (ex.Message == "This username's already taken!") {
+                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso, podrías probar con " + user.userName + "777");
+                return;
+            }
+        }
     }
 }

@@ -9,7 +9,7 @@
   <div class="profile_card">
     <div class="profile_details">
       <div class="intro">
-        <h2>@user.name @user.surname</h2>
+        <h2>@user?.name @user?.surname</h2>
       </div>
    
       <div class="contact_info">
@@ -19,7 +19,7 @@
           </div>
           <div class="content">
             <span>Phone</span>
-            <h5>@user.number</h5>
+            <h5>@user?.number</h5>
           </div>
         </div>
         <div class="row">
@@ -28,7 +28,7 @@
           </div>
           <div class="content">
             <span>Email</span>
-            <h5>@user.mail</h5>
+            <h5>@user?.mail</h5>
           </div>
         </div>
         <div class="row">
@@ -37,7 +37,7 @@
           </div>
           <div class="content">
             <span>UserName</span>
-            <h5>@user.userName</h5>
+            <h5>@user?.userName</h5>
           </div>
         </div>
       </div>
@@ -46,11 +46,15 @@
 </div>
 
 @code {
-  User? user;
+  User? user = new User();
   [Parameter] public int? userId { get; set; }
 
   protected override async Task OnInitializedAsync() {
-    user = userListUseCase.Execute().Find(user => user.Id == userId);
+
+      var foundUser = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == userId));
+
+      user = foundUser ?? new User();
+
   }
 
 }

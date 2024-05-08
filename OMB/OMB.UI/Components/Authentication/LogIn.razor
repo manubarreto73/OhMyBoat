@@ -1,6 +1,7 @@
 @page "/login"
 @inject NavigationManager navegador
 @inject userListUseCase userListUseCase
+@inject employeeListUseCase employeeListUseCase
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
@@ -23,13 +24,17 @@
 @code {
     string mail = "";
     string password = "";
-    User? usuario;
+    Employee? user;
     DialogoError dialogo = null!;
 
-    public async Task Save() {
-        if (usuario != null)
-            await sessionStorage.SetAsync("userId", usuario.Id);
+    public async Task Save(bool isEmployee) {
+        if (user != null) {
+            await sessionStorage.SetAsync("userId", user.Id);
+            await sessionStorage.SetAsync("isEmployee", isEmployee);
+        }
     }
+
+
     
     async void Aceptar(){
 
@@ -38,24 +43,35 @@
             return;
         }
 
-        //BUSCAR EN LA LISTA DE EMPLEADOS Y COSAS EN CONSECUENCIA
+        user = employeeListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
 
-        //Busco un usuario que tenga el mail y clave ingresados
-        usuario = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+        if (user != null) {
+            esEmpleado();
+        }
 
-        if (usuario == null) {
+        user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+
+        if (user != null) {
+            esCliente();
+        }
+
+    }
+
+    async void esEmpleado() {
+        await Save(true);
+        navegador.NavigateTo("/homeemployee", true);
+    }
+
+    async void esCliente() {
+
+        var user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+
+        if (user != null && user.banned) {
             dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");
             return;
         }
 
-        if (usuario.banned) {
-            dialogo.Mostrar("Está cuenta ha sido banneada. Para más información presentese en alguna de las sucursales.");
-            return;
-        }
-        
-        await Save();
-
+        await Save(false);
         navegador.NavigateTo("/", true);
-
     }
 }

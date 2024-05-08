@@ -30,7 +30,12 @@
                 <div class="dropdown">
                     <i class='bx bxs-user-circle' style="font-size: 40px;cursor:pointer;color:#0d6efd;" data-bs-toggle="dropdown" aria-expanded="false"></i>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="profile/@userId">Mi perfil</a></li>
+                        @if (isEmployee) {
+                            <li><a class="dropdown-item" href="profileemployee/@userId">Mi perfil</a></li>
+                        }
+                        else {
+                            <li><a class="dropdown-item" href="profile/@userId">Mi perfil</a></li>
+                        }
                         <li><a class="dropdown-item" href="cambiarcontraseña">Cambiar contraseña</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" @onclick="ReiniciarTipo" 
                             data-bs-target="#cargarVehiculoModal">Cargar vehículo</a></li>
@@ -145,18 +150,22 @@
 
 @code {
     int userId;
+    bool isEmployee;
     DialogoConfirmacion dialogo = null!;
 
     string tipoVehiculo = "";
-    Vehicle vehiculo;
+    //Vehicle vehiculo; 
+    //PONGO ESTO COMO COMENTARIO PQ NO SE USA Y SALTA UN WARNING
 
     private int maxAllowedFiles = 3; // Cantidad máxima de fotos que permite ingresar
     private List<byte[]> fileBytesList = new List<byte[]>(); // Lista de arrays de bytes para las fotos
     private string _inputFileId = Guid.NewGuid().ToString(); // Se usa para limpiar el input
 
     protected override async Task OnInitializedAsync() {
-        var result = await sessionStorage.GetAsync<int>("userId");
-        userId = result.Success ? result.Value : 0;
+        var result  = await sessionStorage.GetAsync<bool>("isEmployee");
+        isEmployee = result .Success ? result .Value : false;
+        var result2 = await sessionStorage.GetAsync<int>("userId");
+        userId = result2.Success ? result2.Value : 0;
     }
 
     private void ConfirmarCerrarSesion() {
@@ -165,6 +174,7 @@
 
     public async Task CerrarSesion() {
         await sessionStorage.DeleteAsync("userId");
+        await sessionStorage.DeleteAsync("isEmployee");
         Navegador.NavigateTo("/", true);
     }
 

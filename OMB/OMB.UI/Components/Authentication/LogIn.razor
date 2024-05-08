@@ -17,7 +17,7 @@
     <div class="form-group">
         <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
     </div>
-    <button class="btn btn-primary" @onclick="Aceptar">Iniciar sesión</button>
+   <button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault>Iniciar sesión</button>
     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Olvidaste tu contraseña?</a>
 </form>
 
@@ -27,44 +27,40 @@
     string password = "";
     DialogoError dialogo = null!;
 
-    async Task Save(bool isEmployee, int? userId) {
-        if (userId != null) {
-            await sessionStorage.SetAsync("userId", userId);
-            await sessionStorage.SetAsync("isEmployee", isEmployee);
-        }
+    async Task Save(bool isEmployee, int? userId, string username) {
+        await sessionStorage.SetAsync("userId", userId);
+        await sessionStorage.SetAsync("isEmployee", isEmployee);
+        await sessionStorage.SetAsync("userName", username);
     }
 
 
     
-    async void Aceptar(){
+    async Task Aceptar(){
 
         if ((string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password))) {
             dialogo.Mostrar("Complete los campos");
             return;
         }
 
-        Employee? employee = employeeListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+        Employee? employee = employeeListUseCase.Execute().Find(employee => employee.mail == mail && employee.password == password);
 
         if (employee != null) {
             await esEmpleado(employee);
+        } else {
+            User? user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
+            await esCliente(user);
         }
-
-        User? user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
-        
-        await esCliente(user);
-        
-
     }
 
     async Task esEmpleado(Employee employee) {
-        await Save(true, employee.Id);
+        await Save(true, employee.Id, employee.userName);
         navegador.NavigateTo("/homeemployee", true);
     }
 
     async Task esCliente(User? user) {
 
         if (user == null) {
-            dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");
+            dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");    
             return;
         }
 
@@ -73,7 +69,7 @@
             return;
         }
 
-        await Save(false, user.Id);
+        await Save(false, user.Id, user.userName);
         navegador.NavigateTo("/", true);
     }
 }

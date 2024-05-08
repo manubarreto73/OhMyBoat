@@ -37,14 +37,14 @@
                     <ul class="dropdown-menu">
                         @if (isEmployee) {
                             if (userId == 1) {
-                                <li><a class="dropdown-item" href="profileadmin/@userId">Mi perfil</a></li>
+                                <li><a class="dropdown-item" href="profileadmin/@userName">Mi perfil</a></li>
                             }
                             else {
-                                <li><a class="dropdown-item" href="profileemployee/@userId">Mi perfil</a></li>
+                                <li><a class="dropdown-item" href="profileemployee/@userName">Mi perfil</a></li>
                             }
                         }
                         else {
-                            <li><a class="dropdown-item" href="profile/@userId">Mi perfil</a></li>
+                            <li><a class="dropdown-item" href="profile/@userName">Mi perfil</a></li>
                         }
                         <li><a class="dropdown-item" href="cambiarcontraseña">Cambiar contraseña</a></li>
                         <li><a class="dropdown-item" href="#" data-bs-toggle="modal" @onclick="ReiniciarTipo" 
@@ -160,6 +160,7 @@
 
 @code {
     int userId;
+    string userName;
     bool isEmployee;
     DialogoConfirmacion dialogo = null!;
 
@@ -173,9 +174,11 @@
 
     protected override async Task OnInitializedAsync() {
         var result  = await sessionStorage.GetAsync<bool>("isEmployee");
-        isEmployee = result .Success ? result .Value : false;
+        isEmployee = result .Success ? result.Value : false;
         var result2 = await sessionStorage.GetAsync<int>("userId");
         userId = result2.Success ? result2.Value : 0;
+        var result3 = await sessionStorage.GetAsync<string>("userName");
+        userName = result3.Success ? result3.Value : "404";
     }
 
     private void ConfirmarCerrarSesion() {
@@ -185,6 +188,7 @@
     public async Task CerrarSesion() {
         await sessionStorage.DeleteAsync("userId");
         await sessionStorage.DeleteAsync("isEmployee");
+        await sessionStorage.DeleteAsync("userName");
         Navegador.NavigateTo("/", true);
     }
 

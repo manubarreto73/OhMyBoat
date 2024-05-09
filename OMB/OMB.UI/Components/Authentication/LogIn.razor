@@ -27,10 +27,9 @@
     string password = "";
     DialogoError dialogo = null!;
 
-    async Task Save(bool isEmployee, int? userId, string username) {
+    async Task Save(bool isEmployee, int? userId) {
         await sessionStorage.SetAsync("userId", userId);
         await sessionStorage.SetAsync("isEmployee", isEmployee);
-        await sessionStorage.SetAsync("userName", username);
     }
 
 
@@ -53,7 +52,7 @@
     }
 
     async Task esEmpleado(Employee employee) {
-        await Save(true, employee.Id, employee.userName);
+        await Save(true, employee.Id);
         navegador.NavigateTo("/homeemployee", true);
     }
 
@@ -69,7 +68,7 @@
             return;
         }
 
-        await Save(false, user.Id, user.userName);
+        await Save(false, user.Id);
         navegador.NavigateTo("/", true);
     }
 }

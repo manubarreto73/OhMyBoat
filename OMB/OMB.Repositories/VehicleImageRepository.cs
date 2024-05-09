@@ -18,6 +18,15 @@ public class VehicleImageRepository : IVehicleImageRepository{
         }
     }
 
+    public void deleteVehicleImage(int VehicleImageId) {
+        using(OMBContext context = new OMBContext()){
+            var exists = context.VehicleImages.Where(VI => VI.Id == VehicleImageId).SingleOrDefault();
+            if(exists != null){
+                context.Remove(exists);
+            }
+        }
+    }
+
     public List<VehicleImage> listVehicleImages(){
         using(OMBContext context = new OMBContext()){
             List<VehicleImage> ret = new List<VehicleImage>();

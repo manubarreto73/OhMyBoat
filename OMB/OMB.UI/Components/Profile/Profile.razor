@@ -57,10 +57,10 @@
   </div>
 </div>
 <div class="text-center">
-  <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
+  <button class="btn btn-primary btn-lg" @onclick="AbrirListarVehiculos" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
 </div>
 
-<ListarVehiculos />
+<ListarVehiculos @ref="listarVehiculos" />
 
 @code {
   User? user = new User();
@@ -69,8 +69,9 @@
   int userId;
   DialogoConfirmacion dialogo = null!;
 
-  protected override async Task OnInitializedAsync() {
+  ListarVehiculos listarVehiculos = null!;
 
+  protected override async Task OnInitializedAsync() {
       //Busca la información del user a mostrar a travez de su userName
       var foundUser = await Task.Run(() => userListUseCase.Execute().Find(user => user.userName == userUsername));
       user = foundUser ?? new User();
@@ -80,7 +81,6 @@
       isEmployee = result .Success ? result.Value : false;
       var result2 = await sessionStorage.GetAsync<int>("userId");
       userId = result2.Success ? result2.Value : 0;
-
   }
 
     private void ConfirmarBaneo() {
@@ -94,4 +94,8 @@
         Navegador.NavigateTo("/", true);
     }
 
+    private async Task AbrirListarVehiculos() {
+      listarVehiculos.Cargar();
+    }
+    
 }

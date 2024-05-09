@@ -1,10 +1,8 @@
 ﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inherits LayoutComponentBase
-
 @inject NavigationManager Navegador
 @inject ProtectedSessionStorage sessionStorage
 @inject IWebHostEnvironment Environment
-<DialogoConfirmacion @ref="dialogo" OnConfirmado="CerrarSesion"/>
 
 <div class="page">
 
@@ -28,24 +26,21 @@
         }
         else {
             <div class="top-row px-4">
-                <div class="dropdown">
-                    <i class='bx bxs-user-circle' style="font-size: 40px;cursor:pointer;color:#0d6efd;" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                    <ul class="dropdown-menu">
+                <div class="searchBar">
+                    <SearchBar />
+                </div>
+                <div>
                         @if (isEmployee) {
                             if (userId == 1) {
-                                <li><a class="dropdown-item" href="profileadmin/@userName">Mi perfil</a></li>
+                               <MenuPerfilAdmin />
                             }
                             else {
-                                <li><a class="dropdown-item" href="profileemployee/@userName">Mi perfil</a></li>
+                                <MenuPerfilEmployee />
                             }
                         }
                         else {
-                            <li><a class="dropdown-item" href="profile/@userName">Mi perfil</a></li>
+                            <MenuPerfil />
                         }
-                        <li><a class="dropdown-item" href="cambiarcontraseña">Cambiar contraseña</a></li>
-                        <li><a class="dropdown-item" data-bs-toggle="modal"data-bs-target="#cargarVehiculoModal">Cargar vehículo</a></li>
-                        <li><a class="dropdown-item" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
-                    </ul>
                 </div>
             </div>
         }
@@ -66,28 +61,13 @@
 
 @code {
     int userId;
-    string userName;
     bool isEmployee;
-    DialogoConfirmacion dialogo = null!;
 
     protected override async Task OnInitializedAsync() {
         var result  = await sessionStorage.GetAsync<bool>("isEmployee");
         isEmployee = result .Success ? result.Value : false;
         var result2 = await sessionStorage.GetAsync<int>("userId");
         userId = result2.Success ? result2.Value : 0;
-        var result3 = await sessionStorage.GetAsync<string>("userName");
-        userName = result3.Success ? result3.Value : "404";
-    }
-
-    private void ConfirmarCerrarSesion() {
-        dialogo.Mostrar("¿Seguro que deseas cerrar la sesión?");
-    }
-
-    public async Task CerrarSesion() {
-        await sessionStorage.DeleteAsync("userId");
-        await sessionStorage.DeleteAsync("isEmployee");
-        await sessionStorage.DeleteAsync("userName");
-        Navegador.NavigateTo("/", true);
     }
 
 }

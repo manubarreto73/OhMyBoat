@@ -1,0 +1,95 @@
+@page "/registrarempleado"
+@inject NavigationManager navegador
+@inject employeeListUseCase employeeListUseCase
+@inject addEmployeeUseCase addEmployeeUseCase
+@rendermode InteractiveServer
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+@using System.Text;
+
+<DialogoError @ref="dialogo"/>
+
+<h1>Registrar empleado</h1>
+
+<input placeholder="employeename" @bind="employee.userName" class="form-control">
+<input placeholder="Mail" @bind="employee.mail" class="form-control">
+<input placeholder="Name" @bind="employee.name" class="form-control">
+<input placeholder="Surname" @bind="employee.surname" class="form-control">
+<input type="date" placeholder="Birthdate" @bind="employee.birthDate" class="form-control">
+<input placeholder="Number" @bind="employee.number" class="form-control">
+<button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+
+@code {
+    Employee employee = new Employee();
+    Employee? newEmployee;
+    DialogoError dialogo = null!;
+    public async Task Save() {
+        if (newEmployee != null) {
+            await sessionStorage.SetAsync("userId", newEmployee.Id);
+            await sessionStorage.SetAsync("isEmployee", false);
+        }
+    }
+
+    async void Aceptar() {
+        if (!validarDatos()) {
+            return;
+        }
+
+        employee.password = GenerateRandomString(8);
+
+        addemployee();
+
+        newEmployee = employeeListUseCase.Execute().Where(elem => employee.userName == elem.userName).SingleOrDefault();
+
+        await Save();
+
+        //MANDAR MAIL AL EMPLEADO
+        
+        navegador.NavigateTo("/");
+        
+    }
+
+    bool validarDatos() {
+        if (string.IsNullOrEmpty(employee.userName) || string.IsNullOrEmpty(employee.name) || string.IsNullOrEmpty(employee.surname) || 
+        string.IsNullOrEmpty(employee.mail) || string.IsNullOrEmpty(employee.number)) {
+            dialogo.Mostrar("Complete todos los campos antes de registrar al empleado");
+            return false;
+        }
+        if (DateOnly.FromDateTime(DateTime.Today) < employee.birthDate.AddYears(18)) {
+            dialogo.Mostrar("El trabajo infantil está penalizado por la ley 23390");
+            return false;
+        }
+        return true;
+    }
+
+    void addemployee() {
+        try {
+            addEmployeeUseCase.Execute(employee);
+        }
+        catch (Exception ex) {
+            if (ex.Message == "Mail already in use!") {
+                dialogo.Mostrar("El mail ingresado ya corresponde con una cuenta");
+                return;
+            }
+            if (ex.Message == "This employeename's already taken!") {
+                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso, podrías probar con " + employee.userName + "777");
+                return;
+            }
+        }
+    }
+
+    string GenerateRandomString(int length)
+    {
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder(length);
+
+        for (int i = 0; i < length; i++)
+        {
+            int randomIndex = random.Next(chars.Length);
+            sb.Append(chars[randomIndex]);
+        }
+
+        return sb.ToString();
+    }
+}

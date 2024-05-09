@@ -1,0 +1,41 @@
+@page "/menuperfil"
+@inject userListUseCase userListUseCase
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager Navegador
+
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="CerrarSesion"/>
+
+<div class="dropdown">
+    <i class='bx bxs-user-circle' style="font-size: 40px;cursor:pointer;color:#0d6efd;" data-bs-toggle="dropdown" aria-expanded="false"></i>
+    <ul class="dropdown-menu">
+        <li><a class="dropdown-item" href="profile/@user.userName">Mi perfil</a></li>
+        <li><a class="dropdown-item" data-bs-toggle="modal"data-bs-target="#cargarVehiculoModal">Cargar vehículo</a></li>
+        <li><a class="dropdown-item" href="cambiarcontraseña">Cambiar contraseña</a></li>
+        <li><a class="dropdown-item" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
+    </ul>
+</div>
+
+@code {
+
+    User? user = new User();
+    int userId;
+    DialogoConfirmacion dialogo = null!;
+
+    protected override async Task OnInitializedAsync() {
+        var result2 = await sessionStorage.GetAsync<int>("userId");
+        userId = result2.Success ? result2.Value : 0;
+        user = userListUseCase.Execute().Find(user => user.Id == userId);
+    }
+
+    private void ConfirmarCerrarSesion() {
+        dialogo.Mostrar("¿Seguro que deseas cerrar la sesión?");
+    }
+
+    public async Task CerrarSesion() {
+        await sessionStorage.DeleteAsync("userId");
+        await sessionStorage.DeleteAsync("isEmployee");
+        Navegador.NavigateTo("/", true);
+    }
+
+}

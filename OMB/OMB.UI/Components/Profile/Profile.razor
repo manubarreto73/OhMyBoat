@@ -1,49 +1,63 @@
 @page "/profile/{userUsername?}"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
-
+@inject modifyUserUseCase modifyUserUseCase
 @inject ProtectedSessionStorage sessionStorage
 @inject userListUseCase userListUseCase
+@inject NavigationManager Navegador
 
-<div class="container">
-  <div class="profile_card">
-    <div class="profile_details">
-      <div class="intro">
-        <h2>@user?.name @user?.surname</h2>
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="Banear"/>
+
+<div class="profile_card">
+  <div class="profile_details">
+    <div class="intro">
+      <h2>@user?.name @user?.surname</h2>
+      @if (isEmployee && userId == 1) {
+        @if (user.banned) {
+          <div class="top-row px-4">
+            <button class="btn btn-primary btn-top-right" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Desbanear</button>
+          </div>
+        }
+        else {
+          <div class="top-row px-4">
+            <button class="btn btn-primary btn-top-right" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Banear</button>
+          </div>
+        }
+      }
+    </div>
+    <div class="contact_info">
+      <div class="row">
+        <div class="icon">
+          <i class="bx bx-user icon" ></i>
+        </div>
+        <div class="content">
+          <span>Phone</span>
+          <h5>@user?.number</h5>
+        </div>
       </div>
-   
-      <div class="contact_info">
-        <div class="row">
-          <div class="icon">
-            <i class="bx bx-user icon" ></i>
-          </div>
-          <div class="content">
-            <span>Phone</span>
-            <h5>@user?.number</h5>
-          </div>
+      <div class="row">
+        <div class="icon">
+          <i class="bx bx-user icon"></i>
         </div>
-        <div class="row">
-          <div class="icon">
-            <i class="bx bx-user icon"></i>
-          </div>
-          <div class="content">
-            <span>Email</span>
-            <h5>@user?.mail</h5>
-          </div>
+        <div class="content">
+          <span>Email</span>
+          <h5>@user?.mail</h5>
         </div>
-        <div class="row">
-          <div class="icon">
-            <i class="bx bx-user icon"></i>
-          </div>
-          <div class="content">
-            <span>UserName</span>
-            <h5>@user?.userName</h5>
-          </div>
+      </div>
+      <div class="row">
+        <div class="icon">
+          <i class="bx bx-user icon"></i>
         </div>
+        <div class="content">
+          <span>UserName</span>
+          <h5>@user?.userName</h5>
+      </div>
       </div>
     </div>
   </div>
-  <button class="btn btn-primary" data-bs-toggle="modal"data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
+</div>
+<div class="text-center">
+  <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
 </div>
 
 <ListarVehiculos />
@@ -51,13 +65,33 @@
 @code {
   User? user = new User();
   [Parameter] public string? userUsername { get; set; }
+  bool isEmployee;
+  int userId;
+  DialogoConfirmacion dialogo = null!;
 
   protected override async Task OnInitializedAsync() {
 
+      //Busca la información del user a mostrar a travez de su userName
       var foundUser = await Task.Run(() => userListUseCase.Execute().Find(user => user.userName == userUsername));
-
       user = foundUser ?? new User();
 
+      //Extrae la información del user loggeado, para mostrarle el boton ban si es daniel
+      var result  = await sessionStorage.GetAsync<bool>("isEmployee");
+      isEmployee = result .Success ? result.Value : false;
+      var result2 = await sessionStorage.GetAsync<int>("userId");
+      userId = result2.Success ? result2.Value : 0;
+
   }
+
+    private void ConfirmarBaneo() {
+        string aux = (user.banned) ? $"¿Seguro que desea banear al usuario {user.userName}?" : $"¿Seguro que desea desbanear al usuario {user.userName}?";
+        dialogo.Mostrar(aux);
+    }
+
+    public async Task Banear() {
+        user.banned = !user.banned;
+        modifyUserUseCase.Execute(user);
+        Navegador.NavigateTo("/", true);
+    }
 
 }

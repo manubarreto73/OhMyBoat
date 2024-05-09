@@ -3,39 +3,40 @@
 @inject userListUseCase userListUseCase
 @inject employeeListUseCase employeeListUseCase
 @rendermode InteractiveServer
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject ProtectedSessionStorage sessionStorage
 
 <DialogoError @ref=dialogo/>
 
 <form onsubmit="return false">
-    <input type="text" placeholder="Search..." @bind="searchTerm">
-    <button @onclick="SubmitForm" class="btn btn-primary">Search</button>
+    <input type="text" placeholder="Buscar perfil..." @bind="searchTerm">
+    <button class="btn btn-primary" @onclick="SubmitForm">
+        Buscar
+        <i class="bi bi-search"></i>
+    </button>
+        
 </form>
 
 @code {
     DialogoError dialogo = null!;
-    User? user;
-    Employee? employee;
-    string searchTerm = "";
-    private void SubmitForm() {         // Este proceso busca el username que matchee con el termino buscado, arrancando por users, dsp employees y luego el admin.
-
-        user = userListUseCase.Execute().Find(user => user.userName == searchTerm);
-
-        if (user == null){
-            employee = employeeListUseCase.Execute().Find(employee => employee.userName == searchTerm);
-            if (employee == null){
-                dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
-            } else {
-                if (employee.Id == 1) {
-                    Navegador.NavigateTo("/profileadmin/" + employee.userName, true);            
-                } else {
-                    Navegador.NavigateTo("/profileemployee/" + employee.userName, true);    
-                }
-            }
-        } else {
-            Navegador.NavigateTo("/profile/" + user.userName, true);
+    string? searchTerm;
+    private void SubmitForm() {
+        if (string.IsNullOrEmpty(searchTerm)) {
+            dialogo.Mostrar("Escriba un nombre de usuario para buscar");
+            return;
         }
+        if (employeeListUseCase.Execute().Find(item => item.userName == searchTerm) != null) {
+            if (employeeListUseCase.Execute().Find(item => item.userName == searchTerm).Id == 1) {
+                Navegador.NavigateTo("/profileadmin/" + searchTerm, true);
+                return;
+            }
+            Navegador.NavigateTo("/profileemployee/" + searchTerm, true); 
+            return;
+        }
+        if (userListUseCase.Execute().Find(item => item.userName == searchTerm) != null) {
+            Navegador.NavigateTo("/profile/" + searchTerm, true);
+            return;
+        }
+        dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
+        
     }
 
 }

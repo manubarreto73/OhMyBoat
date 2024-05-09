@@ -6,15 +6,28 @@
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 
-@foreach (var p in posts){
-    @if(p.getType()){
-        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listShipImagesUseCase.Execute().Where(s => s.ShipId == p.getId()).ElementAt(0).Image))" width="100" height="100"/>
-    }
-    @if(!p.getType()){
-    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listVehicleImagesUseCase.Execute().Where(s => s.VehicleId == p.getId()).ElementAt(0).Image))" width="100" height="100"/>
-    }
-    <p>@p.getTitle()</p> <br>
-}
+
+<table width="100%" class="table">
+    <thead>
+        <tr>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in posts){
+            <tr>
+            @if(p.getType()){
+                <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listShipImagesUseCase.Execute().Where(s => s.ShipId == p.getId()).ElementAt(0).Image))" width="100" height="100"/></td>
+            }
+            @if(!p.getType()){
+                <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listVehicleImagesUseCase.Execute().Where(s => s.VehicleId == p.getId()).ElementAt(0).Image))" width="100" height="100"/></td>
+            }
+            <td>@p.getTitle()</td>
+            </tr>
+        }
+    </tbody>
+</table>
 
 @code {
     

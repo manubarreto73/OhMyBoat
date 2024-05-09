@@ -1,6 +1,8 @@
 using OMB.Repositories;
 using OMB.Aplication.ClasesBase;
 using System.Drawing;
+using OMB.Aplication.VehicleImageUseCases;
+using OMB.Aplication.ShipImageUseCases;
 
 namespace OMB.UI;
 
@@ -57,13 +59,14 @@ public class Testing{
         }
         using(OMBContext context = new OMBContext()){
         if(context.VehiclePosts.Count() == 0){
+            
             context.Add(new VehiclePost(2, "Holis!"));
             context.Add(new VehiclePost(3, "Título!"));
-            context.Add(new VehiclePost(4, ">:3"));
+            context.Add(new VehiclePost(4, ">:3"));/*
             context.Add(new VehiclePost(5, "Son las 12:52"));
             context.Add(new VehiclePost(6, "Mañana tengo EMT!"));
             context.Add(new VehiclePost(7, "No, frfr"));
-            context.Add(new VehiclePost(8, "Help"));
+            context.Add(new VehiclePost(8, "Help"));*/
         }
         context.SaveChanges();
         if(context.ShipPosts.Count() == 0){
@@ -94,6 +97,25 @@ public class Testing{
                     img = Image.FromFile("Rezo.png");
                     img.Save(ms, img.RawFormat);
                     context.Add(new ShipImage(4, ms.ToArray()));
+                }
+                context.SaveChanges();
+            }
+            if(context.VehicleImages.Count() == 0){
+                Image? img;
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Baco.jpg");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new VehicleImage(2, ms.ToArray()));
+                }
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Quito.jpg");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new VehicleImage(3, ms.ToArray()));
+                }
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Rezo.png");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new VehicleImage(4, ms.ToArray()));
                 }
                 context.SaveChanges();
             }

@@ -2,8 +2,12 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject vehicleListUseCase vehicleListUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject modifyVehicleUseCase modifyVehicleUseCase
+@inject deleteVehicleUseCase deleteVehicleUseCase
 
 @rendermode InteractiveServer
+
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="eliminarVehiculo"/>
 
 <div class="modal fade" id="listarVehiculosModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -41,6 +45,14 @@
                   <td>@vehiculo.description</td>
                   <td>@vehiculo.kms</td>
                   <td>@vehiculo.doors</td>
+                  <td>
+                    <button class="btn btn-primary" @onclick="()=>mofificarVehiculo(vehiculo)">
+                        <span class="oi oi-pencil"></span>
+                    </button>
+                    <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
+                        <span class="oi oi-trash"></span>
+                    </button>
+                </td>
                 </tr>
                 i++;
               }
@@ -60,6 +72,9 @@
     List<Vehicle> _vehicles = new List<Vehicle>();
     List<VehicleImage> _allImages = new List<VehicleImage>();
     List<byte[]> _images = new List<byte[]>();
+
+    DialogoConfirmacion dialogo = null!;
+    Vehicle? vehiculoAEliminar;
       
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
@@ -81,5 +96,19 @@
         byte[] image = _allImages.Find(imagen => imagen.VehicleId == vehiculo.Id).Image;
         _images.Add(image);
       }
+    }
+
+    private void mofificarVehiculo(Vehicle vehiculo) {
+      
+    }
+
+    private void confirmarEliminacion(Vehicle vehiculo) {
+      vehiculoAEliminar = vehiculo;
+      dialogo.Mostrar("¿Seguro qué deseas eliminar el vehiculo?");
+    }
+
+    private void eliminarVehiculo() {
+      deleteVehicleUseCase.Execute(vehiculoAEliminar.Id);
+      GetVehiculosCargados();
     }
 }

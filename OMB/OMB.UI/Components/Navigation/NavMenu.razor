@@ -1,6 +1,17 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inherits LayoutComponentBase
+@inject NavigationManager Navegador
+@inject ProtectedSessionStorage sessionStorage
+@inject IWebHostEnvironment Environment
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">OMB.UI</a>
+        @if (isEmployee) {
+            <a class="navbar-brand" href="homeemployee">Oh My Boat!</a>
+        }
+        else {
+            <a class="navbar-brand" href="/">Oh My Boat!</a>
+        }
     </div>
 </div>
 
@@ -8,11 +19,6 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
 
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="userlist">
@@ -28,3 +34,20 @@
     </nav>
 </div>
 
+@code {
+    int userId;
+    bool isEmployee;
+
+    protected override async Task OnInitializedAsync() {
+        var result  = await sessionStorage.GetAsync<bool>("isEmployee");
+        isEmployee = result .Success ? result.Value : false;
+        var result2 = await sessionStorage.GetAsync<int>("userId");
+        userId = result2.Success ? result2.Value : 0;
+    }
+
+}
+    using System.Diagnostics.Eventing.Reader;
+
+#line default
+#line hidden
+#nullable disable

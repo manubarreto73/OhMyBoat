@@ -1,34 +1,23 @@
 ﻿@page "/"
-@using OMB.Repositories
 @rendermode InteractiveServer
 @inject NavigationManager Navegador
 @inject shipPostListUseCase shipPostListUseCase
-
-@if(visible){
-    <img src="@imageDataURL" width="100" height="100"/>
-}
+@inject listShipImagesUseCase listShipImagesUseCase
 
 @foreach (var p in posts){
+    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listShipImagesUseCase.Execute().Where(s => s.ShipId == p.ShipId).ElementAt(0).Image))" width="100" height="100"/>
     <p>@p.Title</p> <br>
 }
 
 @code {
-    OMBContext context = new OMBContext();
-    byte[]? imageBytes;
-    bool visible = false;
-    string? imageDataURL;
-
+    
     List<ShipPost> posts = new List<ShipPost>();
-    List<byte[]> images = new List<byte[]>();
-
-    private void ShowMe() {
-        imageBytes = context.ShipImages.Where(s => s.Id == 1).SingleOrDefault().Image;
-        var imagesrc= Convert.ToBase64String(imageBytes);
-        imageDataURL = string.Format("data:image/jpeg;base64,{0}", imagesrc);
-        visible = true;
-    }
+    byte[]? sad;
+    string result;
 
     protected override void OnInitialized() {
        posts = shipPostListUseCase.Execute();
+       sad = listShipImagesUseCase.Execute().Where(s => s.ShipId == 2).SingleOrDefault().Image;
+       result = "data:image/jpeg;base64, {0}" + Convert.ToBase64String(sad);
    }
 }

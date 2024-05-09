@@ -1,5 +1,6 @@
 using OMB.Repositories;
 using OMB.Aplication.ClasesBase;
+using System.Drawing;
 
 namespace OMB.UI;
 
@@ -69,12 +70,33 @@ public class Testing{
             context.Add(new ShipPost(2, "Holis!"));
             context.Add(new ShipPost(3, "Hola"));
             context.Add(new ShipPost(4, "Hola 2"));
-            context.Add(new ShipPost(5, "Hola: The Return"));
+            /*context.Add(new ShipPost(5, "Hola: The Return"));
             context.Add(new ShipPost(6, "The end of Hola"));
             context.Add(new ShipPost(7, "Hola, back from the dead"));
-            context.Add(new ShipPost(8, "Hola Endgame"));
+            context.Add(new ShipPost(8, "Hola Endgame"));*/
         }
         context.SaveChanges();
+        }
+        using(OMBContext context = new OMBContext()){
+            if(context.ShipImages.Count() == 0){
+                Image? img;
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Baco.jpg");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new ShipImage(2, ms.ToArray()));
+                }
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Quito.jpg");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new ShipImage(3, ms.ToArray()));
+                }
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Rezo.png");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new ShipImage(4, ms.ToArray()));
+                }
+                context.SaveChanges();
+            }
         }
     }
 

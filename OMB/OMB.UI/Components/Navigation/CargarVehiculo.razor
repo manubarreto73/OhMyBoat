@@ -1,5 +1,6 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
+@inject vehicleListUseCase vehicleListUseCase
 @inject addVehicleUseCase addVehicleUseCase
 @inject addVehicleImageUseCase addVehicleImageUseCase
 
@@ -33,7 +34,7 @@
             </div>
             <div>
                 <label class="form-label">Fotos (1 a 3)</label>
-                <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpeg" OnChange="LoadFiles" multiple required/>
+                <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg/.png" OnChange="LoadFiles" multiple required/>
             </div>
             <div>
                 <label class="form-label">Kilometraje (Km)</label>
@@ -58,7 +59,7 @@
             </div>
             <div>
               <label class="form-label">Fotos (1 a 3)</label>
-              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpeg" OnChange="LoadFiles" multiple required/>
+              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg/.png" OnChange="LoadFiles" multiple required/>
             </div>
             <div>
               <label class="form-label">Kilometraje (Km)</label>
@@ -159,6 +160,8 @@
     }
 
     private void SubirFotos() {
+      newVehiculo = vehicleListUseCase.Execute().Where(elem => elem.plate == newVehiculo.plate).SingleOrDefault();
+
       foreach (var img in fileBytesList) {
         addVehicleImageUseCase.Execute(newVehiculo.Id, img);
       }

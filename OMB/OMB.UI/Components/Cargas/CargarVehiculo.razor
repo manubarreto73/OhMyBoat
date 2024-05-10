@@ -99,7 +99,6 @@
     private int cantFiles = 0;
     private List<byte[]> fileBytesList = new List<byte[]>(); // Lista de arrays de bytes para las fotos
     private string _inputFileId = Guid.NewGuid().ToString(); // Se usa para limpiar el input
-
     
     protected override async Task OnInitializedAsync() {
         var result = await sessionStorage.GetAsync<int>("userId");
@@ -119,18 +118,24 @@
       cantFiles = 0;
       try {
         foreach (var file in e.GetMultipleFiles(maxAllowedFiles)) {
-          try {
-            using (var memoryStream = new MemoryStream()) {
+          if (ValidateFileType(file.ContentType)) {
+            try {
+              using (var memoryStream = new MemoryStream()) {
                 using (var fileStream = file.OpenReadStream()) {
                     await fileStream.CopyToAsync(memoryStream);
                 }
                 fileBytesList.Add(memoryStream.ToArray());
                 cantFiles += 1;
-            }
-          } catch (Exception ex) {
+              }
+            } catch (Exception ex) {
               // Handle any errors that occur during file processing
               Console.WriteLine($"Error reading file: {ex.Message}");
             }
+          } else {
+            _inputFileId = Guid.NewGuid().ToString(); // Reinicio los archivos ingresados
+            cantFiles = 0;
+            break;
+          }
         }
       } catch (Exception ex) {
         // Si se meten más fotos que maxAlloweFiles entrá acá
@@ -169,6 +174,17 @@
         dialogo.Mostrar("La cantidad máxima de fotos es 3.");
         return false;
       }
+      return true;
+    }
+
+    private bool ValidateFileType(string file) {
+      string extension = file.Split('/')[1];
+
+      if (extension != "png" && extension != "jpeg" && extension != "jpg") {
+        dialogo.Mostrar("Las archivos ingresados deben ser .jpg o .png.");
+        return false;
+      }
+
       return true;
     }
 

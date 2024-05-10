@@ -46,14 +46,14 @@ public class Testing{
         }
         context.SaveChanges();
         if(context.Ships.Count() == 0){
-            context.Add(new Ship(2, "Catamaran", "ABC123", "Ta lindo", 15, 20, 25, true));
-            context.Add(new Ship(3, "Lancha", "ABC124", "No ta lindo", 10, 15, 20, false));
-            context.Add(new Ship(4, "Catamaran", "ABC125", "Ta medio feo", 20, 25, 30, true));
-            context.Add(new Ship(5, "Lancha", "ABC126", "Ta roto", 5, 10, 15, false));
-            context.Add(new Ship(2, "Catamaran", "ABC127", "No, ayuda, de vrd", 2, 3, 4, true));
-            context.Add(new Ship(3, "Lancha", "ABC128", "Necesita reparación", 4, 3, 2, false));
-            context.Add(new Ship(4, "Catamaran", "ABC129", "X q hago yo este trabajo", 1, 2, 3, true));
-            context.Add(new Ship(5, "Lacha", "ABC139", "Es aburrido", 7, 6, 23, false));
+            context.Add(new Ship(2, "Catamaran", "ABC123", "Ta lindo", "audi", 15, 20, 25, true));
+            context.Add(new Ship(3, "Lancha", "ABC124", "No ta lindo", "mercedes", 10, 15, 20, false));
+            context.Add(new Ship(4, "Catamaran", "ABC125", "Ta medio feo", "audi", 20, 25, 30, true));
+            context.Add(new Ship(5, "Lancha", "ABC126", "Ta roto", "adidas", 5, 10, 15, false));
+            context.Add(new Ship(2, "Catamaran", "ABC127", "No, ayuda, de vrd", "renault", 2, 3, 4, true));
+            context.Add(new Ship(3, "Lancha", "ABC128", "Necesita reparación", "ferrai", 4, 3, 2, false));
+            context.Add(new Ship(4, "Catamaran", "ABC129", "X q hago yo este trabajo", "audi", 1, 2, 3, true));
+            context.Add(new Ship(5, "Lacha", "ABC139", "Es aburrido", "ferrari", 7, 6, 23, false));
         }
         context.SaveChanges();
         }

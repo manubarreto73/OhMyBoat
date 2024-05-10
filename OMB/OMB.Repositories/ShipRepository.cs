@@ -4,37 +4,39 @@ using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-public class ShipRepository : IShipRepository{
+public class ShipRepository : IShipRepository {
     
-        private IShipPostRepository SPRep;
+    private IShipPostRepository SPRep;
 
-        public ShipRepository(IShipPostRepository SPRep){
-            this.SPRep = SPRep;
-        }
-        public void addShip (Ship ship){
-        using(OMBContext context = new OMBContext()){
+    public ShipRepository(IShipPostRepository SPRep) {
+        this.SPRep = SPRep;
+    }
+
+    public void addShip (Ship ship) {
+        using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
-            if(exists == null){
+            if(exists == null) {
                 context.Add(Clone(ship));
                 context.SaveChanges();
             }
-            else{
+            else {
                 throw new Exception("Plate number already registered");
             }
         }
     }
-    public void deleteShip (int shipId){
+
+    public void deleteShip (int shipId) {
         List<ShipPost> posts = new List<ShipPost>();
-        using(OMBContext context = new OMBContext()){
+        using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Include(S => S.ShipPosts).Where(S => S.Id == shipId).SingleOrDefault();
-            if(exists != null){
+            if(exists != null) {
                 posts = exists.ShipPosts;
             }
         }
-        foreach(ShipPost p in posts){
+        foreach(ShipPost p in posts) {
             this.SPRep.deleteShipPost(p.Id);
         }
-        using(OMBContext context = new OMBContext()){
+        using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.Id == shipId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
@@ -42,15 +44,16 @@ public class ShipRepository : IShipRepository{
             }
         }
     }
-    public void modifyShip (Ship ship){
-        using(OMBContext context = new OMBContext()){
+
+    public void modifyShip (Ship ship) {
+        using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.Id == ship.Id).SingleOrDefault();
             Ship? aux = null;
-            if(exists != null){
-                if(ship.plate != exists.plate){
+            if(exists != null) {
+                if(ship.plate != exists.plate) {
                     aux = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
                 }
-                if(aux == null){
+                if(aux == null) {
                     exists.eslora = ship.eslora;
                     exists.manga = ship.manga;
                     exists.calado = ship.calado;
@@ -60,15 +63,15 @@ public class ShipRepository : IShipRepository{
                     exists.plate = ship.plate;
                     context.SaveChanges();
                 }
-                else{
+                else {
                     throw new Exception("This plate is already in our database");
                 }
             }
         }
     }
 
-    public List<Ship> shipList(){
-        using(OMBContext context = new OMBContext()){
+    public List<Ship> shipList() {
+        using(OMBContext context = new OMBContext()) {
             List<Ship> Ret = new List<Ship>();
             List<Ship> Ori = context.Ships.ToList();
             foreach (Ship ship in Ori)
@@ -77,7 +80,7 @@ public class ShipRepository : IShipRepository{
         }
     }
 
-    private Ship Clone(Ship ship){
-        return new Ship(ship.UserId, ship.type, ship.plate, ship.description, ship.eslora, ship.manga, ship.calado, ship.hasEngine){Id = ship.Id};
+    private Ship Clone(Ship ship) {
+        return new Ship(ship.UserId, ship.type, ship.plate, ship.description, ship.model, ship.eslora, ship.manga, ship.calado, ship.hasEngine){Id = ship.Id};
     }
 }

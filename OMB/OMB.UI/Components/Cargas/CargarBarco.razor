@@ -1,84 +1,107 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
-@inject vehicleListUseCase vehicleListUseCase
-@inject addVehicleUseCase addVehicleUseCase
-@inject addVehicleImageUseCase addVehicleImageUseCase
+@inject shipListUseCase shipListUseCase
+@inject addShipUseCase addShipUseCase
+@inject addShipImageUseCase addShipImageUseCase
 
 @rendermode InteractiveServer
 
 <DialogoError @ref="dialogo"/>
 
-<div class="modal fade" id="cargarVehiculoModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="cargarBarcoModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Cargar vehículo</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Cargar barco</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form>
         <div class="modal-body form-body">
           <div>
-              <label class="form-label">Tipo de vehículo</label>
-              <select @bind="tipoVehiculo" class="form-select" required>
+              <label class="form-label">Tipo de barco</label>
+              <select @bind=tipoBarco class="form-select">
                   <option style="display:none"></option>
-                  <option value="camioneta">Camioneta</option>
-                  <option value="auto">Auto</option>
-                  <option value="ciclomotor">Ciclomotor</option>
+                  <option value="crucero">Crucero</option>
+                  <option value="velero">Velero</option>
+                  <option value="lancha">Lancha</option>
+                  <option value="catamarán">Catamarán</option>
               </select>
           </div>
 
-          @if (tipoVehiculo == "") {
+          @if (tipoBarco == "") {
             <div>
-                <label for="validationTooltip01" class="form-label">Modelo</label>
-                <input type="text" class="form-control" id="validationTooltip01" required disabled>
+              <label for="validationTooltip01" class="form-label">Modelo</label>
+              <input type="text" class="form-control" required disabled>
             </div>
             <div >
               <label class="form-label">Descripción</label>
-              <input type="text" class="form-control" @bind=vehiculo.description required disabled>
+              <input type="text" class="form-control" @bind=barco.description required disabled>
             </div>
             <div>
-                <label class="form-label">Fotos (1 a 3)</label>
-                <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png" OnChange="LoadFiles" multiple required disabled/>
+              <label class="form-label">Fotos (1 a 3)</label>
+              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png" OnChange="LoadFiles" multiple required disabled/>
             </div>
             <div>
-                <label class="form-label">Kilometraje (Km)</label>
-                <input type="number" min=0 class="form-control" required disabled>
+              <label class="form-label">Eslora</label>
+              <input type="number" min=0 class="form-control" required disabled>
+            </div>
+             <div>
+              <label class="form-label">Manga</label>
+              <input type="number" min=0 class="form-control" required disabled>
+            </div>
+             <div>
+              <label class="form-label">Calado</label>
+              <input type="number" min=0 class="form-control" required disabled>
             </div>
             <div >
-                <label class="form-label">Patente</label>
-                <input type="text" class="form-control" required disabled>
+              <label class="form-label">Matrícula</label>
+              <input type="text" class="form-control" required disabled>
             </div>
-            <div >
-                <label class="form-label">Cantidad de puertas</label>
-                <input type="number" min=0 class="form-control" required disabled>
+            <div>
+              <label class="form-label">Tiene motor</label>
+              <select @bind=tieneMotor class="form-select" required disabled>
+                  <option value="" style="display:none"></option>
+                  <option value="si">Si</option>
+                  <option value="no">No</option>
+              </select>
             </div>
           } else {
             <div>
-              <label for="validationTooltip01" class="form-label">Modelo</label>
-              <input type="text" class="form-control" @bind=vehiculo.model required>
+              <label class="form-label">Modelo</label>
+              <input type="text" class="form-control" @bind=barco.model required>
             </div>
             <div >
               <label class="form-label">Descripción</label>
-              <input type="text" class="form-control" @bind=vehiculo.description required>
+              <input type="text" class="form-control" @bind=barco.description required>
             </div>
             <div>
               <label class="form-label">Fotos (1 a 3)</label>
               <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png" OnChange="LoadFiles" multiple required/>
             </div>
             <div>
-              <label class="form-label">Kilometraje (Km)</label>
-              <input type="number" min=0 class="form-control" @bind=vehiculo.kms required>
+              <label class="form-label">Eslora</label>
+              <input type="number" min=0 class="form-control" @bind=barco.eslora required>
             </div>
-            <div >
-              <label class="form-label">Patente</label>
-              <input type="text" class="form-control" @bind=vehiculo.plate required>
+             <div>
+              <label class="form-label">Manga</label>
+              <input type="number" min=0 class="form-control" @bind=barco.manga required>
             </div>
-            @if (tipoVehiculo != "ciclomotor") {
-              <div >
-                <label class="form-label">Cantidad de puertas</label>
-                <input type="number" min=0 class="form-control" @bind=vehiculo.doors required>
-              </div>
-            }
+             <div>
+              <label class="form-label">Calado</label>
+              <input type="number" min=0 class="form-control" @bind=barco.calado required>
+            </div>
+            <div>
+              <label class="form-label">Matrícula</label>
+              <input type="text" class="form-control" @bind=barco.plate required>
+            </div>
+            <div>
+              <label class="form-label">Tiene motor</label>
+              <select @bind=tieneMotor class="form-select" required>
+                  <option value="" style="display:none"></option>
+                  <option value="si">Si</option>
+                  <option value="no">No</option>
+              </select>
+            </div>
           }
 
           </div>
@@ -95,9 +118,10 @@
     int userId;
     DialogoError dialogo = null!;
 
-    string tipoVehiculo = ""; // Uso esta variable para el input de cantidad de puertas
-    Vehicle vehiculo = new Vehicle();
-    Vehicle? newVehiculo;
+    string tipoBarco = ""; // Uso esta variable para el input de cantidad de puertas
+    string tieneMotor = "";
+    Ship barco = new Ship();
+    Ship? newBarco;
 
     private int maxAllowedFiles = 3; // Cantidad máxima de fotos que permite ingresar
     private int cantFiles = 0;
@@ -111,9 +135,10 @@
 
     // Pone el tipoVehiculo en vacio para que se reinicie el formulario
     public void ReiniciarForm() {
-        vehiculo = new Vehicle();
-        tipoVehiculo = "";
-        fileBytesList = new List<byte[]>();
+      barco = new Ship();
+      tipoBarco = "";
+      tieneMotor = "";
+      fileBytesList = new List<byte[]>();
     }
 
     // Crea una lista de arrays de bytes con las fotos
@@ -156,13 +181,15 @@
         return;
       }
 
-      if (tipoVehiculo == "ciclomotor") {
-        vehiculo.doors = 0;
+      if (tieneMotor == "si") {
+        barco.hasEngine = true;
+      } else if (tieneMotor == "no") {
+        barco.hasEngine = false;
       }
 
-      newVehiculo = new Vehicle(userId, tipoVehiculo, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors);
+      newBarco = new Ship(userId, tipoBarco, barco.plate, barco.description, barco.model, barco.eslora, barco.manga, barco.calado, barco.hasEngine);
 
-      if (AddVehicle()) {
+      if (AddShip()) {
         SubirFotos();
         ReiniciarForm();
       } else {
@@ -176,6 +203,9 @@
         return false;
       } else if (cantFiles > 3) {
         dialogo.Mostrar("La cantidad máxima de fotos es 3.");
+        return false;
+      } else if (tieneMotor == "") {
+        dialogo.Mostrar("Se debe seleccionar si tiene motor.");
         return false;
       }
       return true;
@@ -195,21 +225,21 @@
 
     // Agrega las fotos a la db
     private void SubirFotos() {
-      newVehiculo = vehicleListUseCase.Execute().Where(elem => elem.plate == newVehiculo.plate).SingleOrDefault();
+      newBarco = shipListUseCase.Execute().Where(elem => elem.plate == newBarco.plate).SingleOrDefault();
 
       foreach (var img in fileBytesList) {
-        addVehicleImageUseCase.Execute(newVehiculo.Id, img);
+        addShipImageUseCase.Execute(newBarco.Id, img);
       }
     }
 
-    private bool AddVehicle() {
+    private bool AddShip() {
       try {
-        addVehicleUseCase.Execute(newVehiculo);
+        addShipUseCase.Execute(newBarco);
         return true;
       }
       catch (Exception ex) {
         if (ex.Message == "Plate number already registered") {
-          dialogo.Mostrar("La patente ingresada ya se encuentra registrada.");
+          dialogo.Mostrar("La matrícula ingresada ya se encuentra registrada.");
         }
         return false;
       }

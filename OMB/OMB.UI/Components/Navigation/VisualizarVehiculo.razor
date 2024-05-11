@@ -1,0 +1,78 @@
+@page "/vehiculo/{patente?}"
+@inject vehicleListUseCase vehicleListUseCase
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject NavigationManager Navegador
+@inject ProtectedSessionStorage sessionStorage
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+
+<p>hola</p>
+<table>
+    <thead>
+        <tr>
+            <th>
+                <button class="btn btn-secondary" @onclick="MoveLeft">&lt;</button>
+            </th>
+            <th>
+                <button class="btn btn-secondary" @onclick="MoveRight">&gt;</button>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="6"><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i])) width="300" height="300"/></td>
+            <td>@v.type</td>
+        </tr>
+        <tr>
+            <td>@v.model</td>
+        </tr>
+        <tr>
+            <td>@v.plate</td>
+        </tr>
+        <tr>
+            <td>@v.kms</td>
+        </tr>
+        <tr>
+            <td>@v.doors</td>
+        </tr>
+        <tr>
+            <td>@v.description</td>
+        </tr>
+    </tbody>
+</table>
+
+
+@code{
+    int i = 1;
+    int limit;
+    Vehicle? v;
+    [Parameter] public string patente {get; set;}
+    List<byte[]> images = new List<byte[]>();
+    public void OnInitialized(){
+        v = vehicleListUseCase.Execute().Where(ve => ve.plate == patente).SingleOrDefault();
+        List<VehicleImage> veim = listVehicleImagesUseCase.Execute().Where(im => im.VehicleId == v.Id).ToList();
+        foreach(VehicleImage ve in veim){
+            images.Add(ve.Image);
+        }
+        limit = images.Count();
+    }
+
+    public void MoveRight(){
+        if(i < limit){
+            i++;
+        }
+        else{
+            i = 1;
+        }
+        StateHasChanged();
+    }
+
+    public void MoveLeft(){
+        if(i > 1){
+            i--;
+        }
+        else{
+            i = limit;
+        }
+        StateHasChanged();
+    }
+}

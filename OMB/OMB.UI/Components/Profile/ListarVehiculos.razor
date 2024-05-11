@@ -73,7 +73,7 @@
     List<byte[]> _images = new List<byte[]>();
 
     DialogoConfirmacion dialogo = null!;
-    Vehicle? vehiculoAEliminar;
+    Vehicle vehiculoAEliminar = new Vehicle();
 
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");

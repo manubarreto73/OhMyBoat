@@ -121,7 +121,7 @@
     string tipoBarco = ""; // Uso esta variable para el input de cantidad de puertas
     string tieneMotor = "";
     Ship barco = new Ship();
-    Ship? newBarco;
+    Ship newBarco = new Ship();
 
     private int maxAllowedFiles = 3; // Cantidad máxima de fotos que permite ingresar
     private int cantFiles = 0;
@@ -166,7 +166,7 @@
             break;
           }
         }
-      } catch (Exception ex) {
+      } catch {
         // Si se meten más fotos que maxAlloweFiles entrá acá
         dialogo.Mostrar("La cantidad máxima de fotos es 3.");
 

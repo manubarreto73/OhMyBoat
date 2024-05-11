@@ -24,7 +24,7 @@
             return;
         }
         if (employeeListUseCase.Execute().Find(item => item.userName == searchTerm) != null) {
-            if (employeeListUseCase.Execute().Find(item => item.userName == searchTerm).Id == 1) {
+            if (employeeListUseCase.Execute().Find(item => item.userName == searchTerm)?.Id == 1) {
                 Navegador.NavigateTo("/profileadmin/" + searchTerm, true);
                 return;
             }

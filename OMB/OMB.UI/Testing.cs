@@ -80,6 +80,7 @@ public class Testing{
         }
         context.SaveChanges();
         }
+        #pragma warning disable CA1416 // Sirve para que desaparezcan warnings
         using(OMBContext context = new OMBContext()){
             if(context.ShipImages.Count() == 0){
                 Image? img;
@@ -120,6 +121,7 @@ public class Testing{
                 context.SaveChanges();
             }
         }
+        #pragma warning restore CA1416
     }
 
 }

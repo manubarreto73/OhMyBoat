@@ -65,7 +65,7 @@
 <ListarBarcos @ref="listarBarcos" />
 
 @code {
-  User? user = new User();
+  User user = new User();
   [Parameter] public string? userUsername { get; set; }
   bool isEmployee;
   int userId;
@@ -91,17 +91,17 @@
         dialogo.Mostrar(aux);
     }
 
-    public async Task Banear() {
+    public void Banear() {
         user.banned = !user.banned;
         modifyUserUseCase.Execute(user);
         Navegador.NavigateTo("/", true);
     }
 
-    private async Task AbrirListarVehiculos() {
+    private void AbrirListarVehiculos() {
       listarVehiculos.Cargar();
     }
     
-    private async Task AbrirListarBarcos() {
+    private void AbrirListarBarcos() {
       listarBarcos.Cargar();
     }
 }

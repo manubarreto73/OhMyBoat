@@ -27,7 +27,7 @@
     User? newUser;
     DialogoError dialogo = null!;
 
-    protected override async Task OnInitializedAsync() {
+    protected override void OnInitialized() {
         user.birthDate = DateOnly.FromDateTime(DateTime.Today);
     }
 

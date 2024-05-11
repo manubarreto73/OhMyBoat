@@ -19,13 +19,18 @@
 <input type="password" placeholder="Password" @bind="user.password" class="form-control">
 <input type="date" placeholder="Birthdate" @bind="user.birthDate" class="form-control">
 <input placeholder="Number" @bind="user.number" class="form-control">
-<button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+<button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault>Aceptar</button>
 <a href="login">Ya tenés una cuenta?</a>
 
 @code {
     User user = new User();
     User? newUser;
     DialogoError dialogo = null!;
+
+    protected override async Task OnInitializedAsync() {
+        user.birthDate = DateOnly.FromDateTime(DateTime.Today);
+    }
+
     public async Task Save() {
         if (newUser != null) {
             await sessionStorage.SetAsync("userId", newUser.Id);
@@ -33,39 +38,22 @@
         }
     }
 
-    async void Aceptar() {
-        if (!validarDatos()) {
-            return;
-        }
+    async Task Aceptar() {
 
-        addUser();
-
-        newUser = userListUseCase.Execute().Where(elem => user.userName == elem.userName).SingleOrDefault();
-
-        await Save();
-        
-        navegador.NavigateTo("/");
-        
-    }
-
-    bool validarDatos() {
         if (string.IsNullOrEmpty(user.userName) || string.IsNullOrEmpty(user.name) || string.IsNullOrEmpty(user.surname) || 
         string.IsNullOrEmpty(user.mail) || string.IsNullOrEmpty(user.password) || string.IsNullOrEmpty(user.number)) {
             dialogo.Mostrar("Ingrese todos los datos para loggearse");
-            return false;
+            return;
         }
         if (DateOnly.FromDateTime(DateTime.Today) < user.birthDate.AddYears(18)) {
             dialogo.Mostrar("Usted debe ser mayor de edad para crear una cuenta");
-            return false;
+            return;
         }
         if (user.password.Length < 8) {
             dialogo.Mostrar("La contraseña debe tener como mínimo 8 dígitos");
-            return false;
+            return;
         }
-        return true;
-    }
 
-    void addUser() {
         try {
             addUserUseCase.Execute(user);
         }
@@ -79,5 +67,13 @@
                 return;
             }
         }
+
+        newUser = userListUseCase.Execute().Where(elem => user.userName == elem.userName).SingleOrDefault();
+
+        await Save();
+
+        navegador.NavigateTo("/", true);
+        
     }
+
 }

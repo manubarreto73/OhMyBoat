@@ -58,9 +58,11 @@
 </div>
 <div class="text-center">
   <button class="btn btn-primary btn-lg" @onclick="AbrirListarVehiculos" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
+  <button class="btn btn-primary btn-lg" @onclick="AbrirListarBarcos" data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Listar barcos</button>
 </div>
 
 <ListarVehiculos @ref="listarVehiculos" />
+<ListarBarcos @ref="listarBarcos" />
 
 @code {
   User? user = new User();
@@ -70,6 +72,7 @@
   DialogoConfirmacion dialogo = null!;
 
   ListarVehiculos listarVehiculos = null!;
+  ListarBarcos listarBarcos = null!;
 
   protected override async Task OnInitializedAsync() {
       //Busca la información del user a mostrar a travez de su userName
@@ -98,4 +101,7 @@
       listarVehiculos.Cargar();
     }
     
+    private async Task AbrirListarBarcos() {
+      listarBarcos.Cargar();
+    }
 }

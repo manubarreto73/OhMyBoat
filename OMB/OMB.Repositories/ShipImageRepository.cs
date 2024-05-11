@@ -18,6 +18,15 @@ public class ShipImageRepository : IShipImageRepository{
         }
     }
 
+    public void deleteShipImage(int ShipImageId) {
+        using(OMBContext context = new OMBContext()){
+            var exists = context.ShipImages.Where(SI => SI.Id == ShipImageId).SingleOrDefault();
+            if(exists != null){
+                context.Remove(exists);
+            }
+        }
+    }
+
     public List<ShipImage> listShipImages(){
         using(OMBContext context = new OMBContext()){
             List<ShipImage> ret = new List<ShipImage>();

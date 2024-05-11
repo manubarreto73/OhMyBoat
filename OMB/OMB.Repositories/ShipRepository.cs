@@ -7,9 +7,11 @@ using Microsoft.EntityFrameworkCore;
 public class ShipRepository : IShipRepository {
     
     private IShipPostRepository SPRep;
+    private IShipImageRepository SIRep;
 
-    public ShipRepository(IShipPostRepository SPRep) {
+    public ShipRepository(IShipPostRepository SPRep, IShipImageRepository SIRep) {
         this.SPRep = SPRep;
+        this.SIRep = SIRep;
     }
 
     public void addShip (Ship ship) {
@@ -36,6 +38,18 @@ public class ShipRepository : IShipRepository {
         foreach(ShipPost p in posts) {
             this.SPRep.deleteShipPost(p.Id);
         }
+
+        List<ShipImage> images = new List<ShipImage>();
+        using(OMBContext context = new OMBContext()){
+            var exists = context.Ships.Include(S => S.ShipImages).Where(S => S.Id == shipId).SingleOrDefault();
+            if(exists != null){
+                images = exists.ShipImages;
+            }
+        }
+        foreach(ShipImage si in images) {
+            this.SIRep.deleteShipImage(si.Id);
+        }
+
         using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.Id == shipId).SingleOrDefault();
             if(exists != null){

@@ -94,7 +94,7 @@
     public void Banear() {
         user.banned = !user.banned;
         modifyUserUseCase.Execute(user);
-        Navegador.NavigateTo("/", true);
+        Navegador.NavigateTo("/homeemployee", true);
     }
 
     private void AbrirListarVehiculos() {

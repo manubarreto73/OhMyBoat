@@ -4,10 +4,12 @@
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject modifyVehicleUseCase modifyVehicleUseCase
 @inject deleteVehicleUseCase deleteVehicleUseCase
+@inject addVehiclePostUseCase addVehiclePostUseCase
 
 @rendermode InteractiveServer
 
-<DialogoConfirmacion @ref="dialogo" OnConfirmado="eliminarVehiculo"/>
+<DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarVehiculo"/>
+<DialogoInput @ref=dialogoInput OnConfirmado="publicar"/>
 
 <div class="modal fade" id="listarVehiculosModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -48,6 +50,7 @@
                       <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
                           <i class='bx bxs-trash-alt'></i>
                       </button>
+                      <button class="btn btn-primary" @onclick="()=>intentarPublicar(vehiculo)">Publicar</button>
                     </td>
                   </tr>
                   i++;
@@ -72,8 +75,9 @@
     List<VehicleImage> _allImages = new List<VehicleImage>();
     List<byte[]> _images = new List<byte[]>();
 
-    DialogoConfirmacion dialogo = null!;
-    Vehicle vehiculoAEliminar = new Vehicle();
+    DialogoConfirmacion dialogoConfirmacion = null!;
+    DialogoInput dialogoInput = null!;
+    Vehicle vehicleAux = new Vehicle();
 
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
@@ -110,12 +114,22 @@
     }
 
     private void confirmarEliminacion(Vehicle vehiculo) {
-      vehiculoAEliminar = vehiculo;
-      dialogo.Mostrar("¿Seguro qué deseas eliminar el vehiculo?");
+      vehicleAux = vehiculo;
+      dialogoConfirmacion.Mostrar("¿Seguro qué deseas eliminar el vehiculo?");
     }
 
     private void eliminarVehiculo() {
-      deleteVehicleUseCase.Execute(vehiculoAEliminar.Id);
+      deleteVehicleUseCase.Execute(vehicleAux.Id);
       GetVehiculosCargados();
+    }
+
+    private void intentarPublicar(Vehicle vehiculo) {
+      vehicleAux = vehiculo;
+      dialogoInput.Mostrar("Titulo de la publicacion");
+      
+    }
+
+    private void publicar() {
+      addVehiclePostUseCase.Execute(new VehiclePost(vehicleAux.Id, dialogoInput.getInput()));
     }
 }

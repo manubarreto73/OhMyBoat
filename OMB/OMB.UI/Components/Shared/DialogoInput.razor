@@ -1,0 +1,39 @@
+@if (visible)
+{
+   <div class="dialogo-contenedor">
+       <div class="dialogo-contenido">
+           <form>
+                <div class="form-group">
+                    <input placeholder="Pepe" @bind="input" class="form-control">
+                </div>
+                <button class="btn btn-primary" @onclick="Cerrar">Aceptar</button>
+           </form>
+       </div>
+   </div>
+}
+
+@code{
+    private bool visible = false;
+    private string Mensaje = "";
+    private string input = "";
+    [Parameter]
+    public EventCallback OnConfirmado{get;set;}
+
+    public void Mostrar(string Mensaje)
+    {
+        this.Mensaje = Mensaje;
+        visible=true;
+        StateHasChanged();
+    }
+    
+    public String getInput() {
+        return this.input;
+    }
+    void Cerrar (bool confirmar)
+    {
+        visible=false;
+        if (confirmar)
+            OnConfirmado.InvokeAsync();
+    }
+
+}

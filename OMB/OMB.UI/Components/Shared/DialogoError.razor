@@ -2,8 +2,8 @@
 {
    <div class="dialogo-contenedor">
        <div class="dialogo-contenido">
-           <h5>@Mensaje</h5>
-           <button class="btn btn-primary" @onclick="Cerrar">Aceptar</button>
+           <h3>@Mensaje</h3>
+            <button class="btn btn-success" @onclick="Cerrar">Aceptar</button>
        </div>
    </div>
 }
@@ -12,13 +12,11 @@
     private bool visible = false;
     private string Mensaje = "";
 
-    public void Mostrar(string Mensaje)
-    {
+    public void Mostrar(string Mensaje) {
         this.Mensaje = Mensaje;
         visible=true;
         StateHasChanged();
     }
     
     void Cerrar() => visible=false;
-
 }

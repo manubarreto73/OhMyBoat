@@ -7,36 +7,32 @@
 
 <div class="container">
   <div class="profile_card">
-    <div class="profile_details">
-      <div class="intro">
-        <h2>@employee?.name @employee?.surname</h2>
+  <div class="profile_details">
+    <div class="intro">
+      <div class="profile_image">
+        <img src="../default_profile_image.jpg" alt="Foto de perfil">
       </div>
-   
+      <h2 class="mb-2">@employee?.name @employee?.surname</h2>
+      </div>
       <div class="contact_info">
         <div class="row">
-          <div class="icon">
-            <i class="bx bx-user icon" ></i>
-          </div>
+          <i class='bx bxs-phone icon'></i>
           <div class="content">
-            <span>Phone</span>
+            <p>Teléfono</p>
             <h5>@employee?.number</h5>
           </div>
         </div>
         <div class="row">
-          <div class="icon">
-            <i class="bx bx-user icon"></i>
-          </div>
+          <i class='bx bx-envelope icon' ></i>
           <div class="content">
-            <span>Email</span>
+            <p>Email</p>
             <h5>@employee?.mail</h5>
           </div>
         </div>
         <div class="row">
-          <div class="icon">
-            <i class="bx bx-user icon"></i>
-          </div>
+          <i class="bx bx-user icon"></i>
           <div class="content">
-            <span>UserName</span>
+            <p>Nombre de usuario</p>
             <h5>@employee?.userName</h5>
           </div>
         </div>
@@ -50,11 +46,7 @@
   [Parameter] public string? employeeUsername { get; set; }
 
   protected override async Task OnInitializedAsync() {
-
       var foundEmployee = await Task.Run(() => employeeListUseCase.Execute().Find(employee => employee.userName == employeeUsername));
-
       employee = foundEmployee ?? new Employee();
-
   }
-
 }

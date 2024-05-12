@@ -205,7 +205,6 @@
         dialogo.Mostrar("La cantidad máxima de fotos es 3.");
         return false;
       } else if (tieneMotor == "") {
-        dialogo.Mostrar("Se debe seleccionar si tiene motor.");
         return false;
       }
       return true;
@@ -216,7 +215,7 @@
       string extension = file.Split('/')[1];
 
       if (extension != "png" && extension != "jpeg" && extension != "jpg") {
-        dialogo.Mostrar("Las archivos ingresados deben ser .jpg o .png.");
+        dialogo.Mostrar("Los archivos ingresados deben ser .jpg o .png.");
         return false;
       }
 

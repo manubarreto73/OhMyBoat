@@ -5,43 +5,51 @@
 @inject IWebHostEnvironment Environment
 
 <div class="page">
-
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
     <main>
-        @if (userId == 0) {
-            <div class="top-row px-4">
-                <div class="searchBar">
-                    <SearchBar />
-                </div>
-                <div>
-                    <a href="login" class="btn btn-primary">Login</a>
-                    <a href="register" class="btn btn-primary">Sign up</a>
-                </div>
+        <div class="top-row px-4">
+            @if (isEmployee) {
+                <a class="navbar-brand" href="homeemployee">
+                    Oh My Boat!
+                    <img src="Oh_My_Boat_logo_4.jpg" alt="">
+                </a>
+            }
+            else {
+                <a class="navbar-brand" href="/">
+                    Oh My Boat!
+                    <img src="Oh_My_Boat_logo_4.jpg" alt="">
+                </a>
+            }
+            <div>
+                <a href="userlist">Lista de usuarios</a>
             </div>
-        }
-        else {
-            <div class="top-row px-4">
-                <div class="searchBar">
-                    <SearchBar />
+            <div>
+                <a href="employeelist">Lista de empleados</a>
+            </div>
+            <div class="searchBar">
+                <SearchBar />
+            </div>
+            @if (userId == 0) {
+                <div class="d-flex" style="gap:.8rem;height:40px">
+                    <a href="login" style="text-decoration:none;" class="btn black_btn">Login</a>
+                    <a href="register" style="text-decoration:none;" class="btn black_btn">Sign up</a>
                 </div>
+            }
+            else {
                 <div>
-                        @if (isEmployee) {
-                            if (userId == 1) {
-                               <MenuPerfilAdmin />
-                            }
-                            else {
-                                <MenuPerfilEmployee />
-                            }
+                    @if (isEmployee) {
+                        if (userId == 1) {
+                            <MenuPerfilAdmin />
                         }
                         else {
-                            <MenuPerfil />
+                            <MenuPerfilEmployee />
                         }
+                    }
+                    else {
+                        <MenuPerfil />
+                    }
                 </div>
-            </div>
-        }
+            }
+        </div>
 
         <CargarVehiculo />
         <CargarBarco />

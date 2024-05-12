@@ -12,12 +12,12 @@
         Buscar
         <i class="bi bi-search"></i>
     </button>
-        
 </form>
 
 @code {
     DialogoError dialogo = null!;
     string? searchTerm;
+
     private void SubmitForm() {
         if (string.IsNullOrEmpty(searchTerm)) {
             dialogo.Mostrar("Escriba un nombre de usuario para buscar");
@@ -38,5 +38,4 @@
         dialogo.Mostrar("El usuario " + searchTerm + " no existe.");
         
     }
-
 }

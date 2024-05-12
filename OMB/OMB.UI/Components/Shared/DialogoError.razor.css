@@ -11,8 +11,13 @@
     justify-content: center;
 }
 
-.dialogo-contenido{
+.dialogo-contenedor h3 {
+    margin-bottom: 2rem;
+}
+
+.dialogo-contenido {
     width: 50%;
     padding: 20px;
+    border-radius: 5px;
     background-color: white;
 } 

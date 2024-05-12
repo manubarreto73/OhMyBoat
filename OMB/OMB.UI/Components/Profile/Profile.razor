@@ -8,57 +8,60 @@
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="Banear"/>
 
-<div class="profile_card">
+<div class="container">
+  <div class="profile_card">
   <div class="profile_details">
     <div class="intro">
-      <h2>@user?.name @user?.surname</h2>
-      @if (isEmployee && userId == 1) {
-        @if (user.banned) {
-          <div class="top-row px-4">
-            <button class="btn btn-primary btn-top-right" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Desbanear</button>
-          </div>
-        }
-        else {
-          <div class="top-row px-4">
-            <button class="btn btn-primary btn-top-right" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Banear</button>
-          </div>
-        }
+      <div class="profile_image">
+        <img src="../default_profile_image.jpg" alt="Foto de perfil">
+      </div>
+      <h2 class="mb-2">@user?.name @user?.surname</h2>
+      @if (user.banned) {
+        <div class="texto_ban">
+          <i class='bx bxs-error'></i>
+          <p>Usuario baneado</p>
+        </div>
       }
-    </div>
-    <div class="contact_info">
-      <div class="row">
-        <div class="icon">
-          <i class="bx bx-user icon" ></i>
-        </div>
-        <div class="content">
-          <span>Phone</span>
-          <h5>@user?.number</h5>
-        </div>
       </div>
-      <div class="row">
-        <div class="icon">
+      <div class="contact_info">
+        <div class="row">
+          <i class='bx bxs-phone icon'></i>
+          <div class="content">
+            <p>Teléfono</p>
+            <h5>@user?.number</h5>
+          </div>
+        </div>
+        <div class="row">
+          <i class='bx bx-envelope icon' ></i>
+          <div class="content">
+            <p>Email</p>
+            <h5>@user?.mail</h5>
+          </div>
+        </div>
+        <div class="row">
           <i class="bx bx-user icon"></i>
+          <div class="content">
+            <p>Nombre de usuario</p>
+            <h5>@user?.userName</h5>
+          </div>
         </div>
-        <div class="content">
-          <span>Email</span>
-          <h5>@user?.mail</h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="icon">
-          <i class="bx bx-user icon"></i>
-        </div>
-        <div class="content">
-          <span>UserName</span>
-          <h5>@user?.userName</h5>
-      </div>
       </div>
     </div>
   </div>
-</div>
-<div class="text-center">
-  <button class="btn btn-primary btn-lg" @onclick="AbrirListarVehiculos" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
-  <button class="btn btn-primary btn-lg" @onclick="AbrirListarBarcos" data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Listar barcos</button>
+  <h4 class="sub_title">Operaciones</h4>
+  <div class="text-left">
+    @if (isEmployee && userId == 1) {
+      @if (user.banned) {
+        <button class="btn btn-danger btn-lg" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Desbanear</button>
+      }
+      else {
+        <button class="btn btn-danger btn-lg" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Banear</button>
+      }
+    } else {
+      <button class="btn blue_btn btn-lg" @onclick="AbrirListarVehiculos" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
+      <button class="btn blue_btn btn-lg" @onclick="AbrirListarBarcos" data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Listar barcos</button>
+    }
+  </div>
 </div>
 
 <ListarVehiculos @ref="listarVehiculos" />

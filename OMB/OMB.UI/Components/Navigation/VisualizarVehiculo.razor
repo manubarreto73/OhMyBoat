@@ -1,59 +1,55 @@
 @page "/vehiculo/{patente?}"
 @inject vehicleListUseCase vehicleListUseCase
+@rendermode InteractiveServer
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject NavigationManager Navegador
 @inject ProtectedSessionStorage sessionStorage
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 
-<p>hola</p>
+
+<button class="btn btn-secondary" @onclick="MoveLeft">&lt;</button>
+<button class="btn btn-secondary" @onclick="MoveRight">&gt;</button>
 <table>
     <thead>
         <tr>
             <th>
-                <button class="btn btn-secondary" @onclick="MoveLeft">&lt;</button>
+                Imagenes
             </th>
             <th>
-                <button class="btn btn-secondary" @onclick="MoveRight">&gt;</button>
+                Datos
             </th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td rowspan="6"><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i])) width="300" height="300"/></td>
-            <td>@v.type</td>
-        </tr>
-        <tr>
-            <td>@v.model</td>
-        </tr>
-        <tr>
-            <td>@v.plate</td>
-        </tr>
-        <tr>
-            <td>@v.kms</td>
-        </tr>
-        <tr>
-            <td>@v.doors</td>
-        </tr>
-        <tr>
-            <td>@v.description</td>
+            <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))" width="300" height="300"/></td>
+            <td>
+                @v.type <br>
+                Modelo: @v.model <br>
+                Patente: @v.plate <br>
+                Kilometros: @v.kms <br>
+                Puertas: @v.doors <br>
+                Descripción: @v.description <br>
+            </td>
         </tr>
     </tbody>
 </table>
 
 
 @code{
-    int i = 1;
+    int i = 0;
     int limit;
-    Vehicle? v;
-    [Parameter] public string patente {get; set;}
+    Vehicle v = new Vehicle();
+    [Parameter] public string? patente {get; set;}
     List<byte[]> images = new List<byte[]>();
-    public void OnInitialized(){
-        v = vehicleListUseCase.Execute().Where(ve => ve.plate == patente).SingleOrDefault();
+    protected override async Task OnInitializedAsync(){
+        var aux = await Task.Run(() => vehicleListUseCase.Execute().Where(ve => ve.plate == patente).SingleOrDefault());
+        v = aux ?? new Vehicle();
         List<VehicleImage> veim = listVehicleImagesUseCase.Execute().Where(im => im.VehicleId == v.Id).ToList();
         foreach(VehicleImage ve in veim){
             images.Add(ve.Image);
         }
-        limit = images.Count();
+        limit = images.Count() - 1;
     }
 
     public void MoveRight(){
@@ -61,13 +57,13 @@
             i++;
         }
         else{
-            i = 1;
+            i = 0;
         }
         StateHasChanged();
     }
 
     public void MoveLeft(){
-        if(i > 1){
+        if(i > 0){
             i--;
         }
         else{

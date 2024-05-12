@@ -33,15 +33,35 @@
 </table>
 
 @code {
-    
     List<Post> posts = new List<Post>();
+    List<Ship> ships = new List<Ship>();
+    List<Vehicle> vehicles = new List<Vehicle>();
+    List<User> users = new List<User>();
+
     bool ver = false;
 
     protected override void OnInitialized() {
-       posts.AddRange(shipPostListUseCase.Execute());
-       posts.AddRange(vehiclePostListUseCase.Execute());
-       posts.RemoveAll(p => null != userListUseCase.Execute().Where(u => u.banned && (shipListUseCase.Execute().Where(s => (s.Id == p.getId()) && p.getType()).Count() != 0) && (u.Id == shipListUseCase.Execute().Where(s => (s.Id == p.getId()) && p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
-       posts.RemoveAll(p => null != userListUseCase.Execute().Where(u => u.banned && (vehicleListUseCase.Execute().Where(s => (s.Id == p.getId()) && !p.getType()).Count() != 0) && (u.Id == vehicleListUseCase.Execute().Where(s => (s.Id == p.getId()) && !p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
-       posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+        // Llamo solo una vez a los listUseCase
+        ships = shipListUseCase.Execute();
+        vehicles = vehicleListUseCase.Execute();
+        users = userListUseCase.Execute();
+
+        posts.AddRange(shipPostListUseCase.Execute());
+        posts.AddRange(vehiclePostListUseCase.Execute());
+
+        // Sacamos los posts de las personas baneadas
+        posts.RemoveAll(p => 
+            null != users.Where(u =>
+                u.banned && (ships.Where(s =>
+                    (s.Id == p.getId()) && p.getType()).Count() != 0) && (u.Id == ships.Where(s =>
+                        (s.Id == p.getId()) && p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
+
+        posts.RemoveAll(p =>
+            null != users.Where(u =>
+                u.banned && (vehicles.Where(s =>
+                    (s.Id == p.getId()) && !p.getType()).Count() != 0) && (u.Id == vehicles.Where(s =>
+                        (s.Id == p.getId()) && !p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
+
+        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
    }
 }

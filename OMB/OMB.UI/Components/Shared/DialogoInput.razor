@@ -6,7 +6,9 @@
                 <div class="form-group">
                     <input placeholder="Pepe" @bind="input" class="form-control">
                 </div>
-                <button class="btn btn-primary" @onclick="Cerrar">Aceptar</button>
+                @* Le sacque el onclick porque no funcionaba, hay que revisarlo *@
+                <button class="btn btn-primary">Aceptar</button>
+                @* <button class="btn btn-primary" @onclick="Cerrar">Aceptar</button> *@
            </form>
        </div>
    </div>
@@ -19,19 +21,18 @@
     [Parameter]
     public EventCallback OnConfirmado{get;set;}
 
-    public void Mostrar(string Mensaje)
-    {
+    public void Mostrar(string Mensaje) {
         this.Mensaje = Mensaje;
-        visible=true;
+        visible = true;
         StateHasChanged();
     }
     
     public String getInput() {
         return this.input;
     }
-    void Cerrar (bool confirmar)
-    {
-        visible=false;
+
+    void Cerrar (bool confirmar) {
+        visible = false;
         if (confirmar)
             OnConfirmado.InvokeAsync();
     }

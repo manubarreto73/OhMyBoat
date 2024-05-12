@@ -48,20 +48,23 @@
       </div>
     </div>
   </div>
-  <h4 class="sub_title">Operaciones</h4>
-  <div class="text-left">
     @if (isEmployee && userId == 1) {
-      @if (user.banned) {
-        <button class="btn btn-danger btn-lg" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Desbanear</button>
-      }
-      else {
-        <button class="btn btn-danger btn-lg" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Banear</button>
-      }
-    } else {
-      <button class="btn blue_btn btn-lg" @onclick="AbrirListarVehiculos" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
-      <button class="btn blue_btn btn-lg" @onclick="AbrirListarBarcos" data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Listar barcos</button>
+      <h4 class="sub_title">Operaciones</h4>
+      <div class="text-left">
+        @if (user.banned) {
+          <button class="btn btn-danger btn-lg" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Desbanear</button>
+        }
+        else {
+          <button class="btn btn-danger btn-lg" data-bs-toggle="modal" @onclick="ConfirmarBaneo">Banear</button>
+        }
+      </div>
+    } else if (user?.Id == userId) {
+      <h4 class="sub_title">Operaciones</h4>
+      <div class="text-left">
+        <button class="btn blue_btn btn-lg" @onclick="AbrirListarVehiculos" data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Listar vehiculos</button>
+        <button class="btn blue_btn btn-lg" @onclick="AbrirListarBarcos" data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Listar barcos</button>
+      </div>
     }
-  </div>
 </div>
 
 <ListarVehiculos @ref="listarVehiculos" />

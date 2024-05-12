@@ -10,16 +10,18 @@
 
 <h1>Cambiar clave</h1>
 
-<div class="form-group">
-    <input type="password" placeholder="Clave actual" @bind="claveActual" class="form-control">
-</div>
-<div class="form-group">
-    <input type="password" placeholder="Nueva clave" @bind="nuevaClaveUno" class="form-control">
-</div>
-<div class="form-group">
-    <input type="password" placeholder="Repite la nueva clave" @bind="nuevaClaveDos" class="form-control">
-</div>
-<button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+<form>
+    <div class="form-group">
+        <input type="password" placeholder="Clave actual" @bind="claveActual" class="form-control">
+    </div>
+    <div class="form-group">
+        <input type="password" placeholder="Nueva clave" @bind="nuevaClaveUno" class="form-control">
+    </div>
+    <div class="form-group">
+        <input type="password" placeholder="Repite la nueva clave" @bind="nuevaClaveDos" class="form-control">
+    </div>
+    <button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+</form>
 
 @code {
     string claveActual = "";
@@ -44,13 +46,13 @@
             return;
         }
 
-        if (nuevaClaveUno != nuevaClaveDos) {
-            dialogo.Mostrar("La nueva clave ingresadas no coincide");
+        if (nuevaClaveUno.Length < 8) {
+            dialogo.Mostrar("La contraseña debe tener como mínimo 8 dígitos");
             return;
         }
 
-        if (nuevaClaveUno.Length < 8) {
-            dialogo.Mostrar("La contraseña debe tener como mínimo 8 dígitos");
+        if (nuevaClaveUno != nuevaClaveDos) {
+            dialogo.Mostrar("La nuevas claves ingresadas no coincide");
             return;
         }
 

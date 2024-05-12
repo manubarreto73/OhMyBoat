@@ -15,13 +15,13 @@
 
     public void Mostrar(string Mensaje) {
         this.Mensaje = Mensaje;
-        visible=true;
+        visible = true;
         StateHasChanged();
     }
+
     [Parameter]
     public EventCallback OnConfirmado{get;set;}
-    void Cerrar (bool confirmar)
-    {
+    void Cerrar (bool confirmar) {
         visible=false;
         if (confirmar)
             OnConfirmado.InvokeAsync();

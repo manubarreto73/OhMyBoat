@@ -10,6 +10,7 @@
 
 <DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarVehiculo"/>
 <DialogoInput @ref=dialogoInput OnConfirmado="publicar"/>
+<DialogoError @ref="dialogoError"/>
 
 <div class="modal fade" id="listarVehiculosModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -36,7 +37,7 @@
                   <tr>
                     <td>
                       <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" 
-                        width="80" height="80"/>
+                        width="80" height="80" style="object-fit: cover;"/>
                     </td>
                     <td>
                       @vehiculo.type[0].ToString().ToUpper()@vehiculo.type.Substring(1)
@@ -50,7 +51,7 @@
                       <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
                           <i class='bx bxs-trash-alt'></i>
                       </button>
-                      <button class="btn btn-primary" @onclick="()=>intentarPublicar(vehiculo)">Publicar</button>
+                      <button class="btn btn-success" @onclick="()=>intentarPublicar(vehiculo)">Publicar</button>
                     </td>
                   </tr>
                   i++;
@@ -77,6 +78,8 @@
 
     DialogoConfirmacion dialogoConfirmacion = null!;
     DialogoInput dialogoInput = null!;
+    DialogoError dialogoError = null!;
+
     Vehicle vehicleAux = new Vehicle();
 
     protected override async Task OnInitializedAsync() {
@@ -126,10 +129,15 @@
     private void intentarPublicar(Vehicle vehiculo) {
       vehicleAux = vehiculo;
       dialogoInput.Mostrar("Titulo de la publicacion");
-      
     }
 
     private void publicar() {
-      addVehiclePostUseCase.Execute(new VehiclePost(vehicleAux.Id, dialogoInput.getInput()));
+      try {
+        addVehiclePostUseCase.Execute(new VehiclePost(vehicleAux.Id, dialogoInput.getInput()));
+      } catch (Exception ex) {
+        if (ex.Message == "Vehicle already posted") {
+          dialogoError.Mostrar("El vehículo seleccionado ya se encuentra publicado.");
+        }
+      }
     }
 }

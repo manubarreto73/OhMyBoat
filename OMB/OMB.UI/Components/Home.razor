@@ -18,16 +18,16 @@
         </tr>
     </thead>
     <tbody>
+        @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
         @foreach (var p in posts){
             <tr>
-            @if(p.getType()){
-                <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listShipImagesUseCase.Execute().Where(s => s.ShipId == p.getId()).ElementAt(0).Image))" width="100" height="100"/></td>
-            }
-            @if(!p.getType()){
-                <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(listVehicleImagesUseCase.Execute().Where(s => s.VehicleId == p.getId()).ElementAt(0).Image))" width="100" height="100"/></td>
-            }
-            <td>@p.getTitle()</td>
+                <td>
+                    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" 
+                    width="100" height="100" style="object-fit: cover;"/>
+                </td>
+                <td>@p.getTitle()</td>
             </tr>
+            i++; @* Incremento i para seguir iterando *@
         }
     </tbody>
 </table>
@@ -37,6 +37,10 @@
     List<Ship> ships = new List<Ship>();
     List<Vehicle> vehicles = new List<Vehicle>();
     List<User> users = new List<User>();
+
+    List<ShipImage> shipImages = new List<ShipImage>();
+    List<VehicleImage> vehicleImages = new List<VehicleImage>();
+    List<byte[]> _images = new List<byte[]>();
 
     bool ver = false;
 
@@ -48,6 +52,9 @@
 
         posts.AddRange(shipPostListUseCase.Execute());
         posts.AddRange(vehiclePostListUseCase.Execute());
+        
+        shipImages = listShipImagesUseCase.Execute();
+        vehicleImages = listVehicleImagesUseCase.Execute();
 
         // Sacamos los posts de las personas baneadas
         posts.RemoveAll(p => 
@@ -62,6 +69,20 @@
                     (s.Id == p.getId()) && !p.getType()).Count() != 0) && (u.Id == vehicles.Where(s =>
                         (s.Id == p.getId()) && !p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
 
+        // Reordenamos los posts
         posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+
+        // Generamos la lista de fotos para ambos tipos de post
+        foreach (var post in posts) {
+            bool type = post.getType();
+            
+            if (type) {
+                byte[] image = shipImages.Find(imagen => imagen.ShipId == post.getId()).Image;
+                _images.Add(image);
+            } else {
+                byte[] image = vehicleImages.Find(imagen => imagen.VehicleId == post.getId()).Image;
+                _images.Add(image);
+            }
+        }
    }
 }

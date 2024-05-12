@@ -2,22 +2,22 @@
 {
    <div class="dialogo-contenedor">
        <div class="dialogo-contenido">
+           <h3>@Mensaje</h3>
            <form>
                 <div class="form-group">
-                    <input placeholder="Pepe" @bind="input" class="form-control">
+                    <input type="text" @bind="input" class="form-control">
                 </div>
-                @* Le sacque el onclick porque no funcionaba, hay que revisarlo *@
-                <button class="btn btn-primary">Aceptar</button>
-                @* <button class="btn btn-primary" @onclick="Cerrar">Aceptar</button> *@
+                <button class="btn btn-success" @onclick="()=>Cerrar(true)">Aceptar</button>
            </form>
        </div>
    </div>
 }
 
-@code{
+@code {
     private bool visible = false;
     private string Mensaje = "";
     private string input = "";
+
     [Parameter]
     public EventCallback OnConfirmado{get;set;}
 

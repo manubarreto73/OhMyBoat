@@ -1,5 +1,19 @@
 @page "/homeemployee"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
 
+<DialogoError @ref=dialogo/>
+
+@if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+    <div class="alert alert-info">
+        @cartelito
+        <button class="btn btn primary" @onclick="() => setFalse()" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+        </button>
+    </div>
+}
 <div>
 Este es el home de empleados
 </div>
@@ -9,6 +23,21 @@ En un futuro aquí se podrán ver los intercambios activos
 
 @code {
 
-    // NADA POR AQUI VAN
+    DialogoError dialogo = null!;
+    string? cartelito;
+    bool mostrarCartel;
+
+    protected override async Task OnInitializedAsync() {
+
+        var result  = await sessionStorage.GetAsync<string>("cartel?");
+        cartelito = result.Success ? result.Value : null;
+        mostrarCartel = true;
+        await sessionStorage.DeleteAsync("cartel?");
+        
+    }
+
+    public void setFalse() {
+        this.mostrarCartel = false;
+    }
 
 }

@@ -27,6 +27,7 @@
         if (newEmployee != null) {
             await sessionStorage.SetAsync("userId", newEmployee.Id);
             await sessionStorage.SetAsync("isEmployee", false);
+            await sessionStorage.SetAsync("cartel?", "El empleado fue registrado con éxito");
         }
     }
 
@@ -42,10 +43,10 @@
         newEmployee = employeeListUseCase.Execute().Where(elem => employee.userName == elem.userName).SingleOrDefault();
 
         await Save();
-
+        
         //MANDAR MAIL AL EMPLEADO
         
-        navegador.NavigateTo("/");
+        navegador.NavigateTo("/homeemployee");
         
     }
 

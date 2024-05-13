@@ -56,6 +56,7 @@
         if (newUser != null) {
             await sessionStorage.SetAsync("userId", newUser.Id);
             await sessionStorage.SetAsync("isEmployee", false);
+            await sessionStorage.SetAsync("cartel?", "Te haz registrado con exito");
         }
     }
 

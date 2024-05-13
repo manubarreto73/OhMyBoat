@@ -23,10 +23,10 @@
         <input placeholder="Apellido" @bind="user.surname" class="form-control">
     </div>
     <div class="form-group">
-        <input type="date" placeholder="Birthdate" @bind="user.birthDate" class="form-control">
+        <input type="date" @bind="user.birthDate" class="form-control">
     </div>
     <div class="form-group">
-        <input placeholder="Number" @bind="user.number" class="form-control">
+        <input placeholder="Numero de telefono" @bind="user.number" class="form-control">
     </div>
     <div class="form-group">
         <input placeholder="Nombre de usuario" @bind="user.userName" class="form-control">
@@ -39,7 +39,7 @@
     </div>
    <button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault>Aceptar</button>
    <a href="login">Ya tenés una cuenta?</a>
-    <!-- <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Olvidaste tu contraseña?</a> -->
+    
 </form>
 
 @code {

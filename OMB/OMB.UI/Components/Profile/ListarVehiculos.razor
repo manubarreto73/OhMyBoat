@@ -87,7 +87,6 @@
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
       userId = result.Success ? result.Value : 0;
-
       GetVehiculosCargados();
     }
 

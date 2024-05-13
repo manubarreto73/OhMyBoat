@@ -117,7 +117,9 @@
 @code {
     int userId;
     DialogoError dialogo = null!;
-
+    string? cartelito;
+    bool mostrarCartel;
+    
     string tipoBarco = ""; // Uso esta variable para el input de cantidad de puertas
     string tieneMotor = "";
     Ship barco = new Ship();
@@ -139,6 +141,11 @@
       tipoBarco = "";
       tieneMotor = "";
       fileBytesList = new List<byte[]>();
+    }
+
+    public void CerrarCartel() {
+      mostrarCartel = false;
+      StateHasChanged();
     }
 
     // Crea una lista de arrays de bytes con las fotos

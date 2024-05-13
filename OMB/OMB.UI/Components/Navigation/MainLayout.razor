@@ -45,14 +45,14 @@
                         }
                     }
                     else {
-                        <MenuPerfil OnAbiertoVehiculo="CerrarCartel" />
+                        <MenuPerfil OnAbiertoVehiculo="CerrarCartelVehiculo" OnAbiertoBarco="CerrarCartelBarco" />
                     }
                 </div>
             }
         </div>
 
         <CargarVehiculo @ref="cargarVehiculo" />
-        <CargarBarco />
+        <CargarBarco  @ref="cargarVehiculo" />
         
         <article class="content px-4">
             @Body
@@ -72,6 +72,7 @@
     bool firstRender = true;
 
     CargarVehiculo cargarVehiculo = null!;
+    CargarBarco cargarBarco = null!;
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
@@ -85,7 +86,11 @@
         }
     }
 
-    public void CerrarCartel() {
+    public void CerrarCartelVehiculo() {
         cargarVehiculo.CerrarCartel();
+    }
+
+    public void CerrarCartelBarco() {
+        cargarBarco.CerrarCartel();
     }
 }

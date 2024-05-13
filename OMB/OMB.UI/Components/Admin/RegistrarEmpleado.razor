@@ -9,14 +9,14 @@
 
 <DialogoError @ref="dialogo"/>
 
-<h1>Registrar empleado</h1>
+<h1>Ingrese los datos para registrar a un nuevo empleado</h1>
 
-<input placeholder="employeename" @bind="employee.userName" class="form-control">
-<input placeholder="Mail" @bind="employee.mail" class="form-control">
-<input placeholder="Name" @bind="employee.name" class="form-control">
-<input placeholder="Surname" @bind="employee.surname" class="form-control">
-<input type="date" placeholder="Birthdate" @bind="employee.birthDate" class="form-control">
-<input placeholder="Number" @bind="employee.number" class="form-control">
+<input placeholder="Dirección de correo electrónico" @bind="employee.mail" class="form-control">
+<input placeholder="Nombre" @bind="employee.name" class="form-control">
+<input placeholder="Apellido" @bind="employee.surname" class="form-control">
+<input type="date" @bind="employee.birthDate" class="form-control">
+<input placeholder="Numero de telefono" @bind="employee.number" class="form-control">
+<input placeholder="Nombre de usuario" @bind="employee.userName" class="form-control">
 <button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
 
 @code {
@@ -56,7 +56,7 @@
             return false;
         }
         if (DateOnly.FromDateTime(DateTime.Today) < employee.birthDate.AddYears(18)) {
-            dialogo.Mostrar("El trabajo infantil está penalizado por la ley 23390");
+            dialogo.Mostrar("El empleado debe ser mayor de edad para crear la cuenta");
             return false;
         }
         return true;
@@ -72,7 +72,7 @@
                 return;
             }
             if (ex.Message == "This username's already taken!") {
-                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso, podrías probar con " + employee.userName + "777");
+                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso.");
                 return;
             }
         }

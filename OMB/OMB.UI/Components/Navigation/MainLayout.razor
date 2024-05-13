@@ -45,13 +45,13 @@
                         }
                     }
                     else {
-                        <MenuPerfil />
+                        <MenuPerfil OnAbiertoVehiculo="CerrarCartel" />
                     }
                 </div>
             }
         </div>
 
-        <CargarVehiculo />
+        <CargarVehiculo @ref="cargarVehiculo" />
         <CargarBarco />
         
         <article class="content px-4">
@@ -70,6 +70,8 @@
     int userId;
     bool isEmployee;
 
+    CargarVehiculo cargarVehiculo = null!;
+
     protected override async Task OnInitializedAsync() {
         var result  = await sessionStorage.GetAsync<bool>("isEmployee");
         isEmployee = result .Success ? result.Value : false;
@@ -77,4 +79,7 @@
         userId = result2.Success ? result2.Value : 0;
     }
 
+    public void CerrarCartel() {
+        cargarVehiculo.CerrarCartel();
+    }
 }

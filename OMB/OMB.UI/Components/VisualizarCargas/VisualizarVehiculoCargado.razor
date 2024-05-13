@@ -1,6 +1,8 @@
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject modifyVehicleUseCase modifyVehicleUseCase
 @inject ProtectedSessionStorage sessionStorage
+@inject addVehiclePostUseCase addVehiclePostUseCase
+@inject vehiclePostListUseCase vehiclePostListUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -61,19 +63,32 @@
           </div>
         </form>
         <div class="modal-footer">
+          <hr>
+            @if(publicando){
+              <br>
+              <input class="form-control" placeholder="Título para su publicación" type="text" @bind=title required>
+            }
             <button class="btn btn-primary" @onclick="()=>mofificarVehiculo()">Modificar</button>
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal" 
             data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Cerrar</button>
+            @if(!publicando && !publicado){
+              <button class="btn btn-success" @onclick="()=>confirmarPublicar()">Publicar</button>
+            }
+            @if(publicando){
+              <button class="btn btn-success" @onclick="()=>publicar()">Definir Publicación</button>
+            }
         </div>
       </div>
     </div>
 </div>
 
-
 @code {
     int i = 0;
     int limit = 0;
     DialogoError dialogoError = null!;
+    string title = "";
+    bool publicando = false;
+    bool publicado;
     
     Vehicle vehiculo = new Vehicle();
     List<byte[]> images = new List<byte[]>();
@@ -82,8 +97,25 @@
       images.Add(new byte[0]);
     }
 
+    public void confirmarPublicar(){
+      publicando = true;
+      StateHasChanged();
+    }
+
+    public void publicar(){
+      if(string.IsNullOrEmpty(this.title)){
+        dialogoError.Mostrar("Por favor ponga un título antes de publicar");
+      }
+      else{
+      addVehiclePostUseCase.Execute(new VehiclePost(vehiculo.Id, this.title));
+      publicando = false;
+      publicado = true;
+      StateHasChanged();
+      }
+    }
     public void Cargar(Vehicle vehiculo) {
       this.vehiculo = vehiculo;
+      publicado = vehiclePostListUseCase.Execute().Where(v => v.VehicleId == vehiculo.Id).Count() > 0;
       i = 0;
 
       GetImages();

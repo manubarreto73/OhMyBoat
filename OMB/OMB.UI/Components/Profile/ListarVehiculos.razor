@@ -9,7 +9,6 @@
 @rendermode InteractiveServer
 
 <DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarVehiculo"/>
-<DialogoInput @ref=dialogoInput OnConfirmado="publicar"/>
 <DialogoError @ref="dialogoError"/>
 
 <div class="modal fade" id="listarVehiculosModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -50,7 +49,6 @@
                       <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
                           <i class='bx bxs-trash-alt'></i>
                       </button>
-                      <button class="btn btn-success" @onclick="()=>confirmarPublicar(vehiculo)">Publicar</button>
                     </td>
                   </tr>
                   i++;
@@ -78,7 +76,6 @@
     List<byte[]> _images = new List<byte[]>();
 
     DialogoConfirmacion dialogoConfirmacion = null!;
-    DialogoInput dialogoInput = null!;
     DialogoError dialogoError = null!;
 
     Vehicle vehicleAux = new Vehicle();
@@ -122,22 +119,6 @@
     private void eliminarVehiculo() {
       deleteVehicleUseCase.Execute(vehicleAux.Id);
       GetVehiculosCargados();
-    }
-
-    private void confirmarPublicar(Vehicle vehiculo) {
-      vehicleAux = vehiculo;
-      dialogoInput.Mostrar("Titulo de la publicacion");
-    }
-
-    private void publicar() {
-      try {
-        addVehiclePostUseCase.Execute(new VehiclePost(vehicleAux.Id, dialogoInput.getInput()));
-      } 
-      catch (Exception ex) {
-        if (ex.Message == "Vehicle already posted") {
-          dialogoError.Mostrar("El vehiculo ya se encuentra publicado");
-        }
-      }
     }
 
     public void VisualizarVehiculo(Vehicle vehiculo) {

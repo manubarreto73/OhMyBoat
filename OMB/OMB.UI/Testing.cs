@@ -23,7 +23,7 @@ public class Testing{
         }
         using(OMBContext context = new OMBContext()){
         if(context.Employees.Count() == 0){
-            context.Employees.Add(new Employee("Daniel", "Perez", "jefaso", "daniel123", "danieljefaso@gmail.com", "221512748", birthDate)); //1 ADMIN
+            context.Employees.Add(new Employee("Daniel", "Perez", "DanielP", "PaseAdmin", "daniel@gmail.com", "221512748", birthDate)); //1 ADMIN
             context.Employees.Add(new Employee("Tadeo", "Etcheverría", "tadeoetche", "tadeo123", "tadeo@gmail.com", "221512465", birthDate)); //2
             context.Employees.Add(new Employee("Renata", "Vargas", "renatavargas", "renata123", "renatavargas@gmail.com", "221777888", birthDate)); //3
             context.Employees.Add(new Employee("Matías", "Fernández", "matiasfernandez", "matias123", "matiasfernandez@gmail.com", "221999000", birthDate)); //4
@@ -40,7 +40,7 @@ public class Testing{
             context.Add(new Vehicle(5, "Moto", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
             context.Add(new Vehicle(3, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
             context.Add(new Vehicle(6, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
-            context.Add(new Vehicle(4, "Camioneta", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
+            context.Add(new Vehicle(4, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
             context.SaveChanges();
         }
         
@@ -112,12 +112,12 @@ public class Testing{
                     context.Add(new ShipImage(7, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
-                    img = Image.FromFile("Catamaran 2.jpg");
+                    img = Image.FromFile("Crucero 2.jpg");
                     img.Save(ms, img.RawFormat);
                     context.Add(new ShipImage(1, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
-                    img = Image.FromFile("Catamaran 2.jpg");
+                    img = Image.FromFile("Lancha 2.jpg");
                     img.Save(ms, img.RawFormat);
                     context.Add(new ShipImage(8, ms.ToArray()));
                 }
@@ -156,12 +156,22 @@ public class Testing{
                     context.Add(new VehicleImage(7, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
-                    img = Image.FromFile("Honda.jpg");
+                    img = Image.FromFile("Fiat Pulse.jpg");
                     img.Save(ms, img.RawFormat);
                     context.Add(new VehicleImage(1, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
-                    img = Image.FromFile("Honda.jpg");
+                    img = Image.FromFile("Nissan Versa 1.jpg");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new VehicleImage(8, ms.ToArray()));
+                }
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Nissan Versa 2.jpg");
+                    img.Save(ms, img.RawFormat);
+                    context.Add(new VehicleImage(8, ms.ToArray()));
+                }
+                using(var ms = new MemoryStream()){
+                    img = Image.FromFile("Nissan Versa 3.jpeg");
                     img.Save(ms, img.RawFormat);
                     context.Add(new VehicleImage(8, ms.ToArray()));
                 }

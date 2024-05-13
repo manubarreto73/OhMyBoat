@@ -1,0 +1,9 @@
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.carousel-container {
+  margin-bottom: 0.5rem;
+}

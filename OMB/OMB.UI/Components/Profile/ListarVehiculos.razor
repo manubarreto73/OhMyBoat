@@ -36,8 +36,10 @@
                 @foreach (var vehiculo in _vehicles) {
                   <tr>
                     <td>
-                      <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" 
-                        width="80" height="80" style="object-fit: cover;"/>
+                      <div class="img">
+                        <img @onclick="()=>VisualizarVehiculo(vehiculo)" data-bs-toggle="modal" data-bs-target="#visualizarVehiculoCargadoModal"
+                        src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
+                      </div>
                     </td>
                     <td>
                       @vehiculo.type[0].ToString().ToUpper()@vehiculo.type.Substring(1)
@@ -45,9 +47,6 @@
                     <td>@vehiculo.model</td>
                     <td>@vehiculo.plate</td>
                     <td>
-                      <button class="btn btn-primary" @onclick="()=>mofificarVehiculo(vehiculo)">
-                          <i class='bx bx-edit'></i>
-                      </button>
                       <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
                           <i class='bx bxs-trash-alt'></i>
                       </button>
@@ -69,6 +68,8 @@
     </div>
 </div>
 
+<VisualizarVehiculoCargado @ref="visualizarVehiculo" OnModificado="GetVehiculosCargados" />
+
 @code {
     int userId;
     
@@ -81,6 +82,7 @@
     DialogoError dialogoError = null!;
 
     Vehicle vehicleAux = new Vehicle();
+    VisualizarVehiculoCargado visualizarVehiculo = null!;
 
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
@@ -112,10 +114,6 @@
       }
     }
 
-    private void mofificarVehiculo(Vehicle vehiculo) {
-      
-    }
-
     private void confirmarEliminacion(Vehicle vehiculo) {
       vehicleAux = vehiculo;
       dialogoConfirmacion.Mostrar("¿Seguro qué deseas eliminar el vehiculo?");
@@ -136,8 +134,11 @@
         addVehiclePostUseCase.Execute(new VehiclePost(vehicleAux.Id, dialogoInput.getInput()));
       } catch (Exception ex) {
         if (ex.Message == "Vehicle already posted") {
-          dialogoError.Mostrar("El vehículo seleccionado ya se encuentra publicado.");
         }
       }
+    }
+
+    public void VisualizarVehiculo(Vehicle vehiculo) {
+      visualizarVehiculo.Cargar(vehiculo);
     }
 }

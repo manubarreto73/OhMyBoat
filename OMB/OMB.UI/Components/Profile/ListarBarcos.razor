@@ -33,8 +33,10 @@
                 @foreach (var barco in _ships) {
                   <tr>
                     <td>
-                      <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" 
-                        width="80" height="80"/>
+                      <div class="img">
+                        <img @onclick="()=>VisualizarBarco(barco)" data-bs-toggle="modal" data-bs-target="#visualizarBarcoCargadoModal"
+                        src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
+                      </div>
                     </td>
                     <td>
                       @barco.type[0].ToString().ToUpper()@barco.type.Substring(1)
@@ -42,9 +44,6 @@
                     <td>@barco.model</td>
                     <td>@barco.plate</td>
                     <td>
-                      <button class="btn btn-primary" @onclick="()=>mofificarBarco(barco)">
-                          <i class='bx bx-edit'></i>
-                      </button>
                       <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(barco)">
                           <i class='bx bxs-trash-alt'></i>
                       </button>
@@ -65,6 +64,8 @@
     </div>
 </div>
 
+<VisualizarBarcoCargado @ref="visualizarBarco" OnModificado="GetBarcosCargados" />
+
 @code {
     int userId;
     
@@ -74,6 +75,8 @@
 
     DialogoConfirmacion dialogo = null!;
     Ship barcoAEliminar = new Ship();
+
+    VisualizarBarcoCargado visualizarBarco = null!;
 
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
@@ -89,6 +92,8 @@
     }
 
     private void GetBarcosCargados() {
+      Console.WriteLine($"Get barcos cargados");
+
       _ships = shipListUseCase.Execute();
       _ships = _ships.FindAll(ship => ship.UserId == userId);
 
@@ -105,10 +110,6 @@
       }
     }
 
-    private void mofificarBarco(Ship barco) {
-      
-    }
-
     private void confirmarEliminacion(Ship barco) {
       barcoAEliminar = barco;
       dialogo.Mostrar("¿Seguro qué deseas eliminar el barco?");
@@ -117,5 +118,9 @@
     private void eliminarBarco() {
       deleteShipUseCase.Execute(barcoAEliminar.Id);
       GetBarcosCargados();
+    }
+
+    public void VisualizarBarco(Ship barco) {
+      visualizarBarco.Cargar(barco);
     }
 }

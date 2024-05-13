@@ -29,12 +29,12 @@
 
           @if (tipoVehiculo == "") {
             <div>
-                <label for="validationTooltip01" class="form-label">Modelo</label>
-                <input type="text" class="form-control" id="validationTooltip01" required disabled>
+                <label class="form-label">Modelo</label>
+                <input type="text" class="form-control" required disabled>
             </div>
             <div >
               <label class="form-label">Descripción</label>
-              <input type="text" class="form-control" @bind=vehiculo.description required disabled>
+              <input type="text" class="form-control" required disabled>
             </div>
             <div>
                 <label class="form-label">Fotos (1 a 3)</label>
@@ -54,7 +54,7 @@
             </div>
           } else {
             <div>
-              <label for="validationTooltip01" class="form-label">Modelo</label>
+              <label class="form-label">Modelo</label>
               <input type="text" class="form-control" @bind=vehiculo.model required>
             </div>
             <div >
@@ -63,7 +63,7 @@
             </div>
             <div>
               <label class="form-label">Fotos (1 a 3)</label>
-              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png" OnChange="LoadFiles" multiple required/>
+              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png, .jpeg" OnChange="LoadFiles" multiple required/>
             </div>
             <div>
               <label class="form-label">Kilometraje (Km)</label>
@@ -103,17 +103,17 @@
     private int cantFiles = 0;
     private List<byte[]> fileBytesList = new List<byte[]>(); // Lista de arrays de bytes para las fotos
     private string _inputFileId = Guid.NewGuid().ToString(); // Se usa para limpiar el input
-    
+
     protected override async Task OnInitializedAsync() {
-        var result = await sessionStorage.GetAsync<int>("userId");
-        userId = result.Success ? result.Value : 0;
+      var result = await sessionStorage.GetAsync<int>("userId");
+      userId = result.Success ? result.Value : 0;
     }
 
     // Pone el tipoVehiculo en vacio para que se reinicie el formulario
     public void ReiniciarForm() {
-        vehiculo = new Vehicle();
-        tipoVehiculo = "";
-        fileBytesList = new List<byte[]>();
+      vehiculo = new Vehicle();
+      tipoVehiculo = "";
+      fileBytesList = new List<byte[]>();
     }
 
     // Crea una lista de arrays de bytes con las fotos
@@ -126,7 +126,7 @@
             try {
               using (var memoryStream = new MemoryStream()) {
                 using (var fileStream = file.OpenReadStream()) {
-                    await fileStream.CopyToAsync(memoryStream);
+                  await fileStream.CopyToAsync(memoryStream);
                 }
                 fileBytesList.Add(memoryStream.ToArray());
                 cantFiles += 1;

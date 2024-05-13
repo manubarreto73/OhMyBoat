@@ -1,0 +1,132 @@
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject modifyVehicleUseCase modifyVehicleUseCase
+@inject ProtectedSessionStorage sessionStorage
+
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@rendermode InteractiveServer
+
+<DialogoError @ref="dialogoError"/>
+
+<div class="modal fade" id="visualizarVehiculoCargadoModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Tu vehículo cargado</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" 
+        data-bs-toggle="modal" data-bs-target="#listarVehiculosModal"></button>
+      </div>
+        <form>
+          <div class="modal-body form-body">
+              <div class="carousel-container">
+                <div id="carousel" class="carousel slide">
+                  <div class="carousel-inner">
+                    <div class="carousel-item active">
+                      <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))"
+                      height="280px" width="100%" style="object-fit: cover;"/>
+                    </div>
+                  </div>
+                  <button class="carousel-control-prev" type="button" @onclick=MoveLeft>
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" @onclick=MoveRight>
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+                
+              <div>
+                <label class="form-label">Modelo</label>
+                <input type="text" class="form-control" @bind=vehiculo.model required>
+              </div>
+              <div >
+                <label class="form-label">Descripción</label>
+                <input type="text" class="form-control" @bind=vehiculo.description required>
+              </div>
+              <div>
+                <label class="form-label">Kilometraje (Km)</label>
+                <input type="number" min=0 class="form-control" @bind=vehiculo.kms required>
+              </div>
+              <div >
+                <label class="form-label">Patente</label>
+                <input type="text" class="form-control" @bind=vehiculo.plate required>
+              </div>
+              @if (vehiculo.type != "ciclomotor") {
+                <div >
+                  <label class="form-label">Cantidad de puertas</label>
+                  <input type="number" min=0 class="form-control" @bind=vehiculo.doors required>
+                </div>
+              }
+          </div>
+        </form>
+        <div class="modal-footer">
+            <button class="btn btn-primary" @onclick="()=>mofificarVehiculo()">Modificar</button>
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" 
+            data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+@code {
+    int i = 0;
+    int limit = 0;
+    DialogoError dialogoError = null!;
+    
+    Vehicle vehiculo = new Vehicle();
+    List<byte[]> images = new List<byte[]>();
+
+    protected override void OnInitialized() {
+      images.Add(new byte[0]);
+    }
+
+    public void Cargar(Vehicle vehiculo) {
+      this.vehiculo = vehiculo;
+      i = 0;
+
+      GetImages();
+      StateHasChanged();
+    }
+
+    private void GetImages() {
+      images = new List<byte[]>();
+      var vehicleImages = listVehicleImagesUseCase.Execute().Where(img => img.VehicleId == vehiculo.Id);
+
+      foreach (var img in vehicleImages) {
+        images.Add(img.Image);
+      }
+
+      limit = images.Count() - 1;
+    }
+
+    public void MoveRight() {
+      if (i < limit) i++;
+      else i = 0;
+
+      StateHasChanged();
+    }
+
+    public void MoveLeft() {
+      if (i > 0) i--;
+      else i = limit;
+
+      StateHasChanged();
+    }
+
+    [Parameter]
+    public EventCallback OnModificado { get; set; }
+
+    void mofificarVehiculo() {
+      try {
+        modifyVehicleUseCase.Execute(vehiculo);
+        OnModificado.InvokeAsync();
+      }
+      catch (Exception ex) {
+        if (ex.Message == "This plate is already in our database") {
+          dialogoError.Mostrar("La patente ingresada ya se encuentra registrada.");
+        }
+      }
+    }
+}

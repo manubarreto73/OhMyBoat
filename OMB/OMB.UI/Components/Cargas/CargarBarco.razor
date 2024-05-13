@@ -30,16 +30,16 @@
 
           @if (tipoBarco == "") {
             <div>
-              <label for="validationTooltip01" class="form-label">Modelo</label>
+              <label class="form-label">Modelo</label>
               <input type="text" class="form-control" required disabled>
             </div>
             <div >
               <label class="form-label">Descripción</label>
-              <input type="text" class="form-control" @bind=barco.description required disabled>
+              <input type="text" class="form-control" required disabled>
             </div>
             <div>
               <label class="form-label">Fotos (1 a 3)</label>
-              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png" OnChange="LoadFiles" multiple required disabled/>
+              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png, .jpeg" OnChange="LoadFiles" multiple required disabled/>
             </div>
             <div>
               <label class="form-label">Eslora</label>
@@ -76,7 +76,7 @@
             </div>
             <div>
               <label class="form-label">Fotos (1 a 3)</label>
-              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png" OnChange="LoadFiles" multiple required/>
+              <InputFile  @key=@(_inputFileId) class="form-control" accept=".jpg, .png, .jpeg" OnChange="LoadFiles" multiple required/>
             </div>
             <div>
               <label class="form-label">Eslora</label>

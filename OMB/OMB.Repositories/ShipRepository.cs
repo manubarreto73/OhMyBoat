@@ -68,6 +68,7 @@ public class ShipRepository : IShipRepository {
                     aux = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
                 }
                 if(aux == null) {
+                    exists.model = ship.model;
                     exists.eslora = ship.eslora;
                     exists.manga = ship.manga;
                     exists.calado = ship.calado;

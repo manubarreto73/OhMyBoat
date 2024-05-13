@@ -8,6 +8,7 @@
 
 <DialogoError @ref="dialogo"/>
 
+
 <div class="modal fade" id="cargarVehiculoModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -15,6 +16,16 @@
         <h1 class="modal-title fs-5" id="exampleModalLabel">Cargar vehículo</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+      @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+          <div class="alert alert-info">
+              @cartelito
+              <button class="btn btn primary" @onclick="() => setFalse()" >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                  </svg>
+              </button>
+          </div>
+      }
       <form>
         <div class="modal-body form-body">
           <div>
@@ -94,6 +105,8 @@
 @code {
     int userId;
     DialogoError dialogo = null!;
+    string? cartelito;
+    bool mostrarCartel;
 
     string tipoVehiculo = ""; // Uso esta variable para el input de cantidad de puertas
     Vehicle vehiculo = new Vehicle();
@@ -108,12 +121,16 @@
       var result = await sessionStorage.GetAsync<int>("userId");
       userId = result.Success ? result.Value : 0;
     }
-
     // Pone el tipoVehiculo en vacio para que se reinicie el formulario
     public void ReiniciarForm() {
       vehiculo = new Vehicle();
       tipoVehiculo = "";
       fileBytesList = new List<byte[]>();
+    }
+
+    public void CerrarCartel() {
+      mostrarCartel = false;
+      StateHasChanged();
     }
 
     // Crea una lista de arrays de bytes con las fotos
@@ -151,7 +168,7 @@
       }
     }
 
-    public void Aceptar() {
+    public async Task Aceptar() {
       if (!ValidarDatos()) {
         return;
       }
@@ -163,6 +180,8 @@
       newVehiculo = new Vehicle(userId, tipoVehiculo, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors);
 
       if (AddVehicle()) {
+        mostrarCartel = true;
+        cartelito = "Vehiculo cargado con exito";
         SubirFotos();
         ReiniciarForm();
       } else {
@@ -214,4 +233,7 @@
         return false;
       }
     }
+    private void setFalse () {
+    this.mostrarCartel = false;
+   }
 }

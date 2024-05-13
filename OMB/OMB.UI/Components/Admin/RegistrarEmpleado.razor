@@ -27,6 +27,7 @@
         if (newEmployee != null) {
             await sessionStorage.SetAsync("userId", newEmployee.Id);
             await sessionStorage.SetAsync("isEmployee", false);
+            await sessionStorage.SetAsync("cartel?", "El empleado fue registrado con éxito");
         }
     }
 
@@ -37,15 +38,17 @@
 
         employee.password = GenerateRandomString(8);
 
-        addemployee();
+        if (addemployee()) {
+            return;
+        }
 
         newEmployee = employeeListUseCase.Execute().Where(elem => employee.userName == elem.userName).SingleOrDefault();
 
         await Save();
-
+        
         //MANDAR MAIL AL EMPLEADO
         
-        navegador.NavigateTo("/");
+        navegador.NavigateTo("/homeemployee");
         
     }
 
@@ -62,20 +65,21 @@
         return true;
     }
 
-    void addemployee() {
+    bool addemployee() {
         try {
             addEmployeeUseCase.Execute(employee);
         }
         catch (Exception ex) {
             if (ex.Message == "Mail already in use!") {
                 dialogo.Mostrar("El mail ingresado ya corresponde con una cuenta");
-                return;
+                return true;
             }
             if (ex.Message == "This username's already taken!") {
                 dialogo.Mostrar("El nombre de usuario ya se encuentra en uso.");
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     string GenerateRandomString(int length)

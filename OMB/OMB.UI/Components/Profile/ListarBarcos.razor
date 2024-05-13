@@ -92,7 +92,6 @@
     }
 
     private void GetBarcosCargados() {
-      Console.WriteLine($"Get barcos cargados");
 
       _ships = shipListUseCase.Execute();
       _ships = _ships.FindAll(ship => ship.UserId == userId);

@@ -50,7 +50,7 @@
                       <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
                           <i class='bx bxs-trash-alt'></i>
                       </button>
-                      <button class="btn btn-success" @onclick="()=>intentarPublicar(vehiculo)">Publicar</button>
+                      <button class="btn btn-success" @onclick="()=>confirmarPublicar(vehiculo)">Publicar</button>
                     </td>
                   </tr>
                   i++;
@@ -124,7 +124,7 @@
       GetVehiculosCargados();
     }
 
-    private void intentarPublicar(Vehicle vehiculo) {
+    private void confirmarPublicar(Vehicle vehiculo) {
       vehicleAux = vehiculo;
       dialogoInput.Mostrar("Titulo de la publicacion");
     }
@@ -132,8 +132,10 @@
     private void publicar() {
       try {
         addVehiclePostUseCase.Execute(new VehiclePost(vehicleAux.Id, dialogoInput.getInput()));
-      } catch (Exception ex) {
+      } 
+      catch (Exception ex) {
         if (ex.Message == "Vehicle already posted") {
+          dialogoError.Mostrar("El vehiculo ya se encuentra publicado");
         }
       }
     }

@@ -5,9 +5,10 @@
            <h3>@Mensaje</h3>
            <form>
                 <div class="form-group">
-                    <input type="text" @bind="input" class="form-control">
+                    <input @bind="input" class="form-control">
                 </div>
-                <button class="btn btn-success" @onclick="()=>Cerrar(true)">Aceptar</button>
+                <button class="btn btn-primary" @onclick="()=>Cerrar(true)">Aceptar</button>
+                <button class="btn btn-danger" @onclick="()=>Cerrar(true)">Cancelar</button>
            </form>
        </div>
    </div>

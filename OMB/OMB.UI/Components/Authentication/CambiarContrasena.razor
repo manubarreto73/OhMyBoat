@@ -39,6 +39,11 @@
     
     async void Aceptar(){
 
+        if (string.IsNullOrEmpty(claveActual) || string.IsNullOrEmpty(nuevaClaveUno) || string.IsNullOrEmpty(nuevaClaveDos)) {
+            dialogo.Mostrar("Debe completar todos los campos");
+            return;
+        }
+
         await Read();
 
         if (usuario.password != claveActual) {

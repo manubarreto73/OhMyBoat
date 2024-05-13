@@ -93,14 +93,13 @@
   }
 
     private void ConfirmarBaneo() {
-        string aux = (user.banned) ? $"¿Seguro que desea banear al usuario {user.userName}?" : $"¿Seguro que desea desbanear al usuario {user.userName}?";
+        string aux = (user.banned) ? $"¿Seguro que desea desbanear al usuario {user.userName}?" : $"¿Seguro que desea banear al usuario {user.userName}?";
         dialogo.Mostrar(aux);
     }
 
     public void Banear() {
         user.banned = !user.banned;
         modifyUserUseCase.Execute(user);
-        Navegador.NavigateTo("/homeemployee", true);
     }
 
     private void AbrirListarVehiculos() {

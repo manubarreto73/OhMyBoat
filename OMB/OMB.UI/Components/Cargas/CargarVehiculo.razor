@@ -108,7 +108,6 @@
     string? cartelito;
     bool mostrarCartel;
 
-
     string tipoVehiculo = ""; // Uso esta variable para el input de cantidad de puertas
     Vehicle vehiculo = new Vehicle();
     Vehicle newVehiculo = new Vehicle();
@@ -127,6 +126,11 @@
       vehiculo = new Vehicle();
       tipoVehiculo = "";
       fileBytesList = new List<byte[]>();
+    }
+
+    public void CerrarCartel() {
+      mostrarCartel = false;
+      StateHasChanged();
     }
 
     // Crea una lista de arrays de bytes con las fotos

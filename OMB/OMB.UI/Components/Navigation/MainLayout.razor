@@ -69,14 +69,20 @@
 @code {
     int userId;
     bool isEmployee;
+    bool firstRender = true;
 
     CargarVehiculo cargarVehiculo = null!;
 
-    protected override async Task OnInitializedAsync() {
-        var result  = await sessionStorage.GetAsync<bool>("isEmployee");
-        isEmployee = result .Success ? result.Value : false;
-        var result2 = await sessionStorage.GetAsync<int>("userId");
-        userId = result2.Success ? result2.Value : 0;
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            var result  = await sessionStorage.GetAsync<bool>("isEmployee");
+            isEmployee = result .Success ? result.Value : false;
+            var result2 = await sessionStorage.GetAsync<int>("userId");
+            userId = result2.Success ? result2.Value : 0;
+            
+            // le aviso a blazor que se tiene que re-renderizar la pagina
+            StateHasChanged();
+        }
     }
 
     public void CerrarCartel() {

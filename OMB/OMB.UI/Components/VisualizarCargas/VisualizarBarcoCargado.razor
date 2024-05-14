@@ -1,6 +1,8 @@
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject modifyShipUseCase modifyShipUseCase
 @inject ProtectedSessionStorage sessionStorage
+@inject shipPostListUseCase shipPostListUseCase
+@inject addShipPostUseCase addShipPostUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -71,9 +73,19 @@
           </div>
         </form>
         <div class="modal-footer">
+            @if(publicando){
+              <br>
+              <input class="form-control" placeholder="Título para su publicación" type="text" @bind=title required>
+            }
             <button class="btn btn-primary" @onclick="()=>mofificarBarco()">Modificar</button>
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal" 
             data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Cerrar</button>
+            @if(!publicando && !publicado){
+              <button class="btn btn-success" @onclick="()=>confirmarPublicar()">Publicar</button>
+            }
+            @if(publicando){
+              <button class="btn btn-success" @onclick="()=>publicar()">Definir Publicación</button>
+            }
         </div>
       </div>
     </div>
@@ -86,6 +98,10 @@
     string tieneMotor;
     DialogoError dialogoError = null!;
 
+    bool publicando = false;
+    bool publicado;
+    string title = "";
+
     Ship barco = new Ship();
     List<byte[]> images = new List<byte[]>();
 
@@ -95,6 +111,7 @@
 
     public void Cargar(Ship barco) {
       this.barco = barco;
+      publicado = shipPostListUseCase.Execute().Where(s => s.ShipId == barco.Id).Count() > 0;
       tieneMotor = barco.hasEngine ? "si" : "no";
       i = 0;
 
@@ -102,6 +119,22 @@
       StateHasChanged();
     }
 
+    public void confirmarPublicar(){
+      publicando = true;
+      StateHasChanged();
+    }
+
+    public void publicar(){
+      if(string.IsNullOrEmpty(this.title)){
+        dialogoError.Mostrar("Por favor ponga un título antes de publicar");
+      }
+      else{
+          addShipPostUseCase.Execute(new ShipPost(barco.Id, this.title));
+          publicando = false;
+          publicado = true;
+          StateHasChanged();
+      }
+    }
     private void GetImages() {
       images = new List<byte[]>();
       var shipImages = listShipImagesUseCase.Execute().Where(img => img.ShipId == barco.Id);

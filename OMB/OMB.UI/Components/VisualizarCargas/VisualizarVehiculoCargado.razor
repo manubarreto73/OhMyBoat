@@ -47,7 +47,16 @@
                   </button>
                 </div>
               </div>
-                
+
+              <div>
+              <label class="form-label">Tipo</label>
+              <select @bind=vehiculo.type class="form-select" required>
+                  <option value="" style="display:none"></option>
+                  <option value="Camioneta">Camioneta</option>
+                  <option value="Auto">Auto</option>
+                  <option value="Ciclomotor">Ciclomotor</option>
+              </select>
+            </div>   
               <div>
                 <label class="form-label">Modelo</label>
                 <input type="text" class="form-control" @bind=vehiculo.model required>

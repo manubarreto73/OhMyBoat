@@ -34,10 +34,10 @@ public class Testing{
         using(OMBContext context = new OMBContext()){
         if(context.Vehicles.Count() == 0){
             context.Add(new Vehicle(3, "Auto", "ABC123", "En buen estado", "Fiat Pulse", 90000, 3));
-            context.Add(new Vehicle(5, "Moto", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
+            context.Add(new Vehicle(5, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
             context.Add(new Vehicle(2, "Camioneta", "GHI789", "Excelente estado", "GR Yaris", 110000, 5));
             context.Add(new Vehicle(1, "Auto", "JKL012", "Con cambio automático", "Ford Kuga Hibrida", 80000, 5));
-            context.Add(new Vehicle(5, "Moto", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
+            context.Add(new Vehicle(5, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
             context.Add(new Vehicle(3, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
             context.Add(new Vehicle(6, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
             context.Add(new Vehicle(4, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));

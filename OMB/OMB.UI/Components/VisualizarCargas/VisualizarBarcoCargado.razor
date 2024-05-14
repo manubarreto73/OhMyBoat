@@ -47,7 +47,17 @@
                 </button>
               </div>
             </div>
-                
+
+             <div>
+              <label class="form-label">Tipo</label>
+              <select @bind=barco.type class="form-select" required>
+                  <option value="" style="display:none"></option>
+                  <option value="Catamaran">Catamaran</option>
+                  <option value="Velero">Velero</option>
+                  <option value="Crucero">Crucero</option>
+                  <option value="Lancha">Lancha</option>
+              </select>
+            </div>   
             <div>
               <label class="form-label">Modelo</label>
               <input type="text" class="form-control" @bind=barco.model required>

@@ -85,7 +85,8 @@
               <button class="btn btn-success" @onclick="()=>confirmarPublicar()">Publicar</button>
             }
             @if(publicando){
-              <button class="btn btn-success" @onclick="()=>publicar()">Definir Publicación</button>
+              <button class="btn btn-danger" @onclick="()=>turnOff()">Cancelar Publicación</button>
+              <button class="btn btn-success" @onclick="()=>publicar()">Confirmar Publicación</button>
             }
         </div>
       </div>
@@ -110,6 +111,10 @@
       images.Add(new byte[0]);
     }
 
+    public void turnOff(){
+      publicando = false;
+    }
+
     public void confirmarPublicar(){
       publicando = true;
       StateHasChanged();
@@ -127,9 +132,10 @@
       }
     }
     public void Cargar(Vehicle vehiculo) {
-      this.vehiculo = vehiculo;
+      this.vehiculo = new(vehiculo.UserId, vehiculo.type, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors){Id = vehiculo.Id};
       publicado = vehiclePostListUseCase.Execute().Where(v => v.VehicleId == vehiculo.Id).Count() > 0;
       i = 0;
+      publicando = false;
 
       GetImages();
       StateHasChanged();
@@ -164,6 +170,10 @@
     public EventCallback OnModificado { get; set; }
 
     void modificarVehiculo() {
+      if(string.IsNullOrEmpty(vehiculo.plate) || string.IsNullOrEmpty(vehiculo.model) || string.IsNullOrEmpty(vehiculo.description)){
+        dialogoError.Mostrar("Por favor rellene todos los campos antes de intentar modificar");
+      }
+      else{
       try {
         modifyVehicleUseCase.Execute(vehiculo);
         mostrarCartel = true;
@@ -174,6 +184,7 @@
         if (ex.Message == "This plate is already in our database") {
           dialogoError.Mostrar("La patente ingresada ya se encuentra registrada.");
         }
+      }
       }
     }
 

@@ -30,7 +30,7 @@
     async Task Save(bool isEmployee, int? userId) {
         await sessionStorage.SetAsync("userId", userId);
         await sessionStorage.SetAsync("isEmployee", isEmployee);
-        await sessionStorage.SetAsync("cartel?", "Te haz loggeado con exito");
+        await sessionStorage.SetAsync("cartel?", "Te has loggeado con exito");
     }
     
     async Task Aceptar(){

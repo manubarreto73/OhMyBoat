@@ -17,6 +17,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" 
         data-bs-toggle="modal" data-bs-target="#listarBarcosModal"></button>
       </div>
+      @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+          <div class="alert alert-info">
+              @cartelito
+              <button class="btn btn primary" @onclick="() => setFalse()" >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                  </svg>
+              </button>
+          </div>
+        }
         <form>
           <div class="modal-body form-body">
             <div class="carousel-container">
@@ -77,7 +87,7 @@
               <br>
               <input class="form-control" placeholder="Título para su publicación" type="text" @bind=title required>
             }
-            <button class="btn btn-primary" @onclick="()=>mofificarBarco()">Modificar</button>
+            <button class="btn btn-primary" @onclick="()=>modificarBarco()">Modificar</button>
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal" 
             data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Cerrar</button>
             @if(!publicando && !publicado){
@@ -101,6 +111,9 @@
     bool publicando = false;
     bool publicado;
     string title = "";
+
+    string? cartelito;
+    bool mostrarCartel;
 
     Ship barco = new Ship();
     List<byte[]> images = new List<byte[]>();
@@ -164,10 +177,11 @@
     public EventCallback OnModificado { get; set; }
 
     // Hay un error con las patentes que hay que revisar
-    void mofificarBarco() {
+    void modificarBarco() {
       try {
         barco.hasEngine = tieneMotor == "si" ? true : false;
-
+        mostrarCartel = true;
+        cartelito = "Barco modificado";
         modifyShipUseCase.Execute(barco);
         OnModificado.InvokeAsync();
       }
@@ -177,4 +191,8 @@
         }
       }
     }
+
+    private void setFalse () {
+      this.mostrarCartel = false;
+   }
 }

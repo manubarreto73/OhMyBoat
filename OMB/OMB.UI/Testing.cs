@@ -33,26 +33,26 @@ public class Testing{
 
         using(OMBContext context = new OMBContext()){
         if(context.Vehicles.Count() == 0){
-            context.Add(new Vehicle(3, "Auto", "ABC123", "En buen estado", "Fiat Pulse", 90000, 3));
-            context.Add(new Vehicle(5, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
-            context.Add(new Vehicle(2, "Camioneta", "GHI789", "Excelente estado", "GR Yaris", 110000, 5));
+            context.Add(new Vehicle(1, "Auto", "ABC123", "En buen estado", "Fiat Pulse", 90000, 3));
+            context.Add(new Vehicle(1, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
+            context.Add(new Vehicle(1, "Camioneta", "GHI789", "Excelente estado", "GR Yaris", 110000, 5));
             context.Add(new Vehicle(1, "Auto", "JKL012", "Con cambio automático", "Ford Kuga Hibrida", 80000, 5));
-            context.Add(new Vehicle(5, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
-            context.Add(new Vehicle(3, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
-            context.Add(new Vehicle(6, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
-            context.Add(new Vehicle(4, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
+            context.Add(new Vehicle(1, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
+            context.Add(new Vehicle(1, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
+            context.Add(new Vehicle(1, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
+            context.Add(new Vehicle(1, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
             context.SaveChanges();
         }
         
         if(context.Ships.Count() == 0){
-            context.Add(new Ship(2, "Crucero", "ABC123", "Capacidad maxima de 150 personas", "Antares 9 OB", 15, 20, 25, true));
-            context.Add(new Ship(3, "Velero", "DBE030", "Muy veloz", "Oceanis 461", 10, 15, 20, false));
-            context.Add(new Ship(4, "Catamaran", "XFK535", "Apto para aguas agitadas, buena cobertura", "First 40.7", 20, 25, 30, true));
-            context.Add(new Ship(5, "Lancha", "LKM792", "Modelo clásico y resistente, buena capacidad de carga", "242 GTO", 5, 10, 15, false));
-            context.Add(new Ship(2, "Crucero", "RTS222", "Es un modelo muy seguro, y muy fácil de conducir, ideal para principiantes", "188 JOY", 2, 3, 4, true));
-            context.Add(new Ship(3, "Velero", "VYW323", "Espacio para dos personas, muy cómodo y muy rápido", "Cranchi Endurance 33", 4, 3, 2, false));
-            context.Add(new Ship(4, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
-            context.Add(new Ship(5, "Lacha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
+            context.Add(new Ship(1, "Crucero", "ABC123", "Capacidad maxima de 150 personas", "Antares 9 OB", 15, 20, 25, true));
+            context.Add(new Ship(1, "Velero", "DBE030", "Muy veloz", "Oceanis 461", 10, 15, 20, false));
+            context.Add(new Ship(1, "Catamaran", "XFK535", "Apto para aguas agitadas, buena cobertura", "First 40.7", 20, 25, 30, true));
+            context.Add(new Ship(1, "Lancha", "LKM792", "Modelo clásico y resistente, buena capacidad de carga", "242 GTO", 5, 10, 15, false));
+            context.Add(new Ship(1, "Crucero", "RTS222", "Es un modelo muy seguro, y muy fácil de conducir, ideal para principiantes", "188 JOY", 2, 3, 4, true));
+            context.Add(new Ship(1, "Velero", "VYW323", "Espacio para dos personas, muy cómodo y muy rápido", "Cranchi Endurance 33", 4, 3, 2, false));
+            context.Add(new Ship(1, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
+            context.Add(new Ship(1, "Lacha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
             context.SaveChanges();
         }
         }

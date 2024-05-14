@@ -193,6 +193,10 @@
     }
 
     public void Aceptar() {
+      if (string.IsNullOrEmpty(barco.plate) || string.IsNullOrEmpty(barco.description) || string.IsNullOrEmpty(barco.model) || string.IsNullOrEmpty(tieneMotor)) {
+        dialogo.Mostrar("Debe completar los campos para cargar el barco");
+      }
+
       if (!ValidarDatos()) {
         return;
       }

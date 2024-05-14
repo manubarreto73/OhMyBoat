@@ -169,6 +169,10 @@
     }
 
     public async Task Aceptar() {
+      if (string.IsNullOrEmpty(vehiculo.plate) || string.IsNullOrEmpty(vehiculo.description) ||string.IsNullOrEmpty(vehiculo.model)) {
+        dialogo.Mostrar("Debe completar los campos para cargar el vehiculo");
+      }
+      
       if (!ValidarDatos()) {
         return;
       }
@@ -234,6 +238,7 @@
       }
     }
     private void setFalse () {
-    this.mostrarCartel = false;
-   }
+      this.mostrarCartel = false;
+    }
+
 }

@@ -94,7 +94,8 @@
               <button class="btn btn-success" @onclick="()=>confirmarPublicar()">Publicar</button>
             }
             @if(publicando){
-              <button class="btn btn-success" @onclick="()=>publicar()">Definir Publicación</button>
+              <button class="btn btn-danger" @onclick="()=>turnOff()">Cancelar Publicación</button>
+              <button class="btn btn-success" @onclick="()=>publicar()">Confirmar Publicación</button>
             }
         </div>
       </div>
@@ -123,15 +124,19 @@
     }
 
     public void Cargar(Ship barco) {
-      this.barco = barco;
+      this.barco = new Ship(barco.UserId, barco.type, barco.plate, barco.description, barco.model, barco.eslora, barco.manga, barco.calado, barco.hasEngine){Id = barco.Id};
       publicado = shipPostListUseCase.Execute().Where(s => s.ShipId == barco.Id).Count() > 0;
       tieneMotor = barco.hasEngine ? "si" : "no";
       i = 0;
+      publicando = false;
 
       GetImages();
       StateHasChanged();
     }
 
+    public void turnOff(){
+      publicando = false;
+    }
     public void confirmarPublicar(){
       publicando = true;
       StateHasChanged();
@@ -178,6 +183,10 @@
 
     // Hay un error con las patentes que hay que revisar
     void modificarBarco() {
+      if(string.IsNullOrEmpty(barco.description) || string.IsNullOrEmpty(barco.model) || string.IsNullOrEmpty(barco.plate)){
+        dialogoError.Mostrar("Por favor rellene todos los campos antes de intentar modificar");
+      }
+      else{
       try {
         barco.hasEngine = tieneMotor == "si" ? true : false;
         mostrarCartel = true;
@@ -189,6 +198,7 @@
         if (ex.Message == "This plate is already in our database") {
           dialogoError.Mostrar("La patente ingresada ya se encuentra registrada.");
         }
+      }
       }
     }
 

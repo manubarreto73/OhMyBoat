@@ -23,7 +23,7 @@
         </button>
     </div>
 }
-
+<div class="container-de-containers">
 <div class="publicaciones-container">
     <h1 class="publicaciones-title">Publicaciones</h1>
     @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
@@ -40,7 +40,10 @@
         i++; @* Incremento i para seguir iterando *@
     }
 </div>
-
+    <div class="cuadradito">
+        <button class="botoncito-de-decoracion"> Aquí estarán los filtros de busqueda en un futuro. </button>
+    </div>
+</div>
 @code {
     List<Post> posts = new List<Post>();
     List<Ship> ships = new List<Ship>();

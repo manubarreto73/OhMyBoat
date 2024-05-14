@@ -13,8 +13,6 @@
 
 <DialogoError @ref=dialogo/>
 
-
-
 @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
     <div class="alert alert-info">
         @cartelito
@@ -26,27 +24,22 @@
     </div>
 }
 
-<table width="100%" class="table">
-    <thead>
-        <tr>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
-        @foreach (var p in posts){
-            <tr>
-                <td>
-                    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" 
-                    width="100" height="100" style="object-fit: cover;"/>
-                </td>
-                <td>@p.getTitle()</td>
-            </tr>
-            i++; @* Incremento i para seguir iterando *@
-        }
-    </tbody>
-</table>
+<div class="publicaciones-container">
+    <h1 class="publicaciones-title">Publicaciones</h1>
+    @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
+    @foreach (var p in posts){
+        <div class="publicacion">
+            <div class="img">
+                <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
+            </div>
+            <div class="publicacion-info">
+                <h3>@p.getTitle()</h3>
+                <h6>@_descripciones[i]</h6>
+            </div>
+        </div>
+        i++; @* Incremento i para seguir iterando *@
+    }
+</div>
 
 @code {
     List<Post> posts = new List<Post>();
@@ -57,6 +50,8 @@
     List<ShipImage> shipImages = new List<ShipImage>();
     List<VehicleImage> vehicleImages = new List<VehicleImage>();
     List<byte[]> _images = new List<byte[]>();
+    List<string> _descripciones = new List<string>();
+
     DialogoError dialogo = null!;
     string? cartelito;
     bool mostrarCartel;
@@ -92,15 +87,22 @@
         posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
 
         // Generamos la lista de fotos para ambos tipos de post
+        // Generamos la lista de descripciones
         foreach (var post in posts) {
             bool type = post.getType();
             
             if (type) {
                 byte[] image = shipImages.Find(imagen => imagen.ShipId == post.getId()).Image;
                 _images.Add(image);
+
+                string descripcion = ships.Find(barco => barco.Id == post.getId()).description;
+                _descripciones.Add(descripcion);
             } else {
                 byte[] image = vehicleImages.Find(imagen => imagen.VehicleId == post.getId()).Image;
                 _images.Add(image);
+
+                string descripcion = vehicles.Find(vehiculo => vehiculo.Id == post.getId()).description;
+                _descripciones.Add(descripcion);
             }
         }
 

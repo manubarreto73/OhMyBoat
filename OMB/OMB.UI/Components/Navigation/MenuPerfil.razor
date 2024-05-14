@@ -36,6 +36,7 @@
     public async Task CerrarSesion() {
         await sessionStorage.DeleteAsync("userId");
         await sessionStorage.DeleteAsync("isEmployee");
+        await sessionStorage.SetAsync("cartel?", "Sesion cerrada correctamente");
         Navegador.NavigateTo("/", true);
     }
 

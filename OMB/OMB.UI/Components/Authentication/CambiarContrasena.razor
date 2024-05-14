@@ -63,7 +63,7 @@
 
         usuario.password = nuevaClaveUno;
         modifyUserUseCase.Execute(usuario);
-
+        await sessionStorage.SetAsync("cartel?", "Cambio de contraseña exitoso");
         navegador.NavigateTo("/", true);
 
     }

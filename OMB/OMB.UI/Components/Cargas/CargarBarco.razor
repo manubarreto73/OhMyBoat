@@ -31,10 +31,10 @@
               <label class="form-label">Tipo de barco</label>
               <select @bind=tipoBarco class="form-select">
                   <option style="display:none"></option>
-                  <option value="crucero">Crucero</option>
-                  <option value="velero">Velero</option>
-                  <option value="lancha">Lancha</option>
-                  <option value="catamarán">Catamarán</option>
+                  <option value="Crucero">Crucero</option>
+                  <option value="Velero">Velero</option>
+                  <option value="Lancha">Lancha</option>
+                  <option value="Catamaran">Catamarán</option>
               </select>
           </div>
           @if (tipoBarco == "") {
@@ -195,6 +195,7 @@
     public void Aceptar() {
       if (string.IsNullOrEmpty(barco.plate) || string.IsNullOrEmpty(barco.description) || string.IsNullOrEmpty(barco.model) || string.IsNullOrEmpty(tieneMotor)) {
         dialogo.Mostrar("Debe completar los campos para cargar el barco");
+        return;
       }
 
       if (!ValidarDatos()) {

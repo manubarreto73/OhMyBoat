@@ -17,16 +17,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" 
         data-bs-toggle="modal" data-bs-target="#listarBarcosModal"></button>
       </div>
-      @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
-          <div class="alert alert-info">
-              @cartelito
-              <button class="btn btn primary" @onclick="() => setFalse()" >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                  </svg>
-              </button>
-          </div>
-        }
         <form>
           <div class="modal-body form-body">
             <div class="carousel-container">
@@ -92,6 +82,16 @@
             </div>
           </div>
         </form>
+        @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+          <div class="alert alert-info">
+              @cartelito
+              <button class="btn btn primary" @onclick="() => setFalse()" >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                      <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                  </svg>
+              </button>
+          </div>
+        }
         <div class="modal-footer">
             @if(publicando){
               <br>
@@ -139,7 +139,8 @@
       tieneMotor = barco.hasEngine ? "si" : "no";
       i = 0;
       publicando = false;
-
+      mostrarCartel = false;
+      title = "";
       GetImages();
       StateHasChanged();
     }
@@ -160,6 +161,8 @@
           addShipPostUseCase.Execute(new ShipPost(barco.Id, this.title));
           publicando = false;
           publicado = true;
+          mostrarCartel = true;
+          cartelito = "Publicacion exitosa";
           StateHasChanged();
       }
     }

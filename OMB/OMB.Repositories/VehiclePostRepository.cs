@@ -21,6 +21,7 @@ public class VehiclePostRepository : IVehiclePostRepository {
             var exists = context.VehiclePosts.Where(VP => VP.Id == vehiclePostId).SingleOrDefault();
             if(exists != null){
                 context.Remove(exists);
+                context.SaveChanges();
             }
         }
     }

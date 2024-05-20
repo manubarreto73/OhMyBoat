@@ -3,11 +3,13 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject shipPostListUseCase shipPostListUseCase
 @inject addShipPostUseCase addShipPostUseCase
+@inject deleteShipPostUseCase deleteShipPostUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
 
 <DialogoError @ref="dialogoError"/>
+<DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarPublicacion"/>
 
 <div class="modal fade" id="visualizarBarcoCargadoModal" tabindex="-1" data-bs-backdrop="static">
   <div class="modal-dialog">
@@ -103,9 +105,14 @@
             @if(!publicando && !publicado){
               <button class="btn btn-success" @onclick="()=>confirmarPublicar()">Publicar</button>
             }
-            @if(publicando){
-              <button class="btn btn-danger" @onclick="()=>turnOff()">Cancelar Publicación</button>
-              <button class="btn btn-success" @onclick="()=>publicar()">Confirmar Publicación</button>
+            else{
+              if(publicando){
+                <button class="btn btn-danger" @onclick="()=>turnOff()">Cancelar Publicación</button>
+                <button class="btn btn-success" @onclick="()=>publicar()">Confirmar Publicación</button>
+              }
+              else{
+                <button class="btn btn-danger" @onclick="()=>confirmarEliminar()">Eliminar Publicación</button>
+              }
             }
         </div>
       </div>
@@ -118,6 +125,7 @@
     int limit = 0;
     string tieneMotor;
     DialogoError dialogoError = null!;
+    DialogoConfirmacion dialogoConfirmacion = null!;
 
     bool publicando = false;
     bool publicado;
@@ -143,6 +151,15 @@
       title = "";
       GetImages();
       StateHasChanged();
+    }
+
+    public void confirmarEliminar(){
+      dialogoConfirmacion.Mostrar("¿Seguro que desea eliminar esta publicación? Todas las ofertas asociadas serán eliminadas");
+    }
+
+    public void eliminarPublicacion(){
+      deleteShipPostUseCase.Execute(shipPostListUseCase.Execute().Where(sp => sp.ShipId == barco.Id).SingleOrDefault().Id);
+      publicado = false;
     }
 
     public void turnOff(){

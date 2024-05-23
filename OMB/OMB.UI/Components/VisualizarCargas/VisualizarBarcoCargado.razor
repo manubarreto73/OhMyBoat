@@ -183,6 +183,7 @@
           StateHasChanged();
       }
     }
+    
     private void GetImages() {
       images = new List<byte[]>();
       var shipImages = listShipImagesUseCase.Execute().Where(img => img.ShipId == barco.Id);

@@ -1,0 +1,132 @@
+@page "/shippost/{postId:int?}"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+@inject shipPostListUseCase shipPostListUseCase
+@inject shipListUseCase shipListUseCase
+@inject userListUseCase userListUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
+@inject NavigationManager Navegador
+@rendermode InteractiveServer
+
+@if (actualPost != null && actualShip != null) { // parece que sin este if estaban habiendo problemas para cargar la pagina a veces (como que renderizaba antes de que es hayan conseguido las variables)
+  <div class="ship-post-container">
+    <div class="ship-post">
+      <div class="carousel-container">
+        <div id="carousel" class="carousel slide">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img class="ship-post-img" src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))"
+              height="450px" width="100%" style="object-fit: cover;"/>
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" @onclick=MoveLeft>
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" @onclick=MoveRight>
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+      <h2 class="ship-post-title">@actualPost.Title</h2>
+      <div class="ship-post-info">
+        <div class="ship-post-info-item">
+          <i class='bx bxs-ship icon'></i>
+          <h5>Modelo:  @actualShip.model</h5>
+        </div>
+      </div>
+      <div class="ship-post-info">
+        <div class="ship-post-info-item">
+          <i class='bx bxs-ship icon'></i>
+          <h5>Eslora:  @actualShip.eslora</h5>
+        </div>
+      </div>
+      <div class="ship-post-info">
+        <div class="ship-post-info-item">
+          <i class='bx bxs-ship icon'></i>
+          <h5>Manga:  @actualShip.manga</h5>
+        </div>
+      </div>
+      <div class="ship-post-info">
+        <div class="ship-post-info-item">
+          <i class='bx bxs-ship icon'></i>
+          <h5>Calado:  @actualShip.calado</h5>
+        </div>
+      </div>
+      <div class="ship-post-info">
+        <div class="ship-post-info-item">
+          <i class='bx bxs-ship icon'></i>
+          <h5>Tiene Motor:  @((actualShip.hasEngine) ? "Si" : "No")</h5>
+        </div>
+      </div>
+      <p class="ship-post-description">@actualShip.description</p>
+    </div>
+  </div>
+}
+
+@code {
+  [Parameter] public int? postId { get; set; }
+  bool isOwner = false;
+  ShipPost actualPost;
+  Ship actualShip;
+
+  List<byte[]> images = new List<byte[]>(); // para las imagenes del post
+  int limit = 0;  	  // para manejar el cap de imagenes
+  int i = 0;
+
+
+  protected override void OnInitialized() {
+    images.Add(new byte[0]);
+  }
+
+  protected override async Task OnAfterRenderAsync(bool firstRender) {
+    if (firstRender) {
+      //Extrae el ID del usuario loggeado del sessionStorage
+      var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
+      int loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
+      //Busco al owner del post
+      actualPost = await Task.Run(() => shipPostListUseCase.Execute().Find(post => post.ShipId == postId));
+      if (actualPost != null) {
+        actualShip = await Task.Run(() => shipListUseCase.Execute().Find(ship => ship.Id == actualPost.ShipId));
+        if (actualShip != null) {
+          User owner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == actualShip.UserId));
+            
+          //Checkeo si el owner y el usuario loggeado son el mismo user y guardo el resultado
+          var isOwner = owner.Id == loggedUserId;
+
+          GetImages();
+        }
+      }
+
+      // le aviso a blazor que se tiene que re-renderizar la pagina
+      StateHasChanged();
+    }
+  }
+
+  private void GetImages() {
+    images = new List<byte[]>();
+    var shipImages = listShipImagesUseCase.Execute().Where(img => img.ShipId == actualShip.Id);
+
+    foreach (var img in shipImages) {
+      images.Add(img.Image);
+    }
+
+    limit = images.Count() - 1;
+  }
+
+  public void MoveRight() {  // para moverse por el slider de imagenes
+    if (i < limit) i++;
+    else i = 0;
+
+    StateHasChanged();
+  }
+
+  public void MoveLeft() {  // para moverse por el slider de imagenes
+    if (i > 0) i--;
+    else i = limit;
+
+    StateHasChanged();
+  }
+
+}

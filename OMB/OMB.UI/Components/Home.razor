@@ -1,6 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@inject NavigationManager Navegador
+@inject NavigationManager navegador
 @inject shipPostListUseCase shipPostListUseCase
 @inject vehiclePostListUseCase vehiclePostListUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
@@ -33,7 +33,8 @@ else{
     <h1 class="publicaciones-title">Publicaciones</h1>
     @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
     @foreach (var p in posts){
-        <div class="publicacion">
+        <div class="publicacion" @onclick="async () => await browseToPost(p)">
+
             <div class="img">
                 <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
             </div>
@@ -124,4 +125,20 @@ else{
    private void setFalse () {
     this.mostrarCartel = false;
    }
+
+    private async Task browseToPost(Post p) {
+        try {
+            if (p.getType()) {      // getType returns True if p is ShipPost
+                navegador.NavigateTo("/shippost/" + p.getId(), true);
+            } else {            // if getType is false then p is VehiclePost
+                navegador.NavigateTo("/profile/manubarreto", true);  // placeholder for testing
+            }
+        }
+        catch (TaskCanceledException) {
+            // Retry navigation if it fails due to a TaskCanceledException (un error bastante raro)
+            await Task.Delay(500); // Wait half a sec before trying again
+            await browseToPost(p); // Retry navigation
+        }
+    }
+
 }

@@ -1,9 +1,9 @@
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject modifyVehicleUseCase modifyVehicleUseCase
 @inject ProtectedSessionStorage sessionStorage
-@inject addVehiclePostUseCase addVehiclePostUseCase
-@inject vehiclePostListUseCase vehiclePostListUseCase
-@inject deleteVehiclePostUseCase deleteVehiclePostUseCase
+@inject addPostUseCase addPostUseCase
+@inject listPostUseCase listPostUseCase
+@inject deletePostUseCase deletePostUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -142,7 +142,7 @@
         dialogoError.Mostrar("Por favor ponga un título antes de publicar");
       }
       else{
-      addVehiclePostUseCase.Execute(new VehiclePost(vehiculo.Id, this.title));
+      addPostUseCase.Execute(new Post(vehiculo.Id, this.title));
       publicando = false;
       publicado = true;
       mostrarCartel = true;
@@ -156,12 +156,12 @@
     }
 
     public void eliminarPublicacion(){
-      deleteVehiclePostUseCase.Execute(vehiclePostListUseCase.Execute().Where(ve => ve.VehicleId == vehiculo.Id).SingleOrDefault().Id);
+      deletePostUseCase.Execute(listPostUseCase.Execute().Where(p => p.getTransportId() == vehiculo.Id).SingleOrDefault().Id);
       publicado = false;
     }
     public void Cargar(Vehicle vehiculo) {
       this.vehiculo = new(vehiculo.UserId, vehiculo.type, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors){Id = vehiculo.Id};
-      publicado = vehiclePostListUseCase.Execute().Where(v => v.VehicleId == vehiculo.Id).Count() > 0;
+      publicado = listPostUseCase.Execute().Where(v => v.getTransportId() == vehiculo.Id).Count() > 0;
       i = 0;
       publicando = false;
       mostrarCartel = false;

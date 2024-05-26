@@ -1,4 +1,3 @@
-using System.Drawing;
 using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;
 

@@ -1,8 +1,7 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @inject NavigationManager navegador
-@inject shipPostListUseCase shipPostListUseCase
-@inject vehiclePostListUseCase vehiclePostListUseCase
+@inject listPostUseCase listPostUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject userListUseCase userListUseCase
@@ -78,25 +77,20 @@ else{
         ships = shipListUseCase.Execute();
         vehicles = vehicleListUseCase.Execute();
         users = userListUseCase.Execute();
+        List<Transport> transports = new List<Transport>();
+        transports.AddRange(vehicles);
+        transports.AddRange(ships);
 
-        posts.AddRange(shipPostListUseCase.Execute());
-        posts.AddRange(vehiclePostListUseCase.Execute());
-        
+        posts = listPostUseCase.Execute();
         shipImages = listShipImagesUseCase.Execute();
         vehicleImages = listVehicleImagesUseCase.Execute();
 
         // Sacamos los posts de las personas baneadas
         posts.RemoveAll(p => 
-            null != users.Where(u =>
-                u.banned && (ships.Where(s =>
-                    (s.Id == p.getId()) && p.getType()).Count() != 0) && (u.Id == ships.Where(s =>
-                        (s.Id == p.getId()) && p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
-
-        posts.RemoveAll(p =>
-            null != users.Where(u =>
-                u.banned && (vehicles.Where(s =>
-                    (s.Id == p.getId()) && !p.getType()).Count() != 0) && (u.Id == vehicles.Where(s =>
-                        (s.Id == p.getId()) && !p.getType()).SingleOrDefault().UserId)).SingleOrDefault());
+            null != users.Where(u => 
+                u.banned && (transports.Where(t => 
+                    (t.Id == p.getTransportId())).Count() != 0 && (u.Id == transports.Where(t => 
+                        t.Id == p.getTransportId()).SingleOrDefault().UserId))).SingleOrDefault());
 
         // Reordenamos los posts
         posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
@@ -104,21 +98,11 @@ else{
         // Generamos la lista de fotos para ambos tipos de post
         // Generamos la lista de descripciones
         foreach (var post in posts) {
-            bool type = post.getType();
-            
-            if (type) {
-                byte[] image = shipImages.Find(imagen => imagen.ShipId == post.getId()).Image;
-                _images.Add(image);
+            string descripcion = transports.Find(T => T.Id == post.getTransportId()).description;
+            _descripciones.Add(descripcion);
 
-                string descripcion = ships.Find(barco => barco.Id == post.getId()).description;
-                _descripciones.Add(descripcion);
-            } else {
-                byte[] image = vehicleImages.Find(imagen => imagen.VehicleId == post.getId()).Image;
-                _images.Add(image);
-
-                string descripcion = vehicles.Find(vehiculo => vehiculo.Id == post.getId()).description;
-                _descripciones.Add(descripcion);
-            }
+            byte[]? image = (null != shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).SingleOrDefault()) ? shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).SingleOrDefault().Image : image = vehicleImages.Find(imagen => imagen.VehicleId == post.getTransportId()).Image;;
+            _images.Add(image);
         }
 
         var result  = await sessionStorage.GetAsync<string>("cartel?");
@@ -133,8 +117,8 @@ else{
 
     private async Task browseToPost(Post p) {
         try {
-            if (p.getType()) {      // getType returns True if p is ShipPost
-                navegador.NavigateTo("/shippost/" + p.getId(), true);
+            if (ships.Where(s => s.Id == p.TransportId).SingleOrDefault() != null) {      // getType returns True if p is ShipPost
+                navegador.NavigateTo("/shippost/" + p.getTransportId(), true);
             } else {            // if getType is false then p is VehiclePost
                 navegador.NavigateTo("/profile/manubarreto", true);  // placeholder for testing
             }

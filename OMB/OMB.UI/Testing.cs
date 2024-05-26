@@ -58,22 +58,20 @@ public class Testing{
         }
         
         using(OMBContext context = new OMBContext()){
-        if(context.VehiclePosts.Count() == 0){
+        if(context.Posts.Count() == 0){
             
-            context.Add(new VehiclePost(2, "Moto Honda sin uso"));
-            context.Add(new VehiclePost(3, "Toyota reluciente"));
-            context.Add(new VehiclePost(4, "Auto familiar para viajar con la familia"));
-            context.Add(new VehiclePost(5, "Resistente moto de largas distancias"));
-            context.Add(new VehiclePost(6, "Camioneta 4x4 todoterreno"));
-            context.Add(new VehiclePost(7, "A energía eléctrica, y con buenas luces"));
-        }
-        if(context.ShipPosts.Count() == 0){
-            context.Add(new ShipPost(2, "Oceanis 461 de altas velocidades"));
-            context.Add(new ShipPost(3, "Catamaran muy seguro"));
-            context.Add(new ShipPost(4, "Clasica lancha 242 GTO"));
-            context.Add(new ShipPost(5, "Espacioso crucero, seguridad asegurada"));
-            context.Add(new ShipPost(6, "Velero Cranchi por moto"));
-            context.Add(new ShipPost(7, "Catamaran casi nuevo"));
+            context.Add(new Post(2, "Moto Honda sin uso"));
+            context.Add(new Post(3, "Toyota reluciente"));
+            context.Add(new Post(4, "Auto familiar para viajar con la familia"));
+            context.Add(new Post(5, "Resistente moto de largas distancias"));
+            context.Add(new Post(6, "Camioneta 4x4 todoterreno"));
+            context.Add(new Post(7, "A energía eléctrica, y con buenas luces"));
+            context.Add(new Post(10, "Oceanis 461 de altas velocidades"));
+            context.Add(new Post(11, "Catamaran muy seguro"));
+            context.Add(new Post(12, "Clasica lancha 242 GTO"));
+            context.Add(new Post(13, "Espacioso crucero, seguridad asegurada"));
+            context.Add(new Post(14, "Velero Cranchi por moto"));
+            context.Add(new Post(15, "Catamaran casi nuevo"));
         }
         context.SaveChanges();
         }
@@ -84,42 +82,42 @@ public class Testing{
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Velero 1.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(2, ms.ToArray()));
+                    context.Add(new ShipImage(10, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Catamaran 1.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(3, ms.ToArray()));
+                    context.Add(new ShipImage(11, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Lancha.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(4, ms.ToArray()));
+                    context.Add(new ShipImage(12, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Crucero 1.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(5, ms.ToArray()));
+                    context.Add(new ShipImage(13, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Velero 2.png");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(6, ms.ToArray()));
+                    context.Add(new ShipImage(14, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Catamaran 2.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(7, ms.ToArray()));
+                    context.Add(new ShipImage(15, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Crucero 2.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(1, ms.ToArray()));
+                    context.Add(new ShipImage(9, ms.ToArray()));
                 }
                 using(var ms = new MemoryStream()){
                     img = Image.FromFile("Lancha 2.jpg");
                     img.Save(ms, img.RawFormat);
-                    context.Add(new ShipImage(8, ms.ToArray()));
+                    context.Add(new ShipImage(16, ms.ToArray()));
                 }
                 context.SaveChanges();
             }

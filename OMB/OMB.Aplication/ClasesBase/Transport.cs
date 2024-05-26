@@ -9,9 +9,8 @@ public class Transport {
     public string type {get; set;}
     public string plate {get; set;}
     public string description {get; set;}
-    //public List<Image> photos {get; set;}
-    //supuestamente asi se agregaba imagenes pero no estaría workeando, lo resuelvo después
-    //la lista de las imagenes no debería ser dinámica porque genera problemas en la BD, había una cantidad minima o maxima?
+    public User? owner{get; set;}
+    public Post? post{get; set;}
     public Transport (int UserId, string type, string plate, string description){
         this.UserId = UserId;
         this.type = type;

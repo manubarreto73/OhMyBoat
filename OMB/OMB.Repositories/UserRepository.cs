@@ -6,12 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class UserRepository : IUserRepository {
     
-    private IShipRepository SRep;
-    private IVehicleRepository VRep;
+    private ITransportRepository TRep;
 
-    public UserRepository(IShipRepository SRep, IVehicleRepository VRep){
-        this.SRep = SRep;
-        this.VRep = VRep;
+    public UserRepository(ITransportRepository TRep){
+        this.TRep = TRep;
     }
 
     public void addUser (User user){
@@ -33,20 +31,15 @@ public class UserRepository : IUserRepository {
         }
     }
     public void deleteUser (int userId){
-        List<Ship> ships = new List<Ship>();
-        List<Vehicle> vehicles = new List<Vehicle>();
+        List<Transport> transports = new List<Transport>();
         using(OMBContext context = new OMBContext()){
-            var exists = context.Users.Include(U => U.Ships).Include(U => U.Vehicles).Where(U => U.Id == userId).SingleOrDefault();
+            var exists = context.Users.Include(U => U.Transports).Where(U => U.Id == userId).SingleOrDefault();
             if(exists != null){
-                ships = exists.Ships;
-                vehicles = exists.Vehicles;
+                transports = exists.Transports;
             }
         }
-        foreach(Ship s in ships){
-            this.SRep.deleteShip(s.Id);
-        }
-        foreach(Vehicle v in vehicles){
-            this.VRep.deleteVehicle(v.Id);
+        foreach(Transport t in transports){
+            this.TRep.deleteTransport(t.Id);
         }
         using(OMBContext context = new OMBContext()){
             var exists = context.Users.Where(U => U.Id == userId).SingleOrDefault();

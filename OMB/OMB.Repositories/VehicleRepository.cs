@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class VehicleRepository : IVehicleRepository{
     
-    private IVehiclePostRepository VPRep;
+    private IPostRepository VPRep;
     private IVehicleImageRepository VIRep;
 
-    public VehicleRepository(IVehiclePostRepository VPRep, IVehicleImageRepository VIRep){
+    public VehicleRepository(IPostRepository VPRep, IVehicleImageRepository VIRep){
         this.VPRep = VPRep;
         this.VIRep = VIRep;
     }
@@ -26,16 +26,15 @@ public class VehicleRepository : IVehicleRepository{
         }
     }
     public void deleteVehicle (int vehicleId){
-        List<VehiclePost> posts = new List<VehiclePost>();
+        Post? p = null;
         using(OMBContext context = new OMBContext()){
-            var exists = context.Vehicles.Include(S => S.VehiclePosts).Where(V => V.Id == vehicleId).SingleOrDefault();
+            var exists = context.Vehicles.Include(S => S.post).Where(V => V.Id == vehicleId).SingleOrDefault();
             if(exists != null){
-                posts = exists.VehiclePosts;
+                p = exists.post;
             }
         }
-        foreach(VehiclePost p in posts){
-            this.VPRep.deleteVehiclePost(p.Id);
-        }
+        if(p != null)
+            this.VPRep.deletePost(p.Id);
 
         List<VehicleImage> images = new List<VehicleImage>();
         using(OMBContext context = new OMBContext()){

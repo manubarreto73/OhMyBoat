@@ -1,8 +1,24 @@
 namespace OMB.Aplication.ClasesBase;
 
-public interface Post{
+public class Post{
 
-    public bool getType();
-    public string getTitle();
-    public int getId();
+    public int Id {get; set;}
+    public string Title {get; set;}
+    public int TransportId {get; set;}
+    public DateTime posted {get; set;}
+    public Transport posting {get; set;}
+
+    public string getTitle(){
+        return this.Title;
+    }
+
+    public int getTransportId(){
+        return this.TransportId;
+    }
+
+    public Post(int TransportId, string Title){
+        this.TransportId = TransportId;
+        this.Title = Title;
+        this.posted = DateTime.Now; //Creo que esto está bien??
+    }
 }

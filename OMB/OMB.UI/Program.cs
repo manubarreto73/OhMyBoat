@@ -1,12 +1,11 @@
-using OMB.UI;
 using OMB.UI.Components;
+using OMB.UI;
 using OMB.Aplication.UserUseCases;
 using OMB.Aplication.EmployeeUseCases;
 using OMB.Aplication.VehicleUseCases;
-using OMB.Aplication.VehiclePostUseCases;
+using OMB.Aplication.PostUseCases;
 using OMB.Aplication.VehicleImageUseCases;
 using OMB.Aplication.ShipUseCases;
-using OMB.Aplication.ShipPostUseCases;
 using OMB.Aplication.ShipImageUseCases;
 using OMB.Repositories;
 using OMB.Aplication.Interfaces;
@@ -42,12 +41,6 @@ builder.Services.AddTransient<modifyVehicleUseCase>();
 builder.Services.AddTransient<vehicleListUseCase>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 
-builder.Services.AddTransient<addVehiclePostUseCase>();
-builder.Services.AddTransient<deleteVehiclePostUseCase>();
-builder.Services.AddTransient<modifyVehiclePostUseCase>();
-builder.Services.AddTransient<vehiclePostListUseCase>();
-builder.Services.AddScoped<IVehiclePostRepository, VehiclePostRepository>();
-
 builder.Services.AddTransient<addVehicleImageUseCase>();
 builder.Services.AddTransient<listVehicleImagesUseCase>();
 builder.Services.AddScoped<IVehicleImageRepository, VehicleImageRepository>();
@@ -58,15 +51,16 @@ builder.Services.AddTransient<modifyShipUseCase>();
 builder.Services.AddTransient<shipListUseCase>();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
 
-builder.Services.AddTransient<addShipPostUseCase>();
-builder.Services.AddTransient<deleteShipPostUseCase>();
-builder.Services.AddTransient<modifyShipPostUseCase>();
-builder.Services.AddTransient<shipPostListUseCase>();
-builder.Services.AddScoped<IShipPostRepository, ShipPostRepository>();
+builder.Services.AddTransient<addPostUseCase>();
+builder.Services.AddTransient<deletePostUseCase>();
+builder.Services.AddTransient<modifyPostUseCase>();
+builder.Services.AddTransient<listPostUseCase>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 builder.Services.AddTransient<addShipImageUseCase>();
 builder.Services.AddTransient<listShipImagesUseCase>();
 builder.Services.AddScoped<IShipImageRepository, ShipImageRepository>();
+builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 
 // FIN DE LO QUE AGREGAMOS NOSOTROS
 

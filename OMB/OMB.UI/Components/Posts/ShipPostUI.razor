@@ -1,7 +1,7 @@
 @page "/shippost/{postId:int?}"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
-@inject shipPostListUseCase shipPostListUseCase
+@inject listPostUseCase listPostUseCase
 @inject shipListUseCase shipListUseCase
 @inject userListUseCase userListUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
@@ -68,7 +68,7 @@
 @code {
   [Parameter] public int? postId { get; set; }
   bool isOwner = false;
-  ShipPost actualPost;
+  Post actualPost;
   Ship actualShip;
 
   List<byte[]> images = new List<byte[]>(); // para las imagenes del post
@@ -86,9 +86,9 @@
       var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
       int loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
       //Busco al owner del post
-      actualPost = await Task.Run(() => shipPostListUseCase.Execute().Find(post => post.ShipId == postId));
+      actualPost = await Task.Run(() => listPostUseCase.Execute().Find(post => post.getTransportId() == postId));
       if (actualPost != null) {
-        actualShip = await Task.Run(() => shipListUseCase.Execute().Find(ship => ship.Id == actualPost.ShipId));
+        actualShip = await Task.Run(() => shipListUseCase.Execute().Find(ship => ship.Id == actualPost.getTransportId()));
         if (actualShip != null) {
           User owner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == actualShip.UserId));
             

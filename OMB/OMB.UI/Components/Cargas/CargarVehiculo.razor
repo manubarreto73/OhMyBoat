@@ -32,9 +32,9 @@
               <label class="form-label">Tipo de vehículo</label>
               <select @bind="tipoVehiculo" class="form-select" required>
                   <option style="display:none"></option>
-                  <option value="camioneta">Camioneta</option>
-                  <option value="auto">Auto</option>
-                  <option value="ciclomotor">Ciclomotor</option>
+                  <option value="Camioneta">Camioneta</option>
+                  <option value="Auto">Auto</option>
+                  <option value="Ciclomotor">Ciclomotor</option>
               </select>
           </div>
 
@@ -84,7 +84,7 @@
               <label class="form-label">Patente</label>
               <input type="text" class="form-control" @bind=vehiculo.plate required>
             </div>
-            @if (tipoVehiculo != "ciclomotor") {
+            @if (tipoVehiculo != "Ciclomotor") {
               <div >
                 <label class="form-label">Cantidad de puertas</label>
                 <input type="number" min=0 class="form-control" @bind=vehiculo.doors required>
@@ -169,15 +169,16 @@
     }
 
     public async Task Aceptar() {
-      if (string.IsNullOrEmpty(vehiculo.plate) || string.IsNullOrEmpty(vehiculo.description) ||string.IsNullOrEmpty(vehiculo.model)) {
+      if (string.IsNullOrEmpty(tipoVehiculo) || string.IsNullOrEmpty(vehiculo.plate) || string.IsNullOrEmpty(vehiculo.description) || string.IsNullOrEmpty(vehiculo.model)) {
         dialogo.Mostrar("Debe completar los campos para cargar el vehiculo");
+        return;
       }
       
       if (!ValidarDatos()) {
         return;
       }
 
-      if (tipoVehiculo == "ciclomotor") {
+      if (tipoVehiculo == "Ciclomotor") {
         vehiculo.doors = 0;
       }
 

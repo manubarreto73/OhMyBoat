@@ -14,7 +14,7 @@
 <input placeholder="Dirección de correo electrónico" @bind="employee.mail" class="form-control">
 <input placeholder="Nombre" @bind="employee.name" class="form-control">
 <input placeholder="Apellido" @bind="employee.surname" class="form-control">
-<input type="date" @bind="employee.birthDate" class="form-control">
+<input type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" max="@((DateTime.Today.Year).ToString())-01-01" @bind="employee.birthDate" class="form-control">
 <input placeholder="Numero de telefono" @bind="employee.number" class="form-control">
 <input placeholder="Nombre de usuario" @bind="employee.userName" class="form-control">
 <button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
@@ -25,8 +25,6 @@
     DialogoError dialogo = null!;
     public async Task Save() {
         if (newEmployee != null) {
-            await sessionStorage.SetAsync("userId", newEmployee.Id);
-            await sessionStorage.SetAsync("isEmployee", false);
             await sessionStorage.SetAsync("cartel?", "El empleado fue registrado con éxito");
         }
     }
@@ -58,7 +56,7 @@
             dialogo.Mostrar("Complete todos los campos antes de registrar al empleado");
             return false;
         }
-        if (DateOnly.FromDateTime(DateTime.Today) < employee.birthDate.AddYears(18)) {
+        if ((employee.birthDate > DateOnly.FromDateTime(DateTime.Today)) || (DateOnly.FromDateTime(DateTime.Today) < employee.birthDate.AddYears(18))) {
             dialogo.Mostrar("El empleado debe ser mayor de edad para crear la cuenta");
             return false;
         }

@@ -23,7 +23,7 @@
         <input placeholder="Apellido" @bind="user.surname" class="form-control">
     </div>
     <div class="form-group">
-        <input type="date" @bind="user.birthDate" class="form-control">
+        <input type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" max="@((DateTime.Today.Year).ToString())-01-01" @bind="user.birthDate" class="form-control">
     </div>
     <div class="form-group">
         <input placeholder="Numero de telefono" @bind="user.number" class="form-control">
@@ -68,7 +68,7 @@
             dialogo.Mostrar("Complete todos los campos para registrarse");
             return;
         }
-        if (DateOnly.FromDateTime(DateTime.Today) < user.birthDate.AddYears(18)) {
+        if ((user.birthDate > DateOnly.FromDateTime(DateTime.Today)) || (DateOnly.FromDateTime(DateTime.Today) < user.birthDate.AddYears(18))) {
             dialogo.Mostrar("Usted debe ser mayor de edad para crear una cuenta");
             return;
         }

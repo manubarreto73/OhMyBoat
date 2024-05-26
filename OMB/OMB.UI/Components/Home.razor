@@ -1,6 +1,6 @@
 ﻿@page "/"
 @rendermode InteractiveServer
-@inject NavigationManager Navegador
+@inject NavigationManager navegador
 @inject shipPostListUseCase shipPostListUseCase
 @inject vehiclePostListUseCase vehiclePostListUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
@@ -26,47 +26,35 @@
         </button>
     </div>
 }
-<div class="container-de-containers">
-    <div class="publicaciones-container">
-        <h1 class="publicaciones-title">Publicaciones</h1>
-        @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
-        @foreach (var p in posts){
-            <div class="publicacion">
-                <div class="img">
-                    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
-                </div>
-                <div class="publicacion-info">
-                    <h3>@p.getTitle()</h3>
-                    <h6>@_descripciones[i]</h6>
-                </div>
+@if(posts.Count() == 0){
+        <h1 class="publicaciones-title">No hay publicaciones disponibles aún</h1>
+    }
+else{
+<!--<div class="container-de-containers">-->
+<div class="publicaciones-container">
+    
+    <h1 class="publicaciones-title">Publicaciones</h1>
+    @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
+    @foreach (var p in posts){
+        <div class="publicacion" @onclick="async () => await browseToPost(p)">
+
+            <div class="img">
+                <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
             </div>
-            i++; @* Incremento i para seguir iterando *@
-        }
-    </div>
+            <div class="publicacion-info">
+                <h3>@p.getTitle()</h3>
+                <h6>@_descripciones[i]</h6>
+            </div>
+        </div>
+        i++; @* Incremento i para seguir iterando *@
+    }
+</div><!--
     <div class="cuadradito">
         <button class="botoncito-de-decoracion"> Aquí estarán los filtros de busqueda en un futuro. </button>
         <button @onclick="SendEmail">Enviar Mail</button>
     </div>
-</div>
-
-     @* <div style='
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 0.2rem;
-            padding-inline: 10rem;
-            width: 100%;
-            height: 100%;
-            background-color: #ddd;
-            border-radius: 5px;
-            '>
-        <h1>OhMyBoat!</h1>
-        <p>Tu contraseña se ha generado con éxito!</p>
-        <p>z1xc4ino</p>
-        <a href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'>Ir al login</a>
-        </div> *@
-
+</div>-->
+}
 @code {
     List<Post> posts = new List<Post>();
     List<Ship> ships = new List<Ship>();
@@ -253,15 +241,14 @@
         message.From = new MailAddress("ohmyboatt@gmail.com");
         message.Subject = "¡Contraseña generada con exito!";
         message.Body = string.Format(body);
+        message.IsBodyHtml = true;
 
         // Create  the file attachment for this email message.
         string file = @"wwwroot\Oh_My_Boat_logo_2.jpg";
         Attachment data = new Attachment(file);
         // Add the file attachment to this email message.
         message.Attachments.Add(data);
-
         message.Attachments[0].ContentId = "Logo.jpg";
-        message.IsBodyHtml = true;
 
         using (var smtp = new SmtpClient()) {
             var credential = new NetworkCredential {
@@ -276,4 +263,24 @@
             await smtp.SendMailAsync(message);
         }
     }
+    
+   private void setFalse () {
+    this.mostrarCartel = false;
+   }
+
+    private async Task browseToPost(Post p) {
+        try {
+            if (p.getType()) {      // getType returns True if p is ShipPost
+                navegador.NavigateTo("/shippost/" + p.getId(), true);
+            } else {            // if getType is false then p is VehiclePost
+                navegador.NavigateTo("/profile/manubarreto", true);  // placeholder for testing
+            }
+        }
+        catch (TaskCanceledException) {
+            // Retry navigation if it fails due to a TaskCanceledException (un error bastante raro)
+            await Task.Delay(500); // Wait half a sec before trying again
+            await browseToPost(p); // Retry navigation
+        }
+    }
+
 }

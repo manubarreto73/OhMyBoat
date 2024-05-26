@@ -3,11 +3,13 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject addVehiclePostUseCase addVehiclePostUseCase
 @inject vehiclePostListUseCase vehiclePostListUseCase
+@inject deleteVehiclePostUseCase deleteVehiclePostUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
 
 <DialogoError @ref="dialogoError"/>
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="eliminarPublicacion"/>
 
 <div class="modal fade" id="visualizarVehiculoCargadoModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -17,16 +19,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" 
         data-bs-toggle="modal" data-bs-target="#listarVehiculosModal"></button>
       </div>
-      @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
-        <div class="alert alert-info">
-            @cartelito
-            <button class="btn btn primary" @onclick="() => setFalse()" >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                </svg>
-            </button>
-        </div>
-      }
         <form>
           <div class="modal-body form-body">
               <div class="carousel-container">
@@ -47,7 +39,16 @@
                   </button>
                 </div>
               </div>
-                
+
+              <div>
+              <label class="form-label">Tipo</label>
+              <select @bind=vehiculo.type class="form-select" required>
+                  <option value="" style="display:none"></option>
+                  <option value="Camioneta">Camioneta</option>
+                  <option value="Auto">Auto</option>
+                  <option value="Ciclomotor">Ciclomotor</option>
+              </select>
+            </div>   
               <div>
                 <label class="form-label">Modelo</label>
                 <input type="text" class="form-control" @bind=vehiculo.model required>
@@ -64,7 +65,7 @@
                 <label class="form-label">Patente</label>
                 <input type="text" class="form-control" @bind=vehiculo.plate required>
               </div>
-              @if (vehiculo.type != "ciclomotor") {
+              @if (vehiculo.type != "Ciclomotor") {
                 <div >
                   <label class="form-label">Cantidad de puertas</label>
                   <input type="number" min=0 class="form-control" @bind=vehiculo.doors required>
@@ -72,6 +73,16 @@
               }
           </div>
         </form>
+        @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+        <div class="alert alert-info">
+            @cartelito
+            <button class="btn btn primary" @onclick="() => setFalse()" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+                </svg>
+            </button>
+        </div>
+        }
         <div class="modal-footer">
           <hr>
             @if(publicando){
@@ -84,9 +95,14 @@
             @if(!publicando && !publicado){
               <button class="btn btn-success" @onclick="()=>confirmarPublicar()">Publicar</button>
             }
-            @if(publicando){
-              <button class="btn btn-danger" @onclick="()=>turnOff()">Cancelar Publicación</button>
-              <button class="btn btn-success" @onclick="()=>publicar()">Confirmar Publicación</button>
+            else{
+              @if(publicando){
+                <button class="btn btn-danger" @onclick="()=>turnOff()">Cancelar Publicación</button>
+                <button class="btn btn-success" @onclick="()=>publicar()">Confirmar Publicación</button>
+              }
+              else{
+                <button class="btn btn-danger" @onclick="()=>confirmarEliminar()">Eliminar Publicación</button>
+              }
             }
         </div>
       </div>
@@ -97,6 +113,7 @@
     int i = 0;
     int limit = 0;
     DialogoError dialogoError = null!;
+    DialogoConfirmacion dialogo = null!;
     string title = "";
     bool publicando = false;
     bool publicado;
@@ -128,15 +145,27 @@
       addVehiclePostUseCase.Execute(new VehiclePost(vehiculo.Id, this.title));
       publicando = false;
       publicado = true;
+      mostrarCartel = true;
+      cartelito = "Publicacion exitosa";
       StateHasChanged();
       }
+    }
+
+    public void confirmarEliminar(){
+      dialogo.Mostrar("¿Seguro que desea eliminar esta publicación? Todas las ofertas asociadas serán eliminadas");
+    }
+
+    public void eliminarPublicacion(){
+      deleteVehiclePostUseCase.Execute(vehiclePostListUseCase.Execute().Where(ve => ve.VehicleId == vehiculo.Id).SingleOrDefault().Id);
+      publicado = false;
     }
     public void Cargar(Vehicle vehiculo) {
       this.vehiculo = new(vehiculo.UserId, vehiculo.type, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors){Id = vehiculo.Id};
       publicado = vehiclePostListUseCase.Execute().Where(v => v.VehicleId == vehiculo.Id).Count() > 0;
       i = 0;
       publicando = false;
-
+      mostrarCartel = false;
+      title = "";
       GetImages();
       StateHasChanged();
     }
@@ -175,6 +204,9 @@
       }
       else{
       try {
+        if (vehiculo.type == "Ciclomotor") {
+          vehiculo.doors = 0;
+        }
         modifyVehicleUseCase.Execute(vehiculo);
         mostrarCartel = true;
         cartelito = "Vehículo modificado";

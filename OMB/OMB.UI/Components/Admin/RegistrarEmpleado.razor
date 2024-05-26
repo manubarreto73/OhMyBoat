@@ -19,10 +19,14 @@
 <input placeholder="Nombre de usuario" @bind="employee.userName" class="form-control">
 <button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
 
+<Emails @ref=emails/>
+
 @code {
     Employee employee = new Employee();
     Employee? newEmployee;
     DialogoError dialogo = null!;
+    Emails emails = null!;
+    
     public async Task Save() {
         if (newEmployee != null) {
             await sessionStorage.SetAsync("cartel?", "El empleado fue registrado con éxito");
@@ -44,7 +48,18 @@
 
         await Save();
         
-        //MANDAR MAIL AL EMPLEADO
+        // Manda mail al empleado
+        emails.SendEmail(
+            "¡Contraseña creada!", // Subject
+            employee.mail, // Mail
+            "¡Contraseña creada con éxito!", // Titulo
+            $@"
+            <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu contraseña ha sido generada con exito!</p>
+            <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Para poder iniciar sesión deberás utilizar</p>
+            <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Email: {employee.mail}</p>
+            <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Contraseña: {employee.password}</p>
+            " // Cuerpo
+        );
         
         navegador.NavigateTo("/homeemployee");
         

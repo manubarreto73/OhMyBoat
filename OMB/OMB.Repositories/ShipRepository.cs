@@ -6,10 +6,10 @@ using Microsoft.EntityFrameworkCore;
 
 public class ShipRepository : IShipRepository {
     
-    private IShipPostRepository SPRep;
+    private IPostRepository SPRep;
     private IShipImageRepository SIRep;
 
-    public ShipRepository(IShipPostRepository SPRep, IShipImageRepository SIRep) {
+    public ShipRepository(IPostRepository SPRep, IShipImageRepository SIRep) {
         this.SPRep = SPRep;
         this.SIRep = SIRep;
     }
@@ -28,16 +28,15 @@ public class ShipRepository : IShipRepository {
     }
 
     public void deleteShip (int shipId) {
-        List<ShipPost> posts = new List<ShipPost>();
+        Post? p = null;
         using(OMBContext context = new OMBContext()) {
-            var exists = context.Ships.Include(S => S.ShipPosts).Where(S => S.Id == shipId).SingleOrDefault();
+            var exists = context.Ships.Include(S => S.post).Where(S => S.Id == shipId).SingleOrDefault();
             if(exists != null) {
-                posts = exists.ShipPosts;
+                p = exists.post;
             }
         }
-        foreach(ShipPost p in posts) {
-            this.SPRep.deleteShipPost(p.Id);
-        }
+        if(p != null)
+            this.SPRep.deletePost(p.Id);
 
         List<ShipImage> images = new List<ShipImage>();
         using(OMBContext context = new OMBContext()){

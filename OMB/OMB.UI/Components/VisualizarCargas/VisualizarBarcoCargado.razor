@@ -1,9 +1,9 @@
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject modifyShipUseCase modifyShipUseCase
 @inject ProtectedSessionStorage sessionStorage
-@inject shipPostListUseCase shipPostListUseCase
-@inject addShipPostUseCase addShipPostUseCase
-@inject deleteShipPostUseCase deleteShipPostUseCase
+@inject listPostUseCase listPostUseCase
+@inject addPostUseCase addPostUseCase
+@inject deletePostUseCase deletePostUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -143,7 +143,7 @@
 
     public void Cargar(Ship barco) {
       this.barco = new Ship(barco.UserId, barco.type, barco.plate, barco.description, barco.model, barco.eslora, barco.manga, barco.calado, barco.hasEngine){Id = barco.Id};
-      publicado = shipPostListUseCase.Execute().Where(s => s.ShipId == barco.Id).Count() > 0;
+      publicado = listPostUseCase.Execute().Where(p => p.getTransportId() == barco.Id).Count() > 0;
       tieneMotor = barco.hasEngine ? "si" : "no";
       i = 0;
       publicando = false;
@@ -158,7 +158,7 @@
     }
 
     public void eliminarPublicacion(){
-      deleteShipPostUseCase.Execute(shipPostListUseCase.Execute().Where(sp => sp.ShipId == barco.Id).SingleOrDefault().Id);
+      deletePostUseCase.Execute(listPostUseCase.Execute().Where(p => p.getTransportId() == barco.Id).SingleOrDefault().Id);
       publicado = false;
     }
 
@@ -175,7 +175,7 @@
         dialogoError.Mostrar("Por favor ponga un título antes de publicar");
       }
       else{
-          addShipPostUseCase.Execute(new ShipPost(barco.Id, this.title));
+          addPostUseCase.Execute(new Post(barco.Id, this.title));
           publicando = false;
           publicado = true;
           mostrarCartel = true;

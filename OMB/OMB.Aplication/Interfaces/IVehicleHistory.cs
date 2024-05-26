@@ -2,7 +2,7 @@ namespace OMB.Aplication.Interfaces;
 
 using OMB.Aplication.ClasesBase;
 
-public interface IVehicleRepository {
+public interface IVehicleHistoryRepository {
 
     public void addVehicle (Vehicle vehicle);
     public void deleteVehicle (int vehicleId);

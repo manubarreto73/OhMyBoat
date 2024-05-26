@@ -12,7 +12,6 @@
 @inject ProtectedSessionStorage sessionStorage
 @using System.Net
 @using System.Net.Mail
-@using System.Text
 
 <DialogoError @ref=dialogo/>
 
@@ -48,7 +47,9 @@ else{
         </div>
         i++; @* Incremento i para seguir iterando *@
     }
-</div><!--
+</div>
+<button class="btn btn-danger">Borrar Base de Datos (No toques!!)</button>
+<!--
     <div class="cuadradito">
         <button class="botoncito-de-decoracion"> Aquí estarán los filtros de busqueda en un futuro. </button>
         <button @onclick="SendEmail">Enviar Mail</button>
@@ -130,144 +131,6 @@ else{
         this.mostrarCartel = false;
     }
 
-    
-    string GenerateRandomString(int length) {
-        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        Random random = new Random();
-        StringBuilder sb = new StringBuilder(length);
-
-        for (int i = 0; i < length; i++) {
-            int randomIndex = random.Next(chars.Length);
-            sb.Append(chars[randomIndex]);
-        }
-
-        return sb.ToString();
-    }
-
-    public async Task SendEmail() {
-        string mail = "ide088re@gmail.com";
-        string password = GenerateRandomString(10);
-        // Lo mejor sería no tener todo este string acá. Tenemos que ver como importarlo o algo así
-        var body = $@"
-        <body style='margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #ffffff;color: #000000;'>
-        <table style='border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #ffffff;width: 100%;'cellpadding='0'cellspacing='0'>
-            <tbody>
-            <tr style='vertical-align: top'>
-                <td style='word-break: break-word;border-collapse: collapse !important;vertical-align: top;'>
-                <div style='padding: 0px; background-color: transparent'>
-                    <div class='u-row'
-                    style='margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;'>
-                    <div style='border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;'>
-                        <div class='u-col u-col-100'style='max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;'>
-                        <div style='background-color: #4264f0;height: 100%;width: 100% !important;border-radius: 0px;-webkit-border-radius: 0px;-moz-border-radius: 0px;'>
-                            <divstyle='box-sizing: border-box;height: 100%;padding: 0px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;border-radius: 0px;-webkit-border-radius: 0px;-moz-border-radius: 0px;'>
-                            <table id='u_content_image_1'style='font-family: ""Raleway"", sans-serif'role='presentation'cellpadding='0'cellspacing='0'width='100%'border='0'>
-                                <tbody>
-                                <tr>
-                                    <td class='v-container-padding-padding'style='overflow-wrap: break-word;word-break: break-word;padding: 25px 10px 15px;font-family: ""Raleway"", sans-serif;'align='left'>
-                                    <table width='100%'cellpadding='0'cellspacing='0'border='0'>
-                                        <tr>
-                                        <td style='padding-right: 0px;padding-left: 0px;'align='center'>
-                                            <img align='center'border='0'src='cid:Logo.jpg'alt='image'title='image'style='outline: none;text-decoration: none;-ms-interpolation-mode: bicubic;clear: both;display: inline-block !important;border: none;height: auto;float: none;width: 13%;max-width: 75.4px;'width='75.4'class='v-src-width v-src-max-width'/>
-                                        </td>
-                                        </tr>
-                                    </table>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-                <div style='padding: 0px; background-color: transparent'>
-                    <div style='margin: 0 auto;min-width: 320px;max-width: 600px;overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;background-color: transparent;'>
-                    <div style='border-collapse: collapse;display: table;width: 100%;height: 100%;background-color: transparent;'>
-                        <div class='u-col u-col-100'style='max-width: 320px;min-width: 600px;display: table-cell;vertical-align: top;'>
-                        <div style='background-color: #4264f0;height: 100%;width: 100% !important;'>
-                            <div style='box-sizing: border-box;height: 100%;padding: 10px;border-top: 0px solid transparent;border-left: 0px solid transparent;border-right: 0px solid transparent;border-bottom: 0px solid transparent;'>
-                            <table id='u_content_heading_1'style='font-family: ""Raleway"", sans-serif'role='presentation'cellpadding='0'cellspacing='0'width='100%'border='0'>
-                                <tbody>
-                                <tr>
-                                    <td style='overflow-wrap: break-word;word-break: break-word;padding: 10px 10px 0px;font-family: ""Raleway"", sans-serif;'align='left'>
-                                    <h1 style='margin: 0px;color: #ffffff;line-height: 140%;text-align: center;word-wrap: break-word;font-size: 35px;font-weight: 400;'>
-                                        <strong>Contraseña Generada</strong>
-                                    </h1>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-
-                            <table id='u_content_text_1'style='font-family: ""Raleway"", sans-serif'role='presentation'cellpadding='0'cellspacing='0'width='100%'border='0'>
-                                <tbody>
-                                <tr>
-                                    <td style='overflow-wrap: break-word;word-break: break-word;padding: 5px 50px 25px;font-family: ""Raleway"", sans-serif;'align='left'>
-                                    <div style='font-size: 14px;color: #f4f4f4;line-height: 140%;text-align: center;word-wrap: break-word;'>
-                                        <p style='line-height: 140%;margin-bottom: 0;'>
-                                        ¡Tu contraseña ha sido generada con exito!
-                                        </p>
-                                        <p style='line-height: 140%;margin-top: 0;'>
-                                        Para poder iniciar sesión deberás utilizar
-                                        </p>
-                                        <p style='line-height: 140%;margin-bottom: 0;'>
-                                        Email: {mail}
-                                        </p>
-                                        <p style='line-height: 140%;margin-top: 0;'>
-                                        Contraseña: {password}
-                                        </p>
-                                    </div>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        </body>
-        ";
-
-        var message = new MailMessage();
-        message.To.Add(new MailAddress(mail)); // Aca iría el mail de la persona
-        message.From = new MailAddress("ohmyboatt@gmail.com");
-        message.Subject = "¡Contraseña generada con exito!";
-        message.Body = string.Format(body);
-        message.IsBodyHtml = true;
-
-        // Create  the file attachment for this email message.
-        string file = @"wwwroot\Oh_My_Boat_logo_2.jpg";
-        Attachment data = new Attachment(file);
-        // Add the file attachment to this email message.
-        message.Attachments.Add(data);
-        message.Attachments[0].ContentId = "Logo.jpg";
-
-        using (var smtp = new SmtpClient()) {
-            var credential = new NetworkCredential {
-                UserName = "ohmyboatt@gmail.com",  // Nuestro mail
-                Password = "zpvp izli biid bhop"  // Contraseña de la aplicación de google
-            };
-
-            smtp.Credentials = credential;
-            smtp.Host = "smtp.gmail.com";
-            smtp.Port = 587;
-            smtp.EnableSsl = true;
-            await smtp.SendMailAsync(message);
-        }
-    }
-    
-   private void setFalse () {
-    this.mostrarCartel = false;
-   }
-
     private async Task browseToPost(Post p) {
         try {
             if (p.getType()) {      // getType returns True if p is ShipPost
@@ -282,5 +145,4 @@ else{
             await browseToPost(p); // Retry navigation
         }
     }
-
 }

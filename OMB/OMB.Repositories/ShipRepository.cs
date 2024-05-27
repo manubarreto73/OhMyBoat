@@ -18,7 +18,7 @@ public class ShipRepository : IShipRepository {
         using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
             if(exists == null) {
-                context.Add((Ship)ship.Clone());
+                context.Ships.Add((Ship)ship.Clone());
                 context.SaveChanges();
             }
             else {
@@ -52,7 +52,7 @@ public class ShipRepository : IShipRepository {
         using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.Id == shipId).SingleOrDefault();
             if(exists != null){
-                context.Remove(exists);
+                context.Ships.Remove(exists);
                 context.SaveChanges();
             }
         }

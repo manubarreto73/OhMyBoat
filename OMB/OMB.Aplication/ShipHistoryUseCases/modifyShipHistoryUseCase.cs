@@ -11,7 +11,7 @@ public class modifyShipHistoryUseCase {
         this.repository = repository;
     }
 
-    public void Execute (Ship ship) {
+    public void Execute (ShipHistory ship) {
         repository.modifyShip(ship);
     }
 

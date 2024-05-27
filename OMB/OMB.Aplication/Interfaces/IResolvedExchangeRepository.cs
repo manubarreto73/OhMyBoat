@@ -6,7 +6,7 @@ public interface IResolvedExchangeRepository {
 
     public void addResolvedExchange (ResolvedExchange ResolvedExchange);
     public void deleteResolvedExchange (int ResolvedExchangeId);
-    public void modifyResolvedExchange (ResolvedExchange ResolvedExchange); 
-    public List<ResolvedExchange> ResolvedExchangeList ();
+    // public void modifyResolvedExchange (ResolvedExchange ResolvedExchange); 
+    public List<ResolvedExchange> resolvedExchangeList ();
 
 }

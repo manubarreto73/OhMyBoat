@@ -5,19 +5,13 @@ using OMB.Aplication.ClasesBase;
 using Microsoft.EntityFrameworkCore;
 
 public class OfferRepository : IOfferRepository {
-    
-    private ITransportRepository TRep;
-
-    public OfferRepository(ITransportRepository TRep){
-        this.TRep = TRep;
-    }
 
     public void addOffer (Offer offer){
         using(OMBContext context = new OMBContext()){
             // El único chequeo de repetidos, es que un user no oferte el mismo T al mismo T dos veces (si oferta, borra y oferta no hay drama)
             bool exists = (context.Offers.Where(O => O.transporteOfertadoId == offer.transporteOfertadoId && O.transportePosteadoId == offer.transportePosteadoId).SingleOrDefault() != null);
             if(!exists){
-                context.Add(Clone(offer));
+                context.Add((Offer)offer.Clone());
             }
             else{
                 //De todas formas nunca se debería llegar a esto desde la UI
@@ -41,12 +35,8 @@ public class OfferRepository : IOfferRepository {
             List<Offer> copia = new List<Offer>();
             List<Offer> original = context.Offers.ToList();
             foreach (Offer offer in original)
-                copia.Add(Clone(offer));
+                copia.Add((Offer)offer.Clone());
             return copia;
         }
-    }
-
-    private Offer Clone(Offer offer){
-        return new Offer(offer.transportePosteadoId, offer.transporteOfertadoId);
     }
 }

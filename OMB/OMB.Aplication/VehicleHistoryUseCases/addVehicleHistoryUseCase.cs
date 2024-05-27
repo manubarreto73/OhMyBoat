@@ -11,7 +11,7 @@ public class addVehicleHistoryUseCase {
         this.repository = repository;
     }
 
-    public void Execute (Vehicle vehicle) {
+    public void Execute (VehicleHistory vehicle) {
         repository.addVehicle(vehicle);
     }
 }

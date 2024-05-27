@@ -4,9 +4,9 @@ using OMB.Aplication.ClasesBase;
 
 public interface IVehicleHistoryRepository {
 
-    public void addVehicle (Vehicle vehicle);
+    public void addVehicle (VehicleHistory vehicle);
     public void deleteVehicle (int vehicleId);
-    public void modifyVehicle (Vehicle vehicle); 
-    public List<Vehicle> VehicleList ();
+    public void modifyVehicle (VehicleHistory vehicle); 
+    public List<VehicleHistory> VehicleList ();
 
 }

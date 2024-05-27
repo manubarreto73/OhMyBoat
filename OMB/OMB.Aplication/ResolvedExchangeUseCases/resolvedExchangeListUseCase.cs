@@ -12,7 +12,7 @@ public class resolvedExchangeListUseCase {
     }
 
     public List<ResolvedExchange> Execute () {
-        return repository.ResolvedExchangeList();
+        return repository.resolvedExchangeList();
     }
 
 }

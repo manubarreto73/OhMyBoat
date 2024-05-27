@@ -11,7 +11,7 @@ public class shipHistoryListUseCase {
         this.repository = repository;
     }
 
-    public List<Ship> Execute () {
+    public List<ShipHistory> Execute () {
         return repository.shipList();
     }
 

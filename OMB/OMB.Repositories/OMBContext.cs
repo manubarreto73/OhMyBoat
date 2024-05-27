@@ -23,6 +23,10 @@ public class OMBContext : DbContext{
     
     public DbSet<VehicleImage> VehicleImages {get; set;}
     public DbSet<Offer> Offers {get; set;}
+    public DbSet<VehicleHistory> VehiclesHistory {get; set;}
+    public DbSet<ShipHistory> ShipsHistory {get; set;}
+    public DbSet<ResolvedExchange> ResolvedExchanges {get; set;}
+    public DbSet<UnresolvedExchange> UnresolvedExchanges {get; set;}
 
     #nullable restore
 
@@ -53,6 +57,7 @@ public class OMBContext : DbContext{
             .HasForeignKey(s => s.UserId); // Ensure it's not nullable
 
         base.OnModelCreating(modelBuilder);
+
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder){

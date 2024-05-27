@@ -11,7 +11,7 @@ public class vehicleHistoryListUseCase {
         this.repository = repository;
     }
 
-    public List<Vehicle> Execute () {
+    public List<VehicleHistory> Execute () {
         return repository.VehicleList();
     }
 }

@@ -17,7 +17,7 @@ public class VehicleRepository : IVehicleRepository{
         using(OMBContext context = new OMBContext()){
             var exists = context.Vehicles.Where(V => V.plate == vehicle.plate).SingleOrDefault();
             if(exists == null){
-                context.Add((Vehicle)vehicle.Clone());
+                context.Vehicles.Add((Vehicle)vehicle.Clone());
                 context.SaveChanges();
             }
             else{
@@ -50,7 +50,7 @@ public class VehicleRepository : IVehicleRepository{
         using(OMBContext context = new OMBContext()){
             var exists = context.Vehicles.Where(V => V.Id == vehicleId).SingleOrDefault();
             if(exists != null){
-                context.Remove(exists);
+                context.Vehicles.Remove(exists);
                 context.SaveChanges();
             }
         }

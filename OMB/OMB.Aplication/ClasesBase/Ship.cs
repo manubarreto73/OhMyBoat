@@ -17,5 +17,8 @@ public class Ship : Transport {
     }
 
     public Ship() : base() {}
-
+    
+    public override IClonable Clone() {
+        return new Ship(this.UserId, this.type, this.plate, this.description, this.model, this.eslora, this.manga, this.calado, this.hasEngine){Id = this.Id};
+    }
 }

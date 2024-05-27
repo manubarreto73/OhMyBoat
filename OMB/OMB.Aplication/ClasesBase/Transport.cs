@@ -1,8 +1,6 @@
 namespace OMB.Aplication.ClasesBase;
 
-using System.Drawing;
-
-public class Transport {
+public abstract class Transport : IClonable {
 
     public int Id {get; set;}
     public int UserId {get; set;}
@@ -19,5 +17,6 @@ public class Transport {
     }
 
     public Transport() {}
+    public abstract IClonable Clone();
 
 }

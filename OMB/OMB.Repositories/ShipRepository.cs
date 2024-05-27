@@ -18,7 +18,7 @@ public class ShipRepository : IShipRepository {
         using(OMBContext context = new OMBContext()) {
             var exists = context.Ships.Where(S => S.plate == ship.plate).SingleOrDefault();
             if(exists == null) {
-                context.Add(Clone(ship));
+                context.Add((Ship)ship.Clone());
                 context.SaveChanges();
             }
             else {
@@ -89,12 +89,8 @@ public class ShipRepository : IShipRepository {
             List<Ship> Ret = new List<Ship>();
             List<Ship> Ori = context.Ships.ToList();
             foreach (Ship ship in Ori)
-                Ret.Add(Clone(ship));
+                Ret.Add((Ship)ship.Clone());
             return Ret;
         }
-    }
-
-    private Ship Clone(Ship ship) {
-        return new Ship(ship.UserId, ship.type, ship.plate, ship.description, ship.model, ship.eslora, ship.manga, ship.calado, ship.hasEngine){Id = ship.Id};
     }
 }

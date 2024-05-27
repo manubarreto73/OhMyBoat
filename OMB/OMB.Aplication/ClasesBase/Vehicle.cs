@@ -14,4 +14,8 @@ public class Vehicle : Transport {
 
     public Vehicle() : base() {}
 
+    public override IClonable Clone(){
+        return new Vehicle(this.UserId, this.type, this.plate, this.description, this.model, this.kms, this.doors){Id = this.Id};
+    }
+
 }

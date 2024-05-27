@@ -17,7 +17,7 @@ public class VehicleRepository : IVehicleRepository{
         using(OMBContext context = new OMBContext()){
             var exists = context.Vehicles.Where(V => V.plate == vehicle.plate).SingleOrDefault();
             if(exists == null){
-                context.Add(Clone(vehicle));
+                context.Add((Vehicle)vehicle.Clone());
                 context.SaveChanges();
             }
             else{
@@ -84,12 +84,8 @@ public class VehicleRepository : IVehicleRepository{
             List<Vehicle> Ret = new List<Vehicle>();
             List<Vehicle> Ori = context.Vehicles.ToList();
             foreach (Vehicle vehicle in Ori)
-                Ret.Add(Clone(vehicle));
+                Ret.Add((Vehicle)vehicle.Clone());
             return Ret;
         }
-    }
-
-    private Vehicle Clone(Vehicle vehicle){
-        return new Vehicle(vehicle.UserId, vehicle.type, vehicle.plate, vehicle.description, vehicle.model, vehicle.kms, vehicle.doors){Id = vehicle.Id};
     }
 }

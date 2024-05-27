@@ -1,7 +1,8 @@
 namespace OMB.Repositories;
 
+using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;
-public class TransportRepository : ITransportRepository { //implementar interfaz
+public class TransportRepository : ITransportRepository {
 
     public void deleteTransport (int transportId){
         using(OMBContext context = new OMBContext()){
@@ -11,5 +12,30 @@ public class TransportRepository : ITransportRepository { //implementar interfaz
                 context.SaveChanges();
             }
         }
+    }
+
+    public void addTransport (Transport transport){
+        using(OMBContext context = new OMBContext()){
+            var exists = context.Transports.Where(t => t.plate == transport.plate).SingleOrDefault();
+            if(exists == null){
+                context.Add((Transport)transport.Clone());
+                context.SaveChanges();
+            }
+            else{
+                throw new Exception("Placa ya registrada");
+            }
+        }
+    }
+
+    public List<Transport> listTransports(){
+        List<Transport> aux = new List<Transport>();
+        List<Transport> l;
+        using(OMBContext context = new OMBContext()){
+            l = context.Transports.ToList();
+        }
+        foreach (Transport t in l){
+            aux.Add((Transport)t.Clone());
+        }
+        return aux;
     }
 }

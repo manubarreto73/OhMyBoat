@@ -156,8 +156,11 @@
     }
 
     public void eliminarPublicacion(){
-      deletePostUseCase.Execute(listPostUseCase.Execute().Where(p => p.getTransportId() == vehiculo.Id).SingleOrDefault().Id);
-      publicado = false;
+      var post = listPostUseCase.Execute().Where(p => p.getTransportId() == vehiculo.Id).SingleOrDefault();
+      if (post != null) {
+        deletePostUseCase.Execute(post.Id);
+        publicado = false;
+      }
     }
     public void Cargar(Vehicle vehiculo) {
       this.vehiculo = new(vehiculo.UserId, vehiculo.type, vehiculo.plate, vehiculo.description, vehiculo.model, vehiculo.kms, vehiculo.doors){Id = vehiculo.Id};

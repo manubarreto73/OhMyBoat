@@ -70,8 +70,6 @@ else{
     string? cartelito;
     bool mostrarCartel;
 
-    bool ver = false;
-
     protected override async Task OnInitializedAsync() {
         // Llamo solo una vez a los listUseCase
         ships = shipListUseCase.Execute();
@@ -91,7 +89,6 @@ else{
                 u.banned && (transports.Where(t => 
                     (t.Id == p.getTransportId())).Count() != 0 && (u.Id == transports.Where(t => 
                         t.Id == p.getTransportId()).SingleOrDefault().UserId))).SingleOrDefault());
-
         // Reordenamos los posts
         posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
 

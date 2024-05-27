@@ -1,0 +1,29 @@
+@page "/listarmisofertas"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedSessionStorage sessionStorage
+@inject userListUseCase userListUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject offerListUseCase offerListUseCase
+
+
+
+@code {
+    List<Offer> offerList = new List<Offer>();
+    int userId;
+    protected override async Task OnInitializedAsync() {
+        //Inicializo en offerList las ofertas hechas por el usuario loggeado
+        //Se supone que acá solo llegan los clientes loggeados
+        var result2 = await sessionStorage.GetAsync<int>("userId");
+        userId = result2.Success ? result2.Value : 0;
+
+        getOfferList();
+    }
+
+    public void getOfferList () {
+        //Ids de todos los transportes del usuario loggeado
+        List<int> ids = listTransportUseCase.Execute().Where(T => T.UserId == userId).ToList().Select(T => T.Id).ToList();
+        //Todas las ofertas en las que se ofrecen transportes del usuario loggeado
+        offerList = offerListUseCase.Execute().Where(O => ids.Contains(O.transporteOfertadoId)).ToList();
+    }
+
+}

@@ -1,4 +1,4 @@
-namespace OMB.Aplication.resolvedExchangeUseCases;
+namespace OMB.Aplication.ResolvedExchangeUseCases;
 
 using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;

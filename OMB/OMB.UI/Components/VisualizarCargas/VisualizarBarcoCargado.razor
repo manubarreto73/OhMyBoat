@@ -123,7 +123,7 @@
 @code {
     int i = 0;
     int limit = 0;
-    string tieneMotor;
+    string tieneMotor = "no";
     DialogoError dialogoError = null!;
     DialogoConfirmacion dialogoConfirmacion = null!;
 
@@ -158,8 +158,11 @@
     }
 
     public void eliminarPublicacion(){
-      deletePostUseCase.Execute(listPostUseCase.Execute().Where(p => p.getTransportId() == barco.Id).SingleOrDefault().Id);
-      publicado = false;
+      var post = listPostUseCase.Execute().Where(p => p.getTransportId() == barco.Id).SingleOrDefault();
+      if (post != null) {
+        deletePostUseCase.Execute(post.Id);
+        publicado = false;
+      }
     }
 
     public void turnOff(){

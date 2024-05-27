@@ -27,7 +27,7 @@
     string password = "";
     DialogoError dialogo = null!;
 
-    async Task Save(bool isEmployee, int? userId) {
+    async Task Save(bool isEmployee, int userId) {
         await sessionStorage.SetAsync("userId", userId);
         await sessionStorage.SetAsync("isEmployee", isEmployee);
         await sessionStorage.SetAsync("cartel?", "Haz iniciado sesión con exito");

@@ -7,6 +7,12 @@ using OMB.Aplication.PostUseCases;
 using OMB.Aplication.VehicleImageUseCases;
 using OMB.Aplication.ShipUseCases;
 using OMB.Aplication.ShipImageUseCases;
+using OMB.Aplication.TransportUseCases;
+using OMB.Aplication.OfferUseCases;
+using OMB.Aplication.VehicleHistoryUseCases;
+using OMB.Aplication.ShipHistoryUseCases;
+using OMB.Aplication.ResolvedExchangeUseCases;
+using OMB.Aplication.UnresolvedExchangeUseCases;
 using OMB.Repositories;
 using OMB.Aplication.Interfaces;
 //Cosas para la sesión
@@ -51,16 +57,51 @@ builder.Services.AddTransient<modifyShipUseCase>();
 builder.Services.AddTransient<shipListUseCase>();
 builder.Services.AddScoped<IShipRepository, ShipRepository>();
 
+builder.Services.AddTransient<addShipImageUseCase>();
+builder.Services.AddTransient<listShipImagesUseCase>();
+builder.Services.AddScoped<IShipImageRepository, ShipImageRepository>();
+
 builder.Services.AddTransient<addPostUseCase>();
 builder.Services.AddTransient<deletePostUseCase>();
 builder.Services.AddTransient<modifyPostUseCase>();
 builder.Services.AddTransient<listPostUseCase>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
 
-builder.Services.AddTransient<addShipImageUseCase>();
-builder.Services.AddTransient<listShipImagesUseCase>();
-builder.Services.AddScoped<IShipImageRepository, ShipImageRepository>();
+builder.Services.AddTransient<addTransportUseCase>();
+builder.Services.AddTransient<deleteTransportUseCase>();
+//builder.Services.AddTransient<modifyTransportUseCase>();
+builder.Services.AddTransient<listTransportUseCase>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
+
+builder.Services.AddTransient<addOfferUseCase>();
+builder.Services.AddTransient<deleteOfferUseCase>();
+//builder.Services.AddTransient<modifyOfferUseCase>();
+builder.Services.AddTransient<offerListUseCase>();
+builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+
+builder.Services.AddTransient<addVehicleHistoryUseCase>();
+builder.Services.AddTransient<deleteVehicleHistoryUseCase>();
+builder.Services.AddTransient<modifyVehicleHistoryUseCase>();
+builder.Services.AddTransient<vehicleHistoryListUseCase>();
+builder.Services.AddScoped<IVehicleHistoryRepository, VehicleHistoryRepository>();
+
+builder.Services.AddTransient<addShipHistoryUseCase>();
+builder.Services.AddTransient<deleteShipHistoryUseCase>();
+builder.Services.AddTransient<modifyShipHistoryUseCase>();
+builder.Services.AddTransient<shipHistoryListUseCase>();
+builder.Services.AddScoped<IShipHistoryRepository, ShipHistoryRepository>();
+
+builder.Services.AddTransient<addResolvedExchangeUseCase>();
+builder.Services.AddTransient<deleteResolvedExchangeUseCase>();
+//builder.Services.AddTransient<modifyResolvedExchangeUseCase>();
+builder.Services.AddTransient<resolvedExchangeListUseCase>();
+builder.Services.AddScoped<IResolvedExchangeRepository, ResolvedExchangeRepository>();
+
+builder.Services.AddTransient<addUnresolvedExchangeUseCase>();
+builder.Services.AddTransient<deleteUnresolvedExchangeUseCase>();
+builder.Services.AddTransient<modifyUnresolvedExchangeUseCase>();
+builder.Services.AddTransient<unresolvedExchangeListUseCase>();
+builder.Services.AddScoped<IUnresolvedExchangeRepository, UnresolvedExchangeRepository>();
 
 // FIN DE LO QUE AGREGAMOS NOSOTROS
 

@@ -1,47 +1,47 @@
-.vehicle-post-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  .vehicle-post {
-    width: 80%;
-    margin: 0 auto;
-    border: 1px solid #ddd;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
-  }
-  
-  .vehicle-post-img {
-    max-width: 100%; 
-    height: 300px;
-    object-fit: contain;
-  }
-  
-  .vehicle-post-title {
-    text-align: center;
-    margin-top: 20px;
-  }
-  
-  .vehicle-post-description {
-    text-align: justify;
-    margin: 20px 0;
-    justify-content: center;
-  }
-  
-  .vehicle-post-info {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .vehicle-post-info-item {
-    display: flex;
-    align-items: center;
-  }
-  
-  .icon {
-    margin-right: 10px;
-  }
-  
+.ship-post-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 1.1rem;
+}
+
+.ship-post {
+  width: 80%;
+  margin: 0 auto;
+  border: 1px solid #ddd;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.ship-post-img {
+  max-width: 100%; 
+  height: 300px;
+  object-fit: contain;
+}
+
+.ship-post-title {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.ship-post-description {
+  text-align: justify;
+  margin: 20px 0;
+  justify-content: center;
+}
+
+.ship-post-info {
+  display: flex;
+  justify-content: center;
+}
+
+.ship-post-info-item {
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-right: 10px;
+}

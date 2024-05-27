@@ -5,25 +5,56 @@
 @inject listTransportUseCase listTransportUseCase
 @inject offerListUseCase offerListUseCase
 
+<div class="offers-container">
+    @if (offerList.Any()) {
+        @foreach (var offer in offerList){
+            <div class="offer">
+                <div class="offer-info">
+                    <h3>Oferta a @getOfferTarget(offer)</h3>
+                    <h6>Ofreces @getOfferedTransport(offer)</h6>
+                    <h6>Pedis @getPostedTransport(offer)</h6>
+                </div>
+            </div>
+        }
+    } else {
+        <div> NO HAY OFERTAS REALIZADAS.</div>
+    }
+</div>
 
 
 @code {
     List<Offer> offerList = new List<Offer>();
-    int userId;
+    int loggedUserId;
+
     protected override async Task OnInitializedAsync() {
         //Inicializo en offerList las ofertas hechas por el usuario loggeado
         //Se supone que acá solo llegan los clientes loggeados
-        var result2 = await sessionStorage.GetAsync<int>("userId");
-        userId = result2.Success ? result2.Value : 0;
+        var getLoggedUser = await sessionStorage.GetAsync<int>("userId");
+        loggedUserId = getLoggedUser.Success ? getLoggedUser.Value : 0;
 
         getOfferList();
     }
 
     public void getOfferList () {
         //Ids de todos los transportes del usuario loggeado
-        List<int> ids = listTransportUseCase.Execute().Where(T => T.UserId == userId).ToList().Select(T => T.Id).ToList();
+        List<int> transportIds = listTransportUseCase.Execute().Where(T => T.UserId == loggedUserId).ToList().Select(T => T.Id).ToList();
         //Todas las ofertas en las que se ofrecen transportes del usuario loggeado
-        offerList = offerListUseCase.Execute().Where(O => ids.Contains(O.transporteOfertadoId)).ToList();
+        offerList = offerListUseCase.Execute().Where(O => transportIds.Contains(O.transporteOfertadoId)).ToList();
     }
 
+    public async Task<string> getOfferTarget(Offer offer) {
+        Transport postedTransport = await Task.Run(() => listTransportUseCase.Execute().Find(transport => transport.Id == offer.transportePosteadoId));
+        User postedTransportOwner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == postedTransport.UserId));
+        return postedTransportOwner.userName;
+    }
+
+    public async Task<string> getOfferedTransport(Offer offer) {
+        Transport offeredTransport = await Task.Run(() => listTransportUseCase.Execute().Find(transport => transport.Id == offer.transporteOfertadoId));
+        return offeredTransport.plate; //placeholder
+    }
+
+    public async Task<string> getPostedTransport(Offer offer) {
+        Transport postedTransport = await Task.Run(() => listTransportUseCase.Execute().Find(transport => transport.Id == offer.transportePosteadoId));
+        return postedTransport.plate; //placeholder
+    }
 }

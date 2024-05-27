@@ -4,12 +4,34 @@ using OMB.Aplication.ClasesBase;
 using OMB.Aplication.Interfaces;
 public class TransportRepository : ITransportRepository {
 
+    private IShipImageRepository SIR;
+    private IVehicleImageRepository VIR;
+    private IPostRepository PR;
+
+    public TransportRepository(IShipImageRepository SIR, IVehicleImageRepository VIR, IPostRepository PR){
+        this.SIR = SIR;
+        this.VIR = VIR;
+        this.PR = PR;
+    }
     public void deleteTransport (int transportId){
+        Transport? exists;
         using(OMBContext context = new OMBContext()){
-            var exists = context.Transports.Where(t => t.Id == transportId).SingleOrDefault();
-            if(exists != null){
-                context.Remove(exists);
-                context.SaveChanges();
+            exists = context.Transports.Where(t => t.Id == transportId).SingleOrDefault();
+        }
+        if(exists != null){
+            Post? post = PR.postList().Where(p => p.TransportId == transportId).SingleOrDefault();
+            PR.deletePost((post == null) ? -1 : post.Id);
+            List<VehicleImage> vm = VIR.listVehicleImages().Where(i => i.VehicleId == transportId).ToList();
+            List<ShipImage> sm = SIR.listShipImages().Where(i => i.ShipId == transportId).ToList();
+            foreach (VehicleImage i in vm){
+                VIR.deleteVehicleImage(i.Id);
+            }
+            foreach (ShipImage i in sm){
+                SIR.deleteShipImage(i.Id);
+            }
+            using(OMBContext context = new OMBContext()){
+                    context.Remove(exists);
+                    context.SaveChanges();
             }
         }
     }

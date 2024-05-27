@@ -22,6 +22,7 @@ public class OMBContext : DbContext{
     public DbSet<ShipImage> ShipImages {get; set;}
     
     public DbSet<VehicleImage> VehicleImages {get; set;}
+    public DbSet<Offer> Offers {get; set;}
 
     #nullable restore
 

@@ -6,7 +6,7 @@ public interface IOfferRepository {
 
     public void addOffer (Offer Offer);
     public void deleteOffer (int OfferId);
-    public void modifyOffer (Offer Offer); 
-    public List<Offer> OfferList ();
+    //public void modifyOffer (Offer Offer); 
+    public List<Offer> offerList ();
 
 }

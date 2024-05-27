@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace OMB.Aplication.ClasesBase;
 
 public class Employee : Persona {

@@ -120,7 +120,7 @@ else{
             if (ships.Where(s => s.Id == p.TransportId).SingleOrDefault() != null) {      // getType returns True if p is ShipPost
                 navegador.NavigateTo("/shippost/" + p.getTransportId(), true);
             } else {            // if getType is false then p is VehiclePost
-                navegador.NavigateTo("/profile/manubarreto", true);  // placeholder for testing
+                navegador.NavigateTo("/vehiclepost/" + p.getTransportId(), true);  // placeholder for testing
             }
         }
         catch (TaskCanceledException) {

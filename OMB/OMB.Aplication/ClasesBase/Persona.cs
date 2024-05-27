@@ -9,7 +9,7 @@ public class Persona{
     public string? password {get; set;}
     public string? mail {get; set;}
     public string? number {get; set;}
-    public DateOnly? birthDate {get; set;}
+    public DateOnly birthDate {get; set;}
 
     public Persona(string name, string surname, string userName, string password, string mail, string number, DateOnly birthDate) {
         this.name = name;

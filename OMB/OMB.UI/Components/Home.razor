@@ -5,8 +5,7 @@
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject userListUseCase userListUseCase
-@inject shipListUseCase shipListUseCase
-@inject vehicleListUseCase vehicleListUseCase
+@inject listTransportUseCase listTransportUseCase
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
 @using System.Net
@@ -56,9 +55,11 @@ else{
 </div>-->
 }
 @code {
-    List<Post> posts = new List<Post>();
-    List<Ship> ships = new List<Ship>();
-    List<Vehicle> vehicles = new List<Vehicle>();
+    int userId;
+
+    List<Post> allPosts = new List<Post>(); // Primera lista con todos los posts
+    List<Post> posts = new List<Post>(); // Lista con los posts después del filtrado
+    List<Transport> transports = new List<Transport>();
     List<User> users = new List<User>();
 
     List<ShipImage> shipImages = new List<ShipImage>();
@@ -71,24 +72,36 @@ else{
     bool mostrarCartel;
 
     protected override async Task OnInitializedAsync() {
-        // Llamo solo una vez a los listUseCase
-        ships = shipListUseCase.Execute();
-        vehicles = vehicleListUseCase.Execute();
-        users = userListUseCase.Execute();
-        List<Transport> transports = new List<Transport>();
-        transports.AddRange(vehicles);
-        transports.AddRange(ships);
+        // Busco el ID del usuario en la sesión
+        var result2 = await sessionStorage.GetAsync<int>("userId");
+        userId = result2.Success ? result2.Value : 0;
 
-        posts = listPostUseCase.Execute();
+        // Llamo solo una vez a los listUseCase
+        users = userListUseCase.Execute();
+        transports = listTransportUseCase.Execute();
+
+        allPosts = listPostUseCase.Execute();
         shipImages = listShipImagesUseCase.Execute();
         vehicleImages = listVehicleImagesUseCase.Execute();
 
         // Sacamos los posts de las personas baneadas
-        posts.RemoveAll(p => 
+        @* posts.RemoveAll(p => 
             null != users.Where(u => 
                 u.banned && (transports.Where(t => 
                     (t.Id == p.getTransportId())).Count() != 0 && (u.Id == transports.Where(t => 
-                        t.Id == p.getTransportId()).SingleOrDefault().UserId))).SingleOrDefault());
+                        t.Id == p.getTransportId()).SingleOrDefault().UserId))).SingleOrDefault()); *@
+
+        // Sacamos los posts de las personas baneadas
+        foreach (Post post in allPosts) { // Lo implemente de otra forma
+            Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
+            User user = users.Find(u => u.Id == transport.UserId);
+
+            // Si el usuario no está baneado y no es el logueado, agrego el post
+            if (!user.banned && user.Id != userId) {
+                posts.Add(post);
+            }
+        }
+            
         // Reordenamos los posts
         posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
 
@@ -114,10 +127,10 @@ else{
 
     private async Task browseToPost(Post p) {
         try {
-            if (ships.Where(s => s.Id == p.TransportId).SingleOrDefault() != null) {      // getType returns True if p is ShipPost
+            if (IsVehicle(p)) {
+                navegador.NavigateTo("/vehiclepost/" + p.getTransportId(), true);
+            } else {
                 navegador.NavigateTo("/shippost/" + p.getTransportId(), true);
-            } else {            // if getType is false then p is VehiclePost
-                navegador.NavigateTo("/vehiclepost/" + p.getTransportId(), true);  // placeholder for testing
             }
         }
         catch (TaskCanceledException) {
@@ -125,5 +138,10 @@ else{
             await Task.Delay(500); // Wait half a sec before trying again
             await browseToPost(p); // Retry navigation
         }
+    }
+
+    private bool IsVehicle(Post post) {
+        Transport transport = transports.Find(trans => trans.Id == post.TransportId);
+        return (transport.type == "Ciclomotor" || transport.type == "Auto" || transport.type == "Camioneta");
     }
 }

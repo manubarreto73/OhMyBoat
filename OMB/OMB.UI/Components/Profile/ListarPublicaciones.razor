@@ -1,0 +1,134 @@
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject NavigationManager navegador
+@inject ProtectedSessionStorage sessionStorage
+@inject listPostUseCase listPostUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
+
+@rendermode InteractiveServer
+
+<DialogoError @ref="dialogoError"/>
+
+<div class="modal fade" id="listarPublicacionesModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Tus publicaciones</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+        <div class="modal-body form-body">
+          @if (_posts.Count != 0) {
+            <table class="table table-striped table-bordered">
+              <thead>
+                <tr>
+                  <th>IMAGEN</th>
+                  <th>TITULO</th>
+                  <th>TIPO</th>
+                  <th>PATENTE</th>
+                </tr>
+              </thead>
+              <tbody>
+                @{int i = 0;}
+                @foreach (var post in _posts) {
+                  <tr>
+                    <td>
+                      <div class="img">
+                        <img data-bs-toggle="modal" @onclick="()=>browseToPost(post)"
+                        src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
+                      </div>
+                    </td>
+                    <td>@post.Title</td>
+                    <td>@_transports[i].type</td>
+                    <td>@_transports[i].plate</td>
+                  </tr>
+                  i++;
+                }
+              </tbody>
+            </table>
+          } else {
+            <h3 class="text-center m-5">Todavía no hay publicaciones hechas</h3>
+          }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+@code {
+    int userId;
+    
+    List<Post> _allPosts = new List<Post>();
+    List<Post> _posts = new List<Post>();
+    List<Transport> _allTransports = new List<Transport>();
+    List<Transport> _transports = new List<Transport>();
+
+    List<VehicleImage> _vehicleImages = new List<VehicleImage>();
+    List<ShipImage> _shipImages = new List<ShipImage>();
+    List<byte[]> _images = new List<byte[]>();
+
+    DialogoError dialogoError = null!;
+
+    protected override async Task OnInitializedAsync() {
+      var result = await sessionStorage.GetAsync<int>("userId");
+      userId = result.Success ? result.Value : 0;
+
+      // Traigo todas las fotos así no tengo que traerlas con cada post
+      _vehicleImages = listVehicleImagesUseCase.Execute();
+      _shipImages = listShipImagesUseCase.Execute();
+    }
+
+    // Cada vez que se abre el modal se debe llamar a Cargar
+    public void Cargar(int profileId) {
+      GetPosts(profileId);
+      StateHasChanged();
+    }
+
+    private void GetPosts(int profileId) {
+      _allPosts = listPostUseCase.Execute();
+      _allTransports = listTransportUseCase.Execute();
+
+      // Filtro entre todos los transportes para encontrar los que corresponden con los posts
+      foreach (Post post in _allPosts) {
+        Transport transport = _allTransports.Find(trans => trans.Id == post.TransportId);
+        if (transport != null) {
+          if (transport.UserId == profileId) {
+            _transports.Add(transport);
+            _posts.Add(post);
+
+            GetTransportImage(transport);
+          }
+        }
+      }
+    }
+
+    private void GetTransportImage(Transport transport) {
+      byte[] image = null;
+
+      if (IsVehicle(transport.type)) {
+        image = _vehicleImages.Find(img => img.VehicleId == transport.Id).Image;
+      } else {
+        image = _shipImages.Find(img => img.ShipId == transport.Id).Image;
+      }
+
+      if (image != null) {
+        _images.Add(image);
+      }
+    }
+
+    private bool IsVehicle(string type) {
+      return (type == "Ciclomotor" || type == "Auto" || type == "Camioneta");
+    }
+
+    private void browseToPost(Post post) {
+      Transport transport = _transports.Find(trans => trans.Id == post.TransportId);
+
+      if (IsVehicle(transport.type)) {
+        navegador.NavigateTo($"/vehiclepost/{transport.Id}", true);
+      } else {
+        navegador.NavigateTo($"/shippost/{transport.Id}", true);
+      }
+    }
+}

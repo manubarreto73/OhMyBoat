@@ -9,7 +9,9 @@
 <div class="dropdown">
     <i class='bx bxs-user-circle' style="font-size: 45px;cursor:pointer;color:black;" data-bs-toggle="dropdown" aria-expanded="false"></i>
     <ul class="dropdown-menu">
-        <li><a class="dropdown-item" @onclick=CargarPerfil>Mi perfil</a></li>
+        <li><a class="dropdown-item" style="cursor:pointer;" @onclick=CargarPerfil>Mi perfil</a></li>
+        <li><a class="dropdown-item" href="listarintercambios">Intercambios</a></li>
+        <li><a class="dropdown-item" href="listarintercambiosresueltos">Intercambios resueltos</a></li>
         <li><a class="dropdown-item" href="cambiarcontraseña">Cambiar contraseña</a></li>
         <li><a class="dropdown-item" style="cursor:pointer;" @onclick="ConfirmarCerrarSesion">Cerrar sesión</a></li>
     </ul>

@@ -1,37 +1,22 @@
-@page "/listarmisintercambios"
+@page "/listarintercambiosresueltos"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
-@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject resolvedExchangeListUseCase resolvedExchangeListUseCase
 
 <div class="exchanges-container">
   <div class="exchanges">
-    <h1 class="exchanges-title1">Intercambios Hechos</h1>
+    <h1 class="exchanges-title">Intercambios resueltos</h1>
     <div class="exchanges-body">
-      @if (madeExchanges.Any()) {
-          @foreach (var exchange in madeExchanges){
+      @if (exchanges.Any()) {
+          @foreach (var exchange in exchanges){
               <div class="exchange-info">
                 <h4>Dueño publicación @getPostTarget(exchange)</h4>
+                <h4>Dueño oferta @getOfferTarget(exchange)</h4>
                 <h6>Publicado @getPostedTransport(exchange)</h6>
-                <h6>Ofertás @getOfferedTransport(exchange)</h6>
+                <h6>Ofertado @getOfferedTransport(exchange)</h6>
               </div>
-          }
-      } else {
-        <h3 class="text-center">Aún no hay intercambios</h3>
-      }
-    </div>
-  </div>
-   <div class="exchanges">
-    <h1 class="exchanges-title2">Intercambios Recibidos</h1>
-    <div class="exchanges-body">
-      @if (receivedExchanges.Any()) {
-          @foreach (var exchange in receivedExchanges){
-            <div class="exchange-info">
-              <h4>Ofertante @getOfferTarget(exchange)</h4>
-              <h6>Oferta @getOfferedTransport(exchange)</h6>
-              <h6>Publicación @getPostedTransport(exchange)</h6>
-            </div>
           }
       } else {
         <h3 class="text-center">Aún no hay intercambios</h3>
@@ -40,33 +25,15 @@
   </div>
 </div>
 
-
 @code {
-  List<UnresolvedExchange> unresolvedExchanges = new List<UnresolvedExchange>();
-  List<UnresolvedExchange> madeExchanges = new List<UnresolvedExchange>(); // Los que oferto algo yo
-  List<UnresolvedExchange> receivedExchanges = new List<UnresolvedExchange>(); // Los que me ofertan algo a mí
+  List<ResolvedExchange> exchanges = new List<ResolvedExchange>();
   List<Transport> transports = new List<Transport>();
   List<User> users = new List<User>();
-  int loggedUserId;
 
   protected override async Task OnInitializedAsync() {
-    // Inicializo en exchanges las ofertas hechas por el usuario loggeado
-    // Se supone que acá solo llegan los clientes loggeados
-    var getLoggedUser = await sessionStorage.GetAsync<int>("userId");
-    loggedUserId = getLoggedUser.Success ? getLoggedUser.Value : 0;
-
     users = userListUseCase.Execute();
     transports = listTransportUseCase.Execute();
-    unresolvedExchanges = unresolvedExchangeListUseCase.Execute();
-    getExchanges();
-  }
-
-  public void getExchanges () {
-    // Ids de todos los transportes del usuario loggeado
-    List<int> transportIds = transports.FindAll(T => T.UserId == loggedUserId).Select(T => T.Id).ToList();
-    // Todas los intercambios donde se está involucrado un transporte del usuario
-    madeExchanges = unresolvedExchanges.FindAll(Exc => transportIds.Contains(Exc.transporteOfertadoId));
-    receivedExchanges = unresolvedExchanges.FindAll(Exc => transportIds.Contains(Exc.transportePosteadoId));
+    exchanges = resolvedExchangeListUseCase.Execute();
   }
 
   // Obtiene el userName del dueño del post involucrado

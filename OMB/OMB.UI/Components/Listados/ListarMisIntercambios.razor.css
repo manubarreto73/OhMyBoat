@@ -1,0 +1,21 @@
+.exchanges-container {
+  display: flex;
+  justify-content: center;
+  gap: 8rem;
+}
+
+.exchanges {
+  width: 40rem;
+}
+
+.exchanges h1 {
+  margin-bottom: 1rem;
+}
+
+.exchanges-body {
+  padding-block: 2rem;
+  height: calc(100vh - 160.8px);
+  background-color: #eeeeee;
+  border-radius: 5px;
+  overflow: auto;
+}

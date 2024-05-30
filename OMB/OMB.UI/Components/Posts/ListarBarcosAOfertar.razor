@@ -90,7 +90,7 @@
       List<Offer> ofertas = offerListUseCase.Execute();
       _ships = shipListUseCase.Execute();
       _ships = _ships.FindAll(ship => ship.UserId == userId);
-      _ships.RemoveAll(s => offerListUseCase.Execute().Where(o => o.transporteOfertadoId == s.Id).Where(o => o.transportePosteadoId == vehicle.Id).SingleOrDefault() != null);
+      _ships.RemoveAll(s => ofertas.Where(o => o.transporteOfertadoId == s.Id).Where(o => o.transportePosteadoId == vehicle.Id).SingleOrDefault() != null);
 
 
       GetImagenesBarcos();
@@ -108,11 +108,11 @@
 
     private void confirmarOfertar(Ship barco) {
       barcoAOfertar = barco;
-      dialogo.Mostrar("¿Seguro qué deseas ofertar tu" + barcoAOfertar.type + " " + barcoAOfertar.model + "?");
+      dialogo.Mostrar("¿Seguro qué deseas ofertar tu " + barcoAOfertar.type + " " + barcoAOfertar.model + "?");
     }
 
     private void OfertarDef() {
       addOfferUseCase.Execute(new Offer(vehicle.Id, barcoAOfertar.Id));
-      StateHasChanged();
+      GetBarcosCargados();
     }
 }

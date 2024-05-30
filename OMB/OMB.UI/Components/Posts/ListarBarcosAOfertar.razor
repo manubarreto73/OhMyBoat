@@ -4,6 +4,8 @@
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject modifyShipUseCase modifyShipUseCase
 @inject deleteShipUseCase deleteShipUseCase
+@inject addOfferUseCase addOfferUseCase
+@inject offerListUseCase offerListUseCase
 
 @rendermode InteractiveServer
 
@@ -69,24 +71,27 @@
     DialogoConfirmacion dialogo = null!;
     Ship barcoAOfertar = new Ship();
 
+    Vehicle? vehicle = new Vehicle();
+
 
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
       userId = result.Success ? result.Value : 0;
-
-      GetBarcosCargados();
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar
-    public void Cargar() {
+    public void Cargar(Vehicle ve) {
+      vehicle = ve;
       GetBarcosCargados();
       StateHasChanged();
     }
 
     private void GetBarcosCargados() {
-
+      List<Offer> ofertas = offerListUseCase.Execute();
       _ships = shipListUseCase.Execute();
       _ships = _ships.FindAll(ship => ship.UserId == userId);
+      _ships.RemoveAll(s => offerListUseCase.Execute().Where(o => o.transporteOfertadoId == s.Id).Where(o => o.transportePosteadoId == vehicle.Id).SingleOrDefault() != null);
+
 
       GetImagenesBarcos();
     }
@@ -107,6 +112,6 @@
     }
 
     private void OfertarDef() {
-      
+      addOfferUseCase.Execute(new Offer(vehicle.Id, barcoAOfertar.Id));
     }
 }

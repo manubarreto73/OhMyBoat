@@ -93,7 +93,7 @@
           User owner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == actualShip.UserId));
             
           //Checkeo si el owner y el usuario loggeado son el mismo user y guardo el resultado
-          var isOwner = owner.Id == loggedUserId;
+          isOwner = owner.Id == loggedUserId;
 
           GetImages();
         }

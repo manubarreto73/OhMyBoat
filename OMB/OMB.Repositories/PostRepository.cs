@@ -30,6 +30,7 @@ public class PostRepository : IPostRepository {
             var exists = context.Posts.Where(P => P.Id == post.Id).SingleOrDefault();
             if(exists != null){
                 exists.Title = post.Title;
+                exists.paused = post.paused;
                 context.SaveChanges();
             }
         }

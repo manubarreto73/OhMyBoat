@@ -27,6 +27,7 @@ public class UnresolvedExchangeRepository : IUnresolvedExchangeRepository {
             if(exists != null){
                 exists.fechaYHora = unresolvedExchange.fechaYHora;
                 exists.sede = unresolvedExchange.sede;
+                exists.state = unresolvedExchange.state;
                 context.SaveChanges();
             }
         }

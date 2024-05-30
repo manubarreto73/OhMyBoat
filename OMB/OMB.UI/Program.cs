@@ -75,7 +75,7 @@ builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 
 builder.Services.AddTransient<addOfferUseCase>();
 builder.Services.AddTransient<deleteOfferUseCase>();
-//builder.Services.AddTransient<modifyOfferUseCase>();
+builder.Services.AddTransient<modifyOfferUseCase>();
 builder.Services.AddTransient<offerListUseCase>();
 builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 

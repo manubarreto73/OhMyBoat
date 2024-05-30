@@ -1,9 +1,27 @@
 @page "/visualizaroferta/{offerId:int?}"
+@inject NavigationManager Navegador
 @inject offerListUseCase offerListUseCase
-@inject listTransportUseCase transportListUseCase
+@inject vehicleListUseCase vehicleListUseCase
 @inject userListUseCase userListUseCase
+@inject modifyOfferUseCase modifyOfferUseCase
 
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="resolver"/>
 
+<div>
+    <h3> Te han ofrecido un @offeredVehicle.type de marca @offeredVehicle.model </h3>
+	<h6> (Imagenes) </h6>
+	<h6> Ofrecido por @userOffering.userName </h6>
+    <h6> @offeredVehicle.description </h6>
+	<h6> Patente @offeredVehicle.plate </h6>
+    <h6> @offeredVehicle.kms kilometros </h6>
+	@if (offeredVehicle.type != "Ciclomotor" ){
+		<h6> @offeredVehicle.doors puertas </h6>
+	}
+</div>
+<div>
+	<button class="btn btn-primary" @onclick="confirmarAceptarOferta" data-bs-dismiss="modal">Aceptar oferta</button>
+    <button class="btn btn-danger" @onclick="confirmarRechazarOferta" data-bs-dismiss="modal">Rechazar oferta</button>
+</div>
 
 @code {
 
@@ -11,18 +29,63 @@
 
 	Offer offer;
 
-	Vehicle vehicle;
+	Vehicle offeredVehicle;
 
-	User user;
+	User userOffering;
+
+	DialogoConfirmacion dialogo = null!;
+
+	bool accion = false;
 
 	protected override async Task OnAfterRenderAsync(bool firstRender) {
 
 		offer = offerListUseCase.Execute().Where(O => O.Id == offerId).SingleOrDefault();
 
-		
+		offeredVehicle = vehicleListUseCase.Execute().Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault();
+
+		userOffering = userListUseCase.Execute().Where(U => U.Id == offeredVehicle.UserId).SingleOrDefault();
+
+		StateHasChanged();
 
 	}
 
+	public void confirmarAceptarOferta () {
+		accion = true;
+		dialogo.Mostrar("¿Seguro que deseas aceptar la oferta?");
+	}
 
+	public void confirmarRechazarOferta () {
+		accion = false;
+		dialogo.Mostrar("¿Seguro que deseas rechazar la oferta?");
+	}
+
+	public void aceptarOferta () {
+		
+		//Pausar publicacion
+
+		//Pausar ofertas de la publicacion
+
+		//pausar publicacion vehiculo ofertado si la hay
+
+		//Agregar intercambio
+
+		//Cambiar estado de oferta
+		
+	}
+
+	public void rechazarOferta () {
+		offer.state = "rejected";
+		modifyOfferUseCase.Execute(offer);
+		//Creo que redirecciona bien pero no lo puedo probar
+		Navegador.NavigateTo("vehiclepost/" + offer.transportePosteadoId, true);
+	}
+
+	//Si metemos dos dialogos confirmacion puede haber problemas
+	public void resolver () {
+		if (accion)
+			aceptarOferta();
+		else
+			rechazarOferta();
+	}
 
 }

@@ -1,0 +1,28 @@
+@page "/visualizaroferta/{offerId:int?}"
+@inject offerListUseCase offerListUseCase
+@inject listTransportUseCase transportListUseCase
+@inject userListUseCase userListUseCase
+
+
+
+@code {
+
+	[Parameter] public int? offerId {get; set;}
+
+	Offer offer;
+
+	Vehicle vehicle;
+
+	User user;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender) {
+
+		offer = offerListUseCase.Execute().Where(O => O.Id == offerId).SingleOrDefault();
+
+		
+
+	}
+
+
+
+}

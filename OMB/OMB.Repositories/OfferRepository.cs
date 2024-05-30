@@ -20,6 +20,18 @@ public class OfferRepository : IOfferRepository {
             context.SaveChanges();
         }
     }
+
+    //para lo unico que se va a modificar una oferta es para el state
+    public void modifyOffer (Offer offer) {
+        using(OMBContext context = new OMBContext()) {
+            var exists = context.Offers.Where(O => O.Id == offer.Id).SingleOrDefault();
+            if (exists != null) {
+                exists.state = offer.state;
+            }
+            context.SaveChanges();
+        }
+    }
+
     public void deleteOffer (int OfferId){
         using(OMBContext context = new OMBContext()){
             var exists = context.Offers.Where(U => U.Id == OfferId).SingleOrDefault();

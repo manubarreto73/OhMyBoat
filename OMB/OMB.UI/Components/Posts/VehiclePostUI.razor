@@ -65,11 +65,15 @@
       @if((loggedUserId != 0) && (!isOwner)){
         <button class="btn btn-primary" @onclick="Ofertar" data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Ofertar</button>
       }
+      @if(isOwner){
+        <button class="btn btn-primary" @onclick="CargarOfertas" data-bs-toggle="modal" data-bs-target="#listarOfertasModal">Ver Ofertas</button>
+      }
     </div>
   </div>
 }
 
 <ListarBarcosAOfertar @ref="listarBarcos" />
+<ListarOfertasAPost @ref="listarOfertas" />
 
 @code {
   [Parameter] public int? postId { get; set; }
@@ -78,6 +82,7 @@
   Vehicle actualVehicle = new Vehicle();
 
   ListarBarcosAOfertar listarBarcos = null!; 
+  ListarOfertasAPost listarOfertas = null!;
 
   List<byte[]> images = new List<byte[]>(); // para las imagenes del post
   int limit = 0;  	  // para manejar el cap de imagenes
@@ -114,8 +119,12 @@
   }
 
   private void Ofertar() {
-      listarBarcos.Cargar(actualVehicle);
-    }
+    listarBarcos.Cargar(actualVehicle);
+  }
+
+  private void CargarOfertas() {
+    listarOfertas.getOfferList(actualPost);
+  }
 
   private void GetImages() {
     images = new List<byte[]>();

@@ -3,6 +3,8 @@
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject offerListUseCase offerListUseCase
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
 
 @rendermode InteractiveServer
 
@@ -14,17 +16,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
         <div class="modal-body form-body">
-           @if (offerList.Any()) {
-                @foreach (var offer in offerList){
+           @if (ofertas.Any()) {
+                int i = 0;
+                @foreach (var offer in ofertas){
                     <div class="offer">
                         <div class="offer-info">
-                        <h3>Oferta de @getOfferTarget(offer)</h3>
-                        <h6>Ofrece @getOfferedTransport(offer)</h6>
+                        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" height="80px" width="80px"/>
+                        <p>@_tipos[i]</p>
+                        <p>@_modelos[i]</p>
+                        <hr>
+                        </div>
                     </div>
-                </div>
                 }
             } else {
-                <div> NO HAY OFERTAS REALIZADAS.</div>
+                <p>No recibiste ofertas aún</p>
             } 
         </div>
         <div class="modal-footer">
@@ -35,9 +40,16 @@
 </div>
 
 @code {
-    List<Offer> offerList = new List<Offer>();
+    List<Offer> ofertas = new List<Offer>();
+    List<Transport> transports;
+    List<ShipImage> shipImages;
+    List<VehicleImage> vehicleImages;
+    List<string> _tipos = new List<string>();
+    List<string> _modelos = new List<string>();
+    List<byte[]> _images = new List<byte[]>();
     int loggedUserId;
     Transport postedTransport;
+    Post post;
 
     protected override async Task OnInitializedAsync() {
         var getloggedUserId = await sessionStorage.GetAsync<int>("userId");
@@ -45,8 +57,9 @@
     }
 
     public void getOfferList (Post post) {
-        postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == post.getTransportId());
-        offerList = offerListUseCase.Execute().Where(offer => offer.transportePosteadoId == postedTransport.Id).ToList();
+        this.post = post;
+        postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == post.getTransportId()); //necesario?
+        GetOfertas();
         StateHasChanged();
     }
 
@@ -62,6 +75,24 @@
 
     public string getPostedTransport(Offer offer) {
         return postedTransport.plate; //placeholder
+    }
+    ////////////////////////////////////////////////////
+
+    private void GetOfertas() {
+      ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == post.getTransportId()).ToList();
+      transports = listTransportUseCase.Execute();
+      shipImages = listShipImagesUseCase.Execute();
+      vehicleImages = listVehicleImagesUseCase.Execute();
+
+      foreach (var oferta in ofertas) {
+            string tipo = transports.Find(T => T.Id == oferta.transporteOfertadoId).type;
+            string modelo = transports.Find(T => T.Id == oferta.transporteOfertadoId).model;
+            _tipos.Add(tipo);
+            _modelos.Add(modelo);
+
+            byte[]? image = (0 != shipImages.Where(imagen => imagen.ShipId == oferta.transporteOfertadoId).Count()) ? shipImages.Where(imagen => imagen.ShipId == oferta.transporteOfertadoId).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == oferta.transporteOfertadoId).First().Image;
+            _images.Add(image);
+        }
     }
 
 }

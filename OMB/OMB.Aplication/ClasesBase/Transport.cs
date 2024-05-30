@@ -7,9 +7,11 @@ public abstract class Transport : IClonable {
     public string type {get; set;}
     public string plate {get; set;}
     public string description {get; set;}
+    public string model {get; set;}
     public User? owner{get; set;}
     public Post? post{get; set;}
-    public Transport (int UserId, string type, string plate, string description){
+    public Transport (int UserId, string type, string model, string plate, string description){
+        this.model = model;
         this.UserId = UserId;
         this.type = type;
         this.plate = plate;

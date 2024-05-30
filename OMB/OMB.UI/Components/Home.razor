@@ -110,7 +110,7 @@ else{
             string descripcion = transports.Find(T => T.Id == post.getTransportId()).description;
             _descripciones.Add(descripcion);
 
-            byte[]? image = (null != shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).SingleOrDefault()) ? shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).SingleOrDefault().Image : image = vehicleImages.Find(imagen => imagen.VehicleId == post.getTransportId()).Image;;
+            byte[]? image = (0 != shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).Count()) ? shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == post.getTransportId()).First().Image;
             _images.Add(image);
         }
 

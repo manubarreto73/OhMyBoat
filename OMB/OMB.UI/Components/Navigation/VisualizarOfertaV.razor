@@ -3,7 +3,11 @@
 @inject offerListUseCase offerListUseCase
 @inject vehicleListUseCase vehicleListUseCase
 @inject userListUseCase userListUseCase
+@inject listPostUseCase postListUseCase
 @inject modifyOfferUseCase modifyOfferUseCase
+@inject modifyPostUseCase modifyPostUseCase
+@inject addUnresolvedExchangeUseCase addUnresolvedExchangeUseCase
+@inject deleteOfferUseCase deleteOfferUseCase
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="resolver"/>
 
@@ -59,17 +63,36 @@
 		dialogo.Mostrar("¿Seguro que deseas rechazar la oferta?");
 	}
 
+	private void pausePost (int transportId) {
+		Post post = postListUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault();
+		if (post != null) {
+			post.paused = true;
+			modifyPostUseCase.Execute(post);
+		}
+	}
+
+	private void borrarOfertas (int transportId) {
+		List<int> offers = offerListUseCase.Execute().Where(O => O.transporteOfertadoId == transportId).ToList().Select(O => O.Id).ToList();
+		foreach (int id in offers) {
+			deleteOfferUseCase.Execute(id);
+		}
+	}
+
 	public void aceptarOferta () {
 		
-		//Pausar publicacion
+		pausePost(offer.transporteOfertadoId);
+		pausePost(offer.transportePosteadoId);
 
-		//Pausar ofertas de la publicacion
+		offer.state = "accepted";
+		modifyOfferUseCase.Execute(offer);
 
-		//pausar publicacion vehiculo ofertado si la hay
+		UnresolvedExchange unresolvedExchange = new UnresolvedExchange(offer.transportePosteadoId, offer.transporteOfertadoId);
+		addUnresolvedExchangeUseCase.Execute(unresolvedExchange);
 
-		//Agregar intercambio
+		borrarOfertas(offer.transporteOfertadoId);
+		borrarOfertas(offer.transportePosteadoId);
 
-		//Cambiar estado de oferta
+		//Mail para avisar
 		
 	}
 

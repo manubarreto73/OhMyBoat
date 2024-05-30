@@ -84,7 +84,7 @@
 
   protected override async Task OnInitializedAsync() {
       //Busca la información del user a mostrar a travez de su userName
-      var foundUser = await Task.Run(() => userListUseCase.Execute().Find(user => user.userName == userUsername));
+      var foundUser = userListUseCase.Execute().Find(user => user.userName == userUsername);
       user = foundUser ?? new User();
 
       //Extrae la información del user loggeado, para mostrarle el boton ban si es daniel

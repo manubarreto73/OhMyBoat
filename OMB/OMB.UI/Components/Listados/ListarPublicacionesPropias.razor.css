@@ -13,7 +13,3 @@ img {
 .img:hover {
   outline: solid black 2px;
 }
-
-.modal-backdrop .fade .show {
-  z-index: 0;
-}

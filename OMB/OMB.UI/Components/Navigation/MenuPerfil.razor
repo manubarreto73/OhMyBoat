@@ -20,13 +20,10 @@
     </ul>
 </div>
 
-<ListarPublicacionesPropias @ref="listarPublicaciones" />
-
 @code {
     User? user = new User();
     int userId;
     DialogoConfirmacion dialogo = null!;
-    ListarPublicacionesPropias listarPublicaciones = null!;
 
     protected override async Task OnInitializedAsync() {
         var result2 = await sessionStorage.GetAsync<int>("userId");
@@ -63,7 +60,10 @@
         OnAbiertoBarco.InvokeAsync();
     }
 
-    private void AbrirListarPublicaciones() {
-      listarPublicaciones.Cargar(user.Id);
+    [Parameter]
+    public EventCallback OnListarPublicaciones { get; set; }
+
+    void AbrirListarPublicaciones() {
+        OnListarPublicaciones.InvokeAsync();
     }
 }

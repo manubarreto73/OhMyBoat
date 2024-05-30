@@ -59,6 +59,7 @@
 
 @code {
     int userId;
+    
     List<Post> _allPosts = new List<Post>();
     List<Post> _posts = new List<Post>();
     List<Transport> _allTransports = new List<Transport>();
@@ -77,21 +78,24 @@
       // Traigo todas las fotos así no tengo que traerlas con cada post
       _vehicleImages = listVehicleImagesUseCase.Execute();
       _shipImages = listShipImagesUseCase.Execute();
+      _allPosts = listPostUseCase.Execute();
+      _allTransports = listTransportUseCase.Execute();
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar
-    public void Cargar(int profileId) {
-      GetPosts(profileId);
+    public void Cargar() {
+      _posts = new List<Post>();
+      _transports = new List<Transport>();
+
+      GetPosts(userId);
       StateHasChanged();
     }
 
     private void GetPosts(int profileId) {
-      _allPosts = listPostUseCase.Execute();
-      _allTransports = listTransportUseCase.Execute();
-
       // Filtro entre todos los transportes para encontrar los que corresponden con los posts
       foreach (Post post in _allPosts) {
         Transport transport = _allTransports.Find(trans => trans.Id == post.TransportId);
+
         if (transport != null) {
           if (transport.UserId == profileId) {
             _transports.Add(transport);

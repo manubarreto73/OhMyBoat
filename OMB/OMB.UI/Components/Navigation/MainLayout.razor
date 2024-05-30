@@ -45,7 +45,7 @@
                         }
                     }
                     else {
-                        <MenuPerfil OnAbiertoVehiculo="CerrarCartelVehiculo" OnAbiertoBarco="CerrarCartelBarco" />
+                        <MenuPerfil OnAbiertoVehiculo="CerrarCartelVehiculo" OnAbiertoBarco="CerrarCartelBarco" OnListarPublicaciones="AbrirListarPublicaciones" />
                     }
                 </div>
             }
@@ -53,7 +53,8 @@
 
         <CargarVehiculo @ref="cargarVehiculo" />
         <CargarBarco  @ref="cargarBarco" />
-        
+        <ListarPublicacionesPropias @ref="listarPublicaciones" />
+
         <article class="content px-4">
             @Body
         </article>
@@ -70,6 +71,7 @@
     int userId;
     bool isEmployee;
 
+    ListarPublicacionesPropias listarPublicaciones = null!;
     CargarVehiculo cargarVehiculo = null!;
     CargarBarco cargarBarco = null!;
 
@@ -91,5 +93,9 @@
 
     public void CerrarCartelBarco() {
         cargarBarco.CerrarCartel();
+    }
+
+    public void AbrirListarPublicaciones() {
+      listarPublicaciones.Cargar();
     }
 }

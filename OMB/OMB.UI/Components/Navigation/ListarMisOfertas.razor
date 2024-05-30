@@ -4,6 +4,9 @@
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject offerListUseCase offerListUseCase
+@inject deleteOfferUseCase deleteOfferUseCase
+
+<DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarOferta"/>
 
 <div class="offers-container">
     @if (offerList.Any()) {
@@ -13,7 +16,13 @@
                     <h3>Oferta a @getOfferTarget(offer).userName </h3>
                     <h6>Ofreces @getOfferedTransport(offer).plate </h6>
                     <h6>Pedis @getPostedTransport(offer).plate </h6>
+                    <h6>Id @offer.Id </h6>
                 </div>
+            </div>
+            <div class="offer">
+                <button class="btn btn-danger" @onclick="()=>confirmarEliminarOferta(offer)">
+                          <i class='bx bxs-trash-alt'></i>
+                </button>
             </div>
         }
     } else {
@@ -26,9 +35,13 @@
         
     List<Transport> transportList = new List<Transport>();
 
-    List<User> userList = new List<User>();  
+    List<User> userList = new List<User>(); 
+
+    DialogoConfirmacion dialogoConfirmacion = null!;
 
     int loggedUserId;
+
+    Offer offerAux;
 
     protected override async Task OnInitializedAsync() {
         //Inicializo en offerList las ofertas hechas por el usuario loggeado
@@ -60,5 +73,20 @@
 
     public Transport getPostedTransport(Offer offer) {
         return transportList.Where(T => T.Id == offer.transportePosteadoId).SingleOrDefault();
+    }
+
+    public void confirmarEliminarOferta(Offer offer) {
+        offerAux = offer;
+        dialogoConfirmacion.Mostrar("¿Seguro qué deseas eliminar la oferta?");
+    }
+
+    private bool sonIguales(Offer o1, Offer o2) {
+        //Se supone que no debería haber dos así
+        return o1.transportePosteadoId == o2.transportePosteadoId && o1.transporteOfertadoId == o2.transporteOfertadoId;
+    }
+
+    public void eliminarOferta() {
+        deleteOfferUseCase.Execute(offerAux.Id);
+        getOfferList();
     }
 }

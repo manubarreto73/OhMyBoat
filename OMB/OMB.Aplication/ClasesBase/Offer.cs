@@ -14,7 +14,7 @@ public class Offer : IClonable {
     }
 
     public IClonable Clone () {
-        return new Offer (this.transportePosteadoId, this.transporteOfertadoId);
+        return new Offer (this.transportePosteadoId, this.transporteOfertadoId){Id = this.Id};
     }
 
 }

@@ -12,6 +12,7 @@
         <li><a class="dropdown-item" style="cursor:pointer" @onclick=CargarPerfil >Mi perfil</a></li>
         <li><a class="dropdown-item" style="cursor:pointer" @onclick=CerrarCartelVehiculo data-bs-toggle="modal"data-bs-target="#cargarVehiculoModal">Cargar vehículo</a></li>
         <li><a class="dropdown-item" style="cursor:pointer" @onclick=CerrarCartelBarco data-bs-toggle="modal"data-bs-target="#cargarBarcoModal">Cargar barco</a></li>
+        <li><a class="dropdown-item" style="cursor:pointer" @onclick=AbrirListarPublicaciones data-bs-toggle="modal"data-bs-target="#listarPublicacionesPropiasModal">Mis Publicaciones</a></li>
         <li><a class="dropdown-item" style="cursor:pointer" href="listarmisofertas">Mis Ofertas</a></li>
         <li><a class="dropdown-item" style="cursor:pointer" href="listarmisintercambios">Mis Intercambios</a></li>
         <li><a class="dropdown-item" style="cursor:pointer" href="cambiarcontraseña">Cambiar contraseña</a></li>
@@ -19,10 +20,13 @@
     </ul>
 </div>
 
+<ListarPublicacionesPropias @ref="listarPublicaciones" />
+
 @code {
     User? user = new User();
     int userId;
     DialogoConfirmacion dialogo = null!;
+    ListarPublicacionesPropias listarPublicaciones = null!;
 
     protected override async Task OnInitializedAsync() {
         var result2 = await sessionStorage.GetAsync<int>("userId");
@@ -57,5 +61,9 @@
 
     void CerrarCartelBarco() {
         OnAbiertoBarco.InvokeAsync();
+    }
+
+    private void AbrirListarPublicaciones() {
+      listarPublicaciones.Cargar(user.Id);
     }
 }

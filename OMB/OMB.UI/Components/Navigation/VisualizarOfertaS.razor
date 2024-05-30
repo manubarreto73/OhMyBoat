@@ -1,0 +1,114 @@
+@page "/visualizaroferta/{offerId:int?}"
+@inject NavigationManager Navegador
+@inject offerListUseCase offerListUseCase
+@inject shipListUseCase shipListUseCase
+@inject userListUseCase userListUseCase
+@inject listPostUseCase postListUseCase
+@inject modifyOfferUseCase modifyOfferUseCase
+@inject modifyPostUseCase modifyPostUseCase
+@inject addUnresolvedExchangeUseCase addUnresolvedExchangeUseCase
+@inject deleteOfferUseCase deleteOfferUseCase
+
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="resolver"/>
+
+<div>
+    <h3> Te han ofrecido un @offeredship.type de marca @offeredship.model </h3>
+	<h6> (Imagenes) </h6>
+	<h6> Ofrecido por @userOffering.userName </h6>
+    <h6> @offeredship.description </h6>
+	<h6> Patente @offeredship.plate </h6>
+    <h6> @offeredship.kms kilometros </h6>
+	@if (offeredship.type != "Ciclomotor" ){
+		<h6> @offeredship.doors puertas </h6>
+	}
+</div>
+<div>
+	<button class="btn btn-primary" @onclick="confirmarAceptarOferta" data-bs-dismiss="modal">Aceptar oferta</button>
+    <button class="btn btn-danger" @onclick="confirmarRechazarOferta" data-bs-dismiss="modal">Rechazar oferta</button>
+</div>
+
+@code {
+
+	[Parameter] public int? offerId {get; set;}
+
+	Offer offer;
+
+	Ship offeredship;
+
+	User userOffering;
+
+	DialogoConfirmacion dialogo = null!;
+
+	bool accion = false;
+
+	protected override async Task OnAfterRenderAsync(bool firstRender) {
+
+		offer = offerListUseCase.Execute().Where(O => O.Id == offerId).SingleOrDefault();
+
+		offeredship = shipListUseCase.Execute().Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault();
+
+		userOffering = userListUseCase.Execute().Where(U => U.Id == offeredship.UserId).SingleOrDefault();
+
+		StateHasChanged();
+
+	}
+
+	public void confirmarAceptarOferta () {
+		accion = true;
+		dialogo.Mostrar("¿Seguro que deseas aceptar la oferta?");
+	}
+
+	public void confirmarRechazarOferta () {
+		accion = false;
+		dialogo.Mostrar("¿Seguro que deseas rechazar la oferta?");
+	}
+
+	private void pausePost (int transportId) {
+		Post post = postListUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault();
+		if (post != null) {
+			post.paused = true;
+			modifyPostUseCase.Execute(post);
+		}
+	}
+
+	private void borrarOfertas (int transportId) {
+		List<int> offers = offerListUseCase.Execute().Where(O => O.transporteOfertadoId == transportId).ToList().Select(O => O.Id).ToList();
+		foreach (int id in offers) {
+			deleteOfferUseCase.Execute(id);
+		}
+	}
+
+	public void aceptarOferta () {
+		
+		pausePost(offer.transporteOfertadoId);
+		pausePost(offer.transportePosteadoId);
+
+		offer.state = "accepted";
+		modifyOfferUseCase.Execute(offer);
+
+		UnresolvedExchange unresolvedExchange = new UnresolvedExchange(offer.transportePosteadoId, offer.transporteOfertadoId);
+		addUnresolvedExchangeUseCase.Execute(unresolvedExchange);
+
+		borrarOfertas(offer.transporteOfertadoId);
+		borrarOfertas(offer.transportePosteadoId);
+
+		//Mail para avisar
+		
+	}
+
+	public void rechazarOferta () {
+		offer.state = "rejected";
+		modifyOfferUseCase.Execute(offer);
+		//Creo que redirecciona bien pero no lo puedo probar
+		Navegador.NavigateTo("shippost/" + offer.transportePosteadoId, true);
+	}
+
+	//Si metemos dos dialogos confirmacion puede haber problemas
+	public void resolver () {
+		if (accion)
+			aceptarOferta();
+		else
+			rechazarOferta();
+	}
+
+}

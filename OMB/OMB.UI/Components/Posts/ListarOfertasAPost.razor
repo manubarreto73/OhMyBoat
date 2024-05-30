@@ -47,6 +47,7 @@
     public void getOfferList (Post post) {
         postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == post.getTransportId());
         offerList = offerListUseCase.Execute().Where(offer => offer.transportePosteadoId == postedTransport.Id).ToList();
+        StateHasChanged();
     }
 
     public string getOfferTarget(Offer offer) {

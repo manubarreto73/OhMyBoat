@@ -1,0 +1,102 @@
+@page "/exchange/{exchangeId:int?}"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@rendermode InteractiveServer
+@inject ProtectedSessionStorage sessionStorage
+@inject userListUseCase userListUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject NavigationManager Navegador
+
+@if (isEmployee) {
+    <div> html para empleados? </div>
+} else if (isParticipant) { // is owner or offerer
+    if (ownerTransport != null && offererTransport != null) {       //sino pones este if renderiza antes de conseguir las variables y detona (anashe)
+        <body>
+            <div class="exchange-container">
+                <div class="user-info">
+                    <h2>Ofertante: @offerer.userName</h2>
+                    <div class="vehicle-info">
+                        <h3>Ofrece:</h3>
+                        <p>Tipo: @offererTransport.type</p>
+                        <p>Modelo: @offererTransport.model</p>
+                        <!-- Add more vehicle details here -->
+                    </div>
+                </div>
+                <div class="user-info">
+                    <h2>Dueño: @owner.userName</h2>
+                    <div class="vehicle-info">
+                        <h3>Se solicita:</h3>
+                        <p>Tipo: @ownerTransport.type</p>
+                        <p>Modelo: @ownerTransport.model</p>
+                        <!-- Add more vehicle details here -->
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                @if (isMyTurn()) {
+                    <button class="accept">Aceptar Intercambio</button>
+                    <button class="try">ofrecer horario</button>
+                }
+                @if (!isMyTurn()) {
+                    <p> Esperando a que el usuario acepte la oferta u ofrezca una nueva fecha </p>
+                }
+                <button class="cancel">Cancelar Intercambio</button>
+            </div>
+        </body>
+    }
+}
+
+@code {
+    [Parameter] public int exchangeId { get; set; }
+    UnresolvedExchange actualExchange;
+
+    User owner = new User();
+    Transport ownerTransport;
+    User offerer = new User();
+    Transport offererTransport;
+
+    int loggedUserId = 0;
+    bool isEmployee = false;
+    bool isParticipant = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            //Extrae la información del user loggeado
+            var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
+            loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
+            var getIsEmployee  = await sessionStorage.GetAsync<bool>("isEmployee");
+            isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
+
+            // get Exchange from its Id
+            actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
+
+            // Load the info after actualExchange is initialized
+            loadInfo();
+        }
+    }
+
+    private void loadInfo() { //cargar info de transportes y los usuarios
+        List<Transport> transports = listTransportUseCase.Execute();  // lista de transportes para conseguir los transportes del owner y offerer
+        ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault();
+        offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault();
+
+        List<User> users = userListUseCase.Execute();   // lista de usuarios para conseguir sus infos a través de sus transportes.
+        owner = users.Where(u => u.Id == ownerTransport.UserId).SingleOrDefault();
+        offerer = users.Where(u => u.Id == offererTransport.UserId).SingleOrDefault();
+
+        // aviso que cambia el estado, osea que se consiguieron los datos para poder renderizar el html
+        StateHasChanged();
+    }
+
+    private bool iAmOwner() {
+        return owner.Id == loggedUserId;
+    }
+    
+    private bool iAmOfferer() {
+        return offerer.Id == loggedUserId;
+    }
+
+    private bool isMyTurn() {
+        return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
+    }
+}

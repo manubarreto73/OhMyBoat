@@ -1,6 +1,7 @@
 @page "/listarmisintercambios"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navegador
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
@@ -11,7 +12,7 @@
     <div class="exchanges-body">
       @if (madeExchanges.Any()) {
           @foreach (var exchange in madeExchanges){
-              <div class="exchange-info">
+              <div class="exchange-info" @onclick="async () => await browseToExchange(exchange.Id)">
                 <h4>Dueño publicación @getPostTarget(exchange)</h4>
                 <h6>Publicado @getPostedTransport(exchange)</h6>
                 <h6>Ofertás @getOfferedTransport(exchange)</h6>
@@ -27,7 +28,7 @@
     <div class="exchanges-body">
       @if (receivedExchanges.Any()) {
           @foreach (var exchange in receivedExchanges){
-            <div class="exchange-info">
+            <div class="exchange-info" @onclick="async () => await browseToExchange(exchange.Id)">
               <h4>Ofertante @getOfferTarget(exchange)</h4>
               <h6>Oferta @getOfferedTransport(exchange)</h6>
               <h6>Publicación @getPostedTransport(exchange)</h6>
@@ -93,5 +94,9 @@
   public string getPostedTransport(Exchange exchange) {
     Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
     return postedTransport.plate;
+  }
+
+  public async Task browseToExchange(int exchangeId) {
+    navegador.NavigateTo("exchange/" + exchangeId, true);
   }
 }

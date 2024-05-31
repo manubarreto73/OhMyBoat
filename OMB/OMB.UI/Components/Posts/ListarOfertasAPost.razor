@@ -1,4 +1,5 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject NavigationManager Navegador
 @inject ProtectedSessionStorage sessionStorage
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
@@ -29,10 +30,11 @@
                     <tbody>
                         @foreach (var offer in ofertas){
                                 <tr>
-                                    <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" height="80px" width="80px"/></td>
+                                    <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" height="80px" width="80px" @onclick="() => irAOferta(offer)" /></td>
                                     <td>@_tipos[i]</td>
                                     <td>@_modelos[i]</td>
                                 </tr>
+                                i++;
                             }
                     </tbody>
                 </table>
@@ -101,6 +103,19 @@
             byte[]? image = (0 != shipImages.Where(imagen => imagen.ShipId == oferta.transporteOfertadoId).Count()) ? shipImages.Where(imagen => imagen.ShipId == oferta.transporteOfertadoId).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == oferta.transporteOfertadoId).First().Image;
             _images.Add(image);
         }
+    }
+
+    private void irAOferta (Offer offer) {
+        if (isVehicle(offer.transporteOfertadoId)) {
+            Navegador.NavigateTo("visualizarofertavehicle/" + offer.Id, true);
+        }
+        else {
+            Navegador.NavigateTo("visualizarofertaship/" + offer.Id, true);
+        }
+    }
+
+    private bool isVehicle (int id) {
+        return vehicleImages.Any(I => I.VehicleId == id);
     }
 
 }

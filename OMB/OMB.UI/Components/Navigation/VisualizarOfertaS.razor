@@ -1,4 +1,4 @@
-@page "/visualizaroferta/{offerId:int?}"
+@page "/visualizarofertaship/{offerId:int?}"
 @inject NavigationManager Navegador
 @inject offerListUseCase offerListUseCase
 @inject shipListUseCase shipListUseCase
@@ -17,10 +17,9 @@
 	<h6> Ofrecido por @userOffering.userName </h6>
     <h6> @offeredship.description </h6>
 	<h6> Patente @offeredship.plate </h6>
-    <h6> @offeredship.kms kilometros </h6>
-	@if (offeredship.type != "Ciclomotor" ){
-		<h6> @offeredship.doors puertas </h6>
-	}
+    <h6> Eslora @offeredship.eslora </h6>
+	<h6> Manga @offeredship.manga </h6>
+	<h6> Calado @offeredship.calado </h6>
 </div>
 <div>
 	<button class="btn btn-primary" @onclick="confirmarAceptarOferta" data-bs-dismiss="modal">Aceptar oferta</button>
@@ -31,11 +30,11 @@
 
 	[Parameter] public int? offerId {get; set;}
 
-	Offer offer;
+	Offer offer = new Offer(0, 0);
 
-	Ship offeredship;
+	Ship offeredship = new Ship();
 
-	User userOffering;
+	User userOffering = new User();
 
 	DialogoConfirmacion dialogo = null!;
 
@@ -72,7 +71,7 @@
 	}
 
 	private void borrarOfertas (int transportId) {
-		List<int> offers = offerListUseCase.Execute().Where(O => O.transporteOfertadoId == transportId).ToList().Select(O => O.Id).ToList();
+		List<int> offers = offerListUseCase.Execute().Where(O => O.transporteOfertadoId == transportId && O.state == "active").ToList().Select(O => O.Id).ToList();
 		foreach (int id in offers) {
 			deleteOfferUseCase.Execute(id);
 		}
@@ -93,6 +92,8 @@
 		borrarOfertas(offer.transportePosteadoId);
 
 		//Mail para avisar
+
+		Navegador.NavigateTo("listarmisintercambios/", true);
 		
 	}
 
@@ -100,7 +101,19 @@
 		offer.state = "rejected";
 		modifyOfferUseCase.Execute(offer);
 		//Creo que redirecciona bien pero no lo puedo probar
-		Navegador.NavigateTo("shippost/" + offer.transportePosteadoId, true);
+	
+		//MAILLLL
+
+		if (isVehicle(offer.transportePosteadoId)) {
+			Navegador.NavigateTo("vehiclepost/" + offer.transportePosteadoId, true);	
+		}
+		else {
+			Navegador.NavigateTo("shippost/" + offer.transportePosteadoId, true);
+		}
+	}
+
+	public bool isVehicle (int id) {
+		return !shipListUseCase.Execute().Any(S => S.Id == id);
 	}
 
 	//Si metemos dos dialogos confirmacion puede haber problemas

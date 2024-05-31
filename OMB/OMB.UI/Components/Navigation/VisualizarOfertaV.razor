@@ -1,4 +1,4 @@
-@page "/visualizaroferta/{offerId:int?}"
+@page "/visualizarofertavehicle/{offerId:int?}"
 @inject NavigationManager Navegador
 @inject offerListUseCase offerListUseCase
 @inject vehicleListUseCase vehicleListUseCase
@@ -72,7 +72,7 @@
 	}
 
 	private void borrarOfertas (int transportId) {
-		List<int> offers = offerListUseCase.Execute().Where(O => O.transporteOfertadoId == transportId).ToList().Select(O => O.Id).ToList();
+		List<int> offers = offerListUseCase.Execute().Where(O => O.transporteOfertadoId == transportId && O.state == "active").ToList().Select(O => O.Id).ToList();
 		foreach (int id in offers) {
 			deleteOfferUseCase.Execute(id);
 		}
@@ -93,6 +93,8 @@
 		borrarOfertas(offer.transportePosteadoId);
 
 		//Mail para avisar
+
+		Navegador.NavigateTo("listarmisintercambios/", true);
 		
 	}
 
@@ -100,7 +102,9 @@
 		offer.state = "rejected";
 		modifyOfferUseCase.Execute(offer);
 		//Creo que redirecciona bien pero no lo puedo probar
-		Navegador.NavigateTo("vehiclepost/" + offer.transportePosteadoId, true);
+		//mail
+		Navegador.NavigateTo("shippost/" + offer.transportePosteadoId, true);
+	
 	}
 
 	//Si metemos dos dialogos confirmacion puede haber problemas

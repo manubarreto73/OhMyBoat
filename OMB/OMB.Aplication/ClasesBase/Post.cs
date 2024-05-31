@@ -7,7 +7,6 @@ public class Post{
     public int TransportId {get; set;}
     public DateTime posted {get; set;}
     public Transport posting {get; set;}
-
     public bool paused {get; set;}
 
     public string getTitle(){

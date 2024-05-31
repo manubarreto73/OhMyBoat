@@ -101,6 +101,11 @@
       loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
       //Busco al owner del post
       actualPost = await Task.Run(() => listPostUseCase.Execute().Find(post => post.getTransportId() == postId));
+      //JOACO SOS UNA BASURA APRENDE A NOMBRAR TUS VARIABLES LA RECONCHA DE TU MADRE
+      //HIJO DE MIL PUTA NO ES UN POST ID ES UN TRANSPORTE ID TU MODULO ES UNA MIERDA NO SE QUE MANDARLE
+      //YO CONFIE EN VOS Y ME TRAICIONASTE LA CONCHA DE TU MADRE TE VOY A ENCONTRAR Y TE VOY A
+      //dar un besito 
+      //tengo problemas psicologicos y me enamoro de quien me lastima
       if (actualPost != null) {
         actualVehicle = await Task.Run(() => vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == actualPost.getTransportId()));
         if (actualVehicle != null) {

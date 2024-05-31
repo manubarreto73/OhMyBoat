@@ -9,7 +9,7 @@ public class UnresolvedExchange : Exchange {
     }
 
     public override IClonable Clone(){
-        return new UnresolvedExchange(this.transportePosteadoId, this.transporteOfertadoId);
+        return new UnresolvedExchange(this.transportePosteadoId, this.transporteOfertadoId){Id = this.Id};
     }
 
 }

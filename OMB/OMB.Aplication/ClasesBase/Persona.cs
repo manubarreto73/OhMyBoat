@@ -21,8 +21,6 @@ public class Persona{
         this.birthDate = birthDate;
     }
 
-    public Persona() {
-        
-    }
+    public Persona() {}
 
 }

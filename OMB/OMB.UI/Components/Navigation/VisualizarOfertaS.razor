@@ -3,11 +3,13 @@
 @inject offerListUseCase offerListUseCase
 @inject shipListUseCase shipListUseCase
 @inject userListUseCase userListUseCase
-@inject listPostUseCase postListUseCase
+@inject listPostUseCase listPostUseCase
 @inject modifyOfferUseCase modifyOfferUseCase
 @inject modifyPostUseCase modifyPostUseCase
 @inject addUnresolvedExchangeUseCase addUnresolvedExchangeUseCase
 @inject deleteOfferUseCase deleteOfferUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject userListUseCase userListUseCase
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="resolver"/>
 
@@ -26,6 +28,8 @@
     <button class="btn btn-danger" @onclick="confirmarRechazarOferta" data-bs-dismiss="modal">Rechazar oferta</button>
 </div>
 
+<Emails @ref=emails/>
+
 @code {
 
 	[Parameter] public int? offerId {get; set;}
@@ -37,6 +41,7 @@
 	User userOffering = new User();
 
 	DialogoConfirmacion dialogo = null!;
+	Emails emails = null!;
 
 	bool accion = false;
 
@@ -63,7 +68,7 @@
 	}
 
 	private void pausePost (int transportId) {
-		Post post = postListUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault();
+		Post post = listPostUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault();
 		if (post != null) {
 			post.paused = true;
 			modifyPostUseCase.Execute(post);
@@ -77,7 +82,7 @@
 		}
 	}
 
-	public void aceptarOferta () {
+	public async void aceptarOferta () {
 		
 		pausePost(offer.transporteOfertadoId);
 		pausePost(offer.transportePosteadoId);
@@ -91,18 +96,41 @@
 		borrarOfertas(offer.transporteOfertadoId);
 		borrarOfertas(offer.transportePosteadoId);
 
-		//Mail para avisar
+		// Mail para avisar al ofertante
+		User ofertante = getUser(offer.transporteOfertadoId);
+		string titulo = getTitle(offer.transportePosteadoId);
+
+		await emails.SendEmail(
+			"¡Oferta aceptada!", // Subject
+			ofertante.mail, // Mail
+			"¡Oferta aceptada!", // Titulo
+			$@"
+			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu oferta a <b>{titulo}</b> ha sido aceptada!</p>
+			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Ya podés entrar a la página para concretar el horario de intercambio</p>
+			" // Cuerpo
+		);
 
 		Navegador.NavigateTo("listarmisintercambios/", true);
 		
 	}
 
-	public void rechazarOferta () {
+	public async void rechazarOferta () {
 		offer.state = "rejected";
 		modifyOfferUseCase.Execute(offer);
-		//Creo que redirecciona bien pero no lo puedo probar
 	
-		//MAILLLL
+		// Mail para avisar al ofertante
+		User ofertante = getUser(offer.transporteOfertadoId);
+		string titulo = getTitle(offer.transportePosteadoId);
+
+		await emails.SendEmail(
+			"Oferta rechazada", // Subject
+			ofertante.mail, // Mail
+			"Oferta rechazada", // Titulo
+			$@"
+			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu oferta a <b>{titulo}</b> ha sido rechazada</p>
+			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para seguir buscando el transporte de tus sueños</p>
+			" // Cuerpo
+		);
 
 		if (isVehicle(offer.transportePosteadoId)) {
 			Navegador.NavigateTo("vehiclepost/" + offer.transportePosteadoId, true);	
@@ -122,6 +150,17 @@
 			aceptarOferta();
 		else
 			rechazarOferta();
+	}
+
+	public User getUser(int transportId) {
+		Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == transportId);
+		return userListUseCase.Execute().Find(user => user.Id == transport.UserId);
+	}
+
+	public string getTitle(int transportId) {
+		Transport postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == transportId);
+    Post post = listPostUseCase.Execute().Find(post => post.TransportId == postedTransport.Id);
+		return post.Title;
 	}
 
 }

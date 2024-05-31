@@ -31,7 +31,7 @@
               <tbody>
                 @{int i = 0;}
                 @foreach (var transport in _transports) {
-                  <tr>
+                  <tr style="cursor-pointer">
                     <td>
                         <div class="img">
                         <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" height="80px" width="80px"/>

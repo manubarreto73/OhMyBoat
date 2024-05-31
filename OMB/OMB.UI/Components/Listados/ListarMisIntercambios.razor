@@ -1,6 +1,7 @@
 @page "/listarmisintercambios"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navegador
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
@@ -16,7 +17,7 @@
       @if (exchanges.Any()) {
         int i = 0;
         @foreach (var exchange in exchanges){
-          <div class="exchange-info">
+          <div class="exchange-info" @onclick="async () => await browseToExchange(exchange.Id)">
             <div class="img">
               <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))"/>
             </div>
@@ -114,5 +115,9 @@
     Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
     Post post = posts.Find(post => post.TransportId == postedTransport.Id);
     return $"{post.Title} {postedTransport.plate}";
+  }
+
+  public async Task browseToExchange(int exchangeId) {
+    navegador.NavigateTo("exchange/" + exchangeId, true);
   }
 }

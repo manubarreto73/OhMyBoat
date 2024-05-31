@@ -61,20 +61,33 @@
         </div>
       </div>
       <p class="ship-post-description">@actualShip.description</p>
+      <hr>
+      @if((loggedUserId != 0) && (!isOwner)){
+        <button class="btn btn-primary" @onclick="Ofertar" data-bs-toggle="modal" data-bs-target="#listarTransportesModal">Ofertar</button>
+      }
+      @if(isOwner){
+        <button class="btn btn-primary" @onclick="CargarOfertas" data-bs-toggle="modal" data-bs-target="#listarOfertasModal">Ver Ofertas</button>
+      }
     </div>
   </div>
 }
 
+<ListarTransportesAOfertar @ref="listarTransportes" />
+<ListarOfertasAPost @ref="listarOfertas" />
+
 @code {
   [Parameter] public int? postId { get; set; }
-  bool isOwner = false;
+  bool isOwner;
   Post actualPost;
-  Ship actualShip;
+  Ship actualShip = new Ship();
+
+  ListarTransportesAOfertar listarTransportes = null!; 
+  ListarOfertasAPost listarOfertas = null!;
 
   List<byte[]> images = new List<byte[]>(); // para las imagenes del post
   int limit = 0;  	  // para manejar el cap de imagenes
   int i = 0;
-
+  int loggedUserId = 0;
 
   protected override void OnInitialized() {
     images.Add(new byte[0]);
@@ -84,7 +97,7 @@
     if (firstRender) {
       //Extrae el ID del usuario loggeado del sessionStorage
       var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
-      int loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
+      loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
       //Busco al owner del post
       actualPost = await Task.Run(() => listPostUseCase.Execute().Find(post => post.getTransportId() == postId));
       if (actualPost != null) {
@@ -102,6 +115,14 @@
       // le aviso a blazor que se tiene que re-renderizar la pagina
       StateHasChanged();
     }
+  }
+
+  private void Ofertar() {
+    listarTransportes.Cargar(actualShip);
+  }
+
+  private void CargarOfertas() {
+    listarOfertas.getOfferList(actualPost);
   }
 
   private void GetImages() {

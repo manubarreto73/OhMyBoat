@@ -74,16 +74,17 @@
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
       userId = result.Success ? result.Value : 0;
+    }
 
+    // Cada vez que se abre el modal se debe llamar a Cargar
+    public void Cargar() {
       // Traigo todas las fotos así no tengo que traerlas con cada post
       _vehicleImages = listVehicleImagesUseCase.Execute();
       _shipImages = listShipImagesUseCase.Execute();
       _allPosts = listPostUseCase.Execute();
       _allTransports = listTransportUseCase.Execute();
-    }
-
-    // Cada vez que se abre el modal se debe llamar a Cargar
-    public void Cargar() {
+      
+      _images = new List<byte[]>();
       _posts = new List<Post>();
       _transports = new List<Transport>();
 

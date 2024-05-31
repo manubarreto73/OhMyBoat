@@ -142,12 +142,12 @@
         dialogoError.Mostrar("Por favor ponga un título antes de publicar");
       }
       else{
-      addPostUseCase.Execute(new Post(vehiculo.Id, this.title));
-      publicando = false;
-      publicado = true;
-      mostrarCartel = true;
-      cartelito = "Publicacion exitosa";
-      StateHasChanged();
+        addPostUseCase.Execute(new Post(vehiculo.Id, this.title));
+        publicando = false;
+        publicado = true;
+        mostrarCartel = true;
+        cartelito = "Publicacion exitosa";
+        StateHasChanged();
       }
     }
 

@@ -1,42 +1,30 @@
 .exchanges-container {
   display: flex;
   justify-content: center;
-  gap: 8rem;
+  width: 68%;
 }
 
 .exchanges {
   position: relative;
-  width: 40rem;
+  width: 100%;
 }
 
-.exchanges-title1,
-.exchanges-title2 {
+.exchanges-title {
   margin-left: 1rem;
   margin-bottom: 1rem;
 }
 
-.exchanges-title1::after {
+.exchanges-title::after {
   position: absolute;
-  left: 420px;
+  left: 265px;
   top: 28px;
   content: "";
-  width: calc(100% - 420px);
+  width: calc(100% - 265px);
   height: 2px;
   background-color: black;
 }
 
-.exchanges-title2::after {
-  position: absolute;
-  left: 460px;
-  top: 28px;
-  content: "";
-  width: calc(100% - 460px);
-  height: 2px;
-  background-color: black;
-}
-
-.exchanges-title1::before,
-.exchanges-title2::before {
+.exchanges-title::before{
   position: absolute;
   left: 0;
   top: 28px;
@@ -48,11 +36,41 @@
 
 .exchanges-body {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
   padding-block: 2rem;
+  padding-inline: 2rem;
   height: calc(100vh - 160.8px);
   background-color: #f3f3f3;
   border-radius: 5px;
   overflow: auto;
+}
+
+.exchange-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.exchange-info::after {
+  position: absolute;
+  left: 0;
+  bottom: -0.5rem;
+  content: "";
+  width: 100%;
+  height: 2px;
+  background-color: black;
+}
+
+.img {
+  margin-right: 1rem;
+  width: 100px;
+  height: 100px;
+}
+
+.img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 5px;
 }

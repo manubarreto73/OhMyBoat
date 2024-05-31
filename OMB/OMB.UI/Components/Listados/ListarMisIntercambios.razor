@@ -5,35 +5,31 @@
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject listPostUseCase listPostUseCase
+@inject shipListUseCase shipListUseCase
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
 
 <div class="exchanges-container">
   <div class="exchanges">
-    <h1 class="exchanges-title1">Intercambios Hechos</h1>
+    <h1 class="exchanges-title">Intercambios</h1>
     <div class="exchanges-body">
-      @if (madeExchanges.Any()) {
-          @foreach (var exchange in madeExchanges){
-              <div class="exchange-info" @onclick="async () => await browseToExchange(exchange.Id)">
-                <h4>Dueño publicación @getPostTarget(exchange)</h4>
-                <h6>Publicado @getPostedTransport(exchange)</h6>
-                <h6>Ofertás @getOfferedTransport(exchange)</h6>
-              </div>
-          }
-      } else {
-        <h3 class="text-center">Aún no hay intercambios</h3>
-      }
-    </div>
-  </div>
-   <div class="exchanges">
-    <h1 class="exchanges-title2">Intercambios Recibidos</h1>
-    <div class="exchanges-body">
-      @if (receivedExchanges.Any()) {
-          @foreach (var exchange in receivedExchanges){
-            <div class="exchange-info" @onclick="async () => await browseToExchange(exchange.Id)">
-              <h4>Ofertante @getOfferTarget(exchange)</h4>
-              <h6>Oferta @getOfferedTransport(exchange)</h6>
-              <h6>Publicación @getPostedTransport(exchange)</h6>
+      @if (exchanges.Any()) {
+        int i = 0;
+        @foreach (var exchange in exchanges){
+          <div class="exchange-info" @onclick="async () => await browseToExchange(exchange.Id)">
+            <div class="img">
+              <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))"/>
             </div>
-          }
+            <div>
+              <h4>Publicación: @getPostedTransport(exchange)</h4>
+              <h6>Dueño de la publicación: @getPostTarget(exchange)</h6>
+              <h6>Ofertado: @getOfferedTransport(exchange)</h6>
+              <h6>Ofertante: @getOfferTarget(exchange)</h6>
+            </div>
+          </div>
+          i++;
+        }
       } else {
         <h3 class="text-center">Aún no hay intercambios</h3>
       }
@@ -41,13 +37,16 @@
   </div>
 </div>
 
-
 @code {
   List<UnresolvedExchange> unresolvedExchanges = new List<UnresolvedExchange>();
-  List<UnresolvedExchange> madeExchanges = new List<UnresolvedExchange>(); // Los que oferto algo yo
-  List<UnresolvedExchange> receivedExchanges = new List<UnresolvedExchange>(); // Los que me ofertan algo a mí
+  List<UnresolvedExchange> exchanges = new List<UnresolvedExchange>();
   List<Transport> transports = new List<Transport>();
+  List<Post> posts = new List<Post>();
   List<User> users = new List<User>();
+  
+  List<VehicleImage> vehicleImages = new List<VehicleImage>();
+  List<ShipImage> shipImages = new List<ShipImage>();
+  List<byte[]> images = new List<byte[]>();
   int loggedUserId;
 
   protected override async Task OnInitializedAsync() {
@@ -56,9 +55,14 @@
     var getLoggedUser = await sessionStorage.GetAsync<int>("userId");
     loggedUserId = getLoggedUser.Success ? getLoggedUser.Value : 0;
 
+    // Inicializo listas para usarlas después
     users = userListUseCase.Execute();
     transports = listTransportUseCase.Execute();
     unresolvedExchanges = unresolvedExchangeListUseCase.Execute();
+
+    posts = listPostUseCase.Execute();
+    vehicleImages = listVehicleImagesUseCase.Execute();
+    shipImages = listShipImagesUseCase.Execute();
     getExchanges();
   }
 
@@ -66,9 +70,25 @@
     // Ids de todos los transportes del usuario loggeado
     List<int> transportIds = transports.FindAll(T => T.UserId == loggedUserId).Select(T => T.Id).ToList();
     // Todas los intercambios donde se está involucrado un transporte del usuario
-    madeExchanges = unresolvedExchanges.FindAll(Exc => transportIds.Contains(Exc.transporteOfertadoId));
-    receivedExchanges = unresolvedExchanges.FindAll(Exc => transportIds.Contains(Exc.transportePosteadoId));
+    exchanges = unresolvedExchanges.FindAll(Exc => transportIds.Contains(Exc.transporteOfertadoId) || transportIds.Contains(Exc.transportePosteadoId));
+    getImages();
   }
+
+  public void getImages() {
+    foreach (var exchange in exchanges) {
+      int transportId = exchange.transportePosteadoId;
+
+      if (isVehicle(transportId)) {
+        images.Add(vehicleImages.Find(img => img.VehicleId == transportId).Image);
+      } else {
+        images.Add(shipImages.Find(img => img.ShipId == transportId).Image);
+      }
+    }
+  }
+
+  public bool isVehicle (int transportId) {
+		return !shipListUseCase.Execute().Any(ship => ship.Id == transportId);
+	}
 
   // Obtiene el userName del dueño del post involucrado
   public string getPostTarget(Exchange exchange) {
@@ -87,13 +107,14 @@
   // Obtiene la patente del transporte ofrecido
   public string getOfferedTransport(Exchange exchange) {
     Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
-    return offeredTransport.plate;
+    return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
   }
 
   // Obtiene la patente del transporte publicado
   public string getPostedTransport(Exchange exchange) {
     Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-    return postedTransport.plate;
+    Post post = posts.Find(post => post.TransportId == postedTransport.Id);
+    return $"{post.Title} {postedTransport.plate}";
   }
 
   public async Task browseToExchange(int exchangeId) {

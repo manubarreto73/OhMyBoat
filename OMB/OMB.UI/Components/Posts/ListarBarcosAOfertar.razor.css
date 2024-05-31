@@ -1,6 +1,9 @@
+tr {
+  cursor: pointer;
+}
+
 img {
   object-fit: cover;
-  cursor: pointer;
   width: 100%;
   height: 100%;
 }

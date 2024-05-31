@@ -32,8 +32,7 @@
               <tbody>
                 @{int i = 0;}
                 @foreach (var barco in _ships) {
-                  
-                  <tr>
+                  <tr style="cursor-pointer">
                     <td @onclick="() => confirmarOfertar(barco)">
                       <div class="img">
                         <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>

@@ -82,8 +82,7 @@
 		}
 	}
 
-	public async void aceptarOferta () {
-		
+	public void aceptarOferta () {
 		pausePost(offer.transporteOfertadoId);
 		pausePost(offer.transportePosteadoId);
 
@@ -100,7 +99,7 @@
 		User ofertante = getUser(offer.transporteOfertadoId);
 		string titulo = getTitle(offer.transportePosteadoId);
 
-		await emails.SendEmail(
+		emails.SendEmail(
 			"¡Oferta aceptada!", // Subject
 			ofertante.mail, // Mail
 			"¡Oferta aceptada!", // Titulo
@@ -114,7 +113,7 @@
 		
 	}
 
-	public async void rechazarOferta () {
+	public void rechazarOferta () {
 		offer.state = "rejected";
 		modifyOfferUseCase.Execute(offer);
 	
@@ -122,7 +121,7 @@
 		User ofertante = getUser(offer.transporteOfertadoId);
 		string titulo = getTitle(offer.transportePosteadoId);
 
-		await emails.SendEmail(
+		emails.SendEmail(
 			"Oferta rechazada", // Subject
 			ofertante.mail, // Mail
 			"Oferta rechazada", // Titulo

@@ -65,12 +65,13 @@
 }
 
 <ProponerHorario @ref="proponerHorario" OnProponerHorario="HorarioPropuesto" />
+<Emails @ref=emails/>
 
 @code {
     DialogoConfirmacion dialogoAccept = null!;      // tres dialogos para las tres posibles confirmaciones
     DialogoConfirmacion dialogoTry = null!;         // para cada confirmacion tengo que hacer un onConfirmado distinto
     DialogoConfirmacion dialogoCancel = null!;
-
+	Emails emails = null!;
 
     [Parameter] public int exchangeId { get; set; }
     UnresolvedExchange actualExchange;
@@ -151,6 +152,14 @@
         dialogoCancel.Mostrar("¿Seguro que deseas cancelar el intercambio?");
     }
 
+    private User getUser() {
+        if (iAmOwner()) {
+            return offerer;
+        } else {
+            return owner;
+        }
+    }
+
     private async Task cancel() {
         // borro el intercambio actual
         deleteUnresolvedExchangeUseCase.Execute(exchangeId);
@@ -162,11 +171,23 @@
         offererTransportOffers.ForEach(Offer => Offer.state = "active");
         // consigo la lista de posts de los vehiculos y seteo su paused a false (osea, NO pausados)
         listPostUseCase.Execute().Where(Post => Post.TransportId == ownerTransport.Id || Post.TransportId == offererTransport.Id).ToList().ForEach(Post => Post.paused = false);
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id);
+
+        // Envia mail al que no cancelo el intercambio
+        User user = getUser();
+        emails.SendEmail(
+			"Intercambio cancelado", // Subject
+			user.mail, // Mail
+			"Intercambio cancelado", // Titulo
+			$@"
+			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu intercambio de <b>{post.Title}</b> ha sido cancelado</p>
+			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para seguir buscando el transporte de tus sueños</p>
+			" // Cuerpo
+		);
+
         // envio el cartelcito notificando que se canceló el intercambio con exito y navego al home
         await sessionStorage.SetAsync("cartel?", "Intercambio cancelado exitosamente");
         Navegador.NavigateTo("/", true);
-        // falta que envie el mail al usuario que NO canceló el intercambio, de que fue cancelado
-        // aquí --> santi!!!
     }
 
     public void Try(UnresolvedExchange exchange) {

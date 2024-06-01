@@ -68,6 +68,11 @@
       @if(isOwner && !actualPost.paused){
         <button class="btn btn-primary" @onclick="CargarOfertas" data-bs-toggle="modal" data-bs-target="#listarOfertasModal">Ver Ofertas</button>
       }
+      @if(actualPost.paused){
+        <div class="texto_pausa">
+          <p><i class='bx bxs-error'></i><strong>  Publicación Pausada </strong></p>
+        </div>
+      }
     </div>
   </div>
 }

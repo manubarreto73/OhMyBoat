@@ -4,8 +4,15 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject userListUseCase userListUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
 @inject listTransportUseCase listTransportUseCase
+@inject listPostUseCase listPostUseCase
+@inject offerListUseCase offerListUseCase
 @inject NavigationManager Navegador
+
+<DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="cancel"/>
+<DialogoConfirmacion @ref="dialogoTry" OnConfirmado="cancel"/>
+<DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
 
 @if (isEmployee) {
     <div> html para empleados? </div>
@@ -34,19 +41,24 @@
             </div>
             <div class="buttons">
                 @if (isMyTurn()) {
-                    <button class="accept">Aceptar Intercambio</button>
-                    <button class="try">ofrecer horario</button>
+                    <button class="accept" @onclick="confirmarCancel">Aceptar Intercambio</button>
+                    <button class="try" @onclick="confirmarCancel">ofrecer horario</button>
                 }
                 @if (!isMyTurn()) {
                     <p> Esperando a que el usuario acepte la oferta u ofrezca una nueva fecha </p>
                 }
-                <button class="cancel">Cancelar Intercambio</button>
+                <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
             </div>
         </body>
     }
 }
 
 @code {
+    DialogoConfirmacion dialogoAccept = null!;      // tres dialogos para las tres posibles confirmaciones
+    DialogoConfirmacion dialogoTry = null!;         // para cada confirmacion tengo que hacer un onConfirmado distinto
+    DialogoConfirmacion dialogoCancel = null!;
+
+
     [Parameter] public int exchangeId { get; set; }
     UnresolvedExchange actualExchange;
 
@@ -98,5 +110,44 @@
 
     private bool isMyTurn() {
         return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
+    }
+
+    /*
+    private void confirmarCancel() {
+        dialogoCancel.Mostrar("¿Seguro que deseas cancelar el intercambio?");
+    }
+
+    private async Task accept() {
+        
+    }
+
+    private void confirmarTry() {
+        dialogoCancel.Mostrar("¿?");
+    }
+    
+    private async Task try() {
+        
+    } */
+
+    private void confirmarCancel() {
+        dialogoCancel.Mostrar("¿Seguro que deseas cancelar el intercambio?");
+    }
+
+    private async Task cancel() {
+        // borro el intercambio actual
+        deleteUnresolvedExchangeUseCase.Execute(exchangeId);
+        // consigo las ofertas de ambos transportes del intercambio
+        List<Offer> ownerTransportOffers = offerListUseCase.Execute().Where(Offer => Offer.transportePosteadoId == ownerTransport.Id || Offer.transporteOfertadoId == ownerTransport.Id).ToList();
+        List<Offer> offererTransportOffers = offerListUseCase.Execute().Where(Offer => Offer.transportePosteadoId == offererTransport.Id || Offer.transporteOfertadoId == offererTransport.Id).ToList();
+        // para cada oferta de ambas listas seteo el estado en "active" (osea las despauso)
+        ownerTransportOffers.ForEach(Offer => Offer.state = "active");
+        offererTransportOffers.ForEach(Offer => Offer.state = "active");
+        // consigo la lista de posts de los vehiculos y seteo su paused a false (osea, NO pausados)
+        listPostUseCase.Execute().Where(Post => Post.TransportId == ownerTransport.Id || Post.TransportId == offererTransport.Id).ToList().ForEach(Post => Post.paused = false);
+        // envio el cartelcito notificando que se canceló el intercambio con exito y navego al home
+        await sessionStorage.SetAsync("cartel?", "Intercambio cancelado exitosamente");
+        Navegador.NavigateTo("/", true);
+        // falta que envie el mail al usuario que NO canceló el intercambio, de que fue cancelado
+        // aquí --> santi!!!
     }
 }

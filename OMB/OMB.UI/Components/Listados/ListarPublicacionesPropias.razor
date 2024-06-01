@@ -98,7 +98,7 @@
         Transport transport = _allTransports.Find(trans => trans.Id == post.TransportId);
 
         if (transport != null) {
-          if (transport.UserId == profileId) {
+          if ((transport.UserId == profileId) && (!post.paused)) {
             _transports.Add(transport);
             _posts.Add(post);
 

@@ -21,10 +21,10 @@ public class UnresolvedExchangeRepository : IUnresolvedExchangeRepository {
             }
         }
     }
-    public void modifyUnresolvedExchange (UnresolvedExchange unresolvedExchange){
+    public void modifyUnresolvedExchange (UnresolvedExchange unresolvedExchange) {
         using(OMBContext context = new OMBContext()){
             var exists = context.UnresolvedExchanges.Where(U => U.Id == unresolvedExchange.Id).SingleOrDefault();
-            if(exists != null){
+            if (exists != null) {
                 exists.fechaYHora = unresolvedExchange.fechaYHora;
                 exists.sede = unresolvedExchange.sede;
                 exists.state = unresolvedExchange.state;

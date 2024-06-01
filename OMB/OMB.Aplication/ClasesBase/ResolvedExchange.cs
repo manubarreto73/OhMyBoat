@@ -8,7 +8,7 @@ public class ResolvedExchange : Exchange{
     }
 
     public override IClonable Clone(){
-        return new ResolvedExchange(this.transportePosteadoId, this.transporteOfertadoId, this.happen){Id = this.Id};
+        return new ResolvedExchange(this.transportePosteadoId, this.transporteOfertadoId, this.happen){Id=this.Id, fechaYHora=this.fechaYHora};
     }
 
 }

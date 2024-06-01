@@ -14,6 +14,16 @@
 <DialogoConfirmacion @ref="dialogoTry" OnConfirmado="cancel"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
 
+@if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+    <div class="alert alert-info">
+        @cartelito
+        <button class="btn" @onclick="()=>setFalse()" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+        </button>
+    </div>
+}
 @if (isEmployee) {
     <div> html para empleados? </div>
 } else if (isParticipant) { // is owner or offerer
@@ -41,8 +51,9 @@
             </div>
             <div class="buttons">
                 @if (isMyTurn()) {
-                    <button class="accept" @onclick="confirmarCancel">Aceptar Intercambio</button>
-                    <button class="try" @onclick="confirmarCancel">ofrecer horario</button>
+                    <button class="accept">Aceptar Intercambio</button>
+                    <button class="try" data-bs-toggle="modal"data-bs-target="#proponerHorarioModal"
+                    @onclick="()=>Try(actualExchange)">Ofrecer horario</button>
                 }
                 @if (!isMyTurn()) {
                     <p> Esperando a que el usuario acepte la oferta u ofrezca una nueva fecha </p>
@@ -52,6 +63,8 @@
         </body>
     }
 }
+
+<ProponerHorario @ref="proponerHorario" OnProponerHorario="HorarioPropuesto" />
 
 @code {
     DialogoConfirmacion dialogoAccept = null!;      // tres dialogos para las tres posibles confirmaciones
@@ -71,6 +84,10 @@
     bool isEmployee = false;
     bool isParticipant = true;
 
+    ProponerHorario proponerHorario = null!;
+    string? cartelito;
+    bool mostrarCartel;
+
     protected override async Task OnAfterRenderAsync(bool firstRender) {
         if (firstRender) {
             //Extrae la información del user loggeado
@@ -82,6 +99,10 @@
             // get Exchange from its Id
             actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
 
+            var result  = await sessionStorage.GetAsync<string>("cartel?");
+            cartelito = result.Success ? result.Value : null;
+            mostrarCartel = true;
+            await sessionStorage.DeleteAsync("cartel?");
             // Load the info after actualExchange is initialized
             loadInfo();
         }
@@ -124,10 +145,7 @@
     private void confirmarTry() {
         dialogoCancel.Mostrar("¿?");
     }
-    
-    private async Task try() {
-        
-    } */
+    */
 
     private void confirmarCancel() {
         dialogoCancel.Mostrar("¿Seguro que deseas cancelar el intercambio?");
@@ -149,5 +167,19 @@
         Navegador.NavigateTo("/", true);
         // falta que envie el mail al usuario que NO canceló el intercambio, de que fue cancelado
         // aquí --> santi!!!
+    }
+
+    public void Try(UnresolvedExchange exchange) {
+        proponerHorario.Cargar(exchange);
+    }
+
+    public void HorarioPropuesto() {
+        StateHasChanged();
+        mostrarCartel = true;
+        cartelito = "Horario propuesto con exito";
+    }
+
+    private void setFalse () {
+      mostrarCartel = false;
     }
 }

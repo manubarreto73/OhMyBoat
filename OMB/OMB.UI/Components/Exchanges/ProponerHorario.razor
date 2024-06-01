@@ -17,9 +17,19 @@
               <label>Fecha</label>
               <input type="date" @bind=fechaExchange class="form-control">
             </div>
-            <div class="form-group">
+            <div class="form-group mb-3">
               <label>Horario</label>
               <input type="time" @bind=horaExchange class="form-control">
+            </div>
+            <div class="form-group">
+              <label>Sede</label>
+              <select @bind=sede class="form-select">
+                  <option value="" style="display:none"></option>
+                  <option value="Sede 1">Sede 1</option>
+                  <option value="Sede 2">Sede 2</option>
+                  <option value="Sede 3">Sede 3</option>
+                  <option value="Sede 4">Sede 4</option>
+              </select>
             </div>
           </form>
         </div>
@@ -35,11 +45,14 @@
   UnresolvedExchange exchange = new UnresolvedExchange(0, 0);
   DateTime fechaExchange = new DateTime();
   DateTime horaExchange = new DateTime();
+  string sede = "";
 
   public void Cargar(UnresolvedExchange exchange) {
     this.exchange = exchange;
     fechaExchange = exchange.fechaYHora.Date;
     horaExchange = new DateTime(0001, 1, 1, exchange.fechaYHora.Hour, exchange.fechaYHora.Minute, exchange.fechaYHora.Second);
+    sede = exchange.sede;
+
     StateHasChanged();
   }
 
@@ -50,6 +63,7 @@
 
     exchange.fechaYHora = dateTime;
     exchange.state = getNextState(exchange);
+    exchange.sede = sede;
     modifyUnresolvedExchangeUseCase.Execute(exchange);
 
     HorarioPropuesto();

@@ -25,18 +25,18 @@
             <tbody>
                 @foreach (var offer in offerList){
                     <tr>
-                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="80px" width="80px"/></td>
+                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="145px" width="145px"/></td>
                         <td>
-                            <h3>Oferta a @getOfferTarget(offer).userName </h3>
+                            <h4>Oferta a @getOfferTarget(offer).userName </h4>
                             <p>Ofreces tu @getOfferedTransport(offer).type.ToLower() @getOfferedTransport(offer).model </p>
                             <p>Pedis @getPostedTransport(offer).type.ToLower() @getPostedTransport(offer).model</p>
                             <hr>
                             <p><strong>Tu oferta @getOfferStatus(offer) &nbsp;</strong>
                             @if (getOfferState(offer) == "active") {
-                                <button class="btn btn-danger" @onclick="()=>confirmarEliminarOferta(offer)"> Cancelar </button>
+                                <button class="StolenButton" @onclick="()=>confirmarEliminarOferta(offer)"> Cancelar </button>
                             }</p>
                         </td>
-                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgOff[i]))" height="80px" width="80px"/></td>
+                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgOff[i]))" height="145px" width="145px"/></td>
                         @{i++;}
                     </tr>
                 }

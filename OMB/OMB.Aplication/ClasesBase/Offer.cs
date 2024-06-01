@@ -12,7 +12,7 @@ public class Offer : IClonable {
     public Offer (int transportePosteadoId, int transporteOfertadoId) {
         this.transporteOfertadoId = transporteOfertadoId;
         this.transportePosteadoId = transportePosteadoId;
-        this.state = "active";
+        this.state = "active";      // states are "active" and "paused"
     }
 
     public IClonable Clone () {

@@ -62,10 +62,10 @@
       </div>
       <p class="ship-post-description">@actualShip.description</p>
       <hr>
-      @if((loggedUserId != 0) && (!isOwner)){
+      @if((loggedUserId != 0) && (!isOwner) && (!isEmployee) && (!actualPost.paused)){
         <button class="btn btn-primary" @onclick="Ofertar" data-bs-toggle="modal" data-bs-target="#listarTransportesModal">Ofertar</button>
       }
-      @if(isOwner){
+      @if(isOwner && !actualPost.paused){
         <button class="btn btn-primary" @onclick="CargarOfertas" data-bs-toggle="modal" data-bs-target="#listarOfertasModal">Ver Ofertas</button>
       }
     </div>
@@ -78,6 +78,7 @@
 @code {
   [Parameter] public int? postId { get; set; }
   bool isOwner;
+  bool isEmployee;
   Post actualPost;
   Ship actualShip = new Ship();
 
@@ -96,6 +97,8 @@
   protected override async Task OnAfterRenderAsync(bool firstRender) {
     if (firstRender) {
       //Extrae el ID del usuario loggeado del sessionStorage
+      var result3  = await sessionStorage.GetAsync<bool>("isEmployee");
+      isEmployee = result3.Success ? result3.Value : false;
       var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
       loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
       //Busco al owner del post
@@ -106,7 +109,7 @@
           User owner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == actualShip.UserId));
             
           //Checkeo si el owner y el usuario loggeado son el mismo user y guardo el resultado
-          isOwner = owner.Id == loggedUserId;
+          isOwner = ((owner.Id == loggedUserId) && !isEmployee);
 
           GetImages();
         }

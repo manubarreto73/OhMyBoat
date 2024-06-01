@@ -45,3 +45,12 @@
 .icon {
   margin-right: 10px;
 }
+
+.texto_pausa {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: 3rem;
+  font-weight: 200;
+  color: rgb(255, 163, 163)
+}

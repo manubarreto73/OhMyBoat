@@ -247,7 +247,7 @@
 
     // Agrega las fotos a la db
     private void SubirFotos() {
-      newBarco = shipListUseCase.Execute().Where(elem => elem.plate == newBarco.plate).SingleOrDefault();
+      newBarco = shipListUseCase.Execute().Where(elem => elem.plate == newBarco.plate).SingleOrDefault(new Ship());
 
       foreach (var img in fileBytesList) {
         addShipImageUseCase.Execute(newBarco.Id, img);

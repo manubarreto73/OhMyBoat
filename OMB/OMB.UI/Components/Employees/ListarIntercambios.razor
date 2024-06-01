@@ -1,6 +1,7 @@
 @page "/listarintercambios"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
+@inject NavigationManager navegador
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
@@ -16,7 +17,7 @@
       @if (exchanges.Any()) {
         int i = 0;
         @foreach (var exchange in exchanges){
-          <div class="exchange-info">
+          <div class="exchange-info" @onclick="()=>browseToExchange(exchange)">
             <div class="img">
               <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))"/>
             </div>
@@ -50,7 +51,7 @@
     // Inicializo listas para usarlas después
     users = userListUseCase.Execute();
     transports = listTransportUseCase.Execute();
-    exchanges = unresolvedExchangeListUseCase.Execute();
+    exchanges = unresolvedExchangeListUseCase.Execute().Where(E => E.state == "Accepted").ToList();
 
     posts = listPostUseCase.Execute();
     vehicleImages = listVehicleImagesUseCase.Execute();
@@ -100,4 +101,8 @@
     Post post = posts.Find(post => post.TransportId == postedTransport.Id);
     return $"{post.Title} {postedTransport.plate}";
   }
+
+    public void browseToExchange(Exchange exchange) {
+        navegador.NavigateTo($"visualizarintercambio/{exchange.Id}", true);
+    }
 }

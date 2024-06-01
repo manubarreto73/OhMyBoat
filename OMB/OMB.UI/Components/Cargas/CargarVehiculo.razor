@@ -168,7 +168,7 @@
       }
     }
 
-    public async Task Aceptar() {
+    public void Aceptar() {
       if (string.IsNullOrEmpty(tipoVehiculo) || string.IsNullOrEmpty(vehiculo.plate) || string.IsNullOrEmpty(vehiculo.description) || string.IsNullOrEmpty(vehiculo.model)) {
         dialogo.Mostrar("Debe completar los campos para cargar el vehiculo");
         return;
@@ -219,11 +219,11 @@
 
     // Agrega las fotos a la db
     private void SubirFotos() {
-      newVehiculo = vehicleListUseCase.Execute().Where(elem => elem.plate == newVehiculo.plate).SingleOrDefault();
+      	newVehiculo = vehicleListUseCase.Execute().Where(elem => elem.plate == newVehiculo.plate).SingleOrDefault(new Vehicle());
 
-      foreach (var img in fileBytesList) {
-        addVehicleImageUseCase.Execute(newVehiculo.Id, img);
-      }
+		foreach (var img in fileBytesList) {
+			addVehicleImageUseCase.Execute(newVehiculo.Id, img);
+      	}
     }
 
     private bool AddVehicle() {

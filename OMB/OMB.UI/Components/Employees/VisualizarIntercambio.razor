@@ -1,0 +1,133 @@
+@page "/visualizarintercambio/{exchangeId:int?}"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@rendermode InteractiveServer
+@inject ProtectedSessionStorage sessionStorage
+@inject userListUseCase userListUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
+@inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject listPostUseCase listPostUseCase
+@inject offerListUseCase offerListUseCase
+@inject NavigationManager Navegador
+@inject addResolvedExchangeUseCase addResolvedExchangeUseCase
+@inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
+
+<DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
+<DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
+
+<body>
+    <div class="exchange-container">
+        <div class="user-info">
+            <h2>Ofertante: @offerer.userName</h2>
+            <div class="vehicle-info">
+                <h3>Ofrece:</h3>
+                <p>Tipo: @offererTransport.type</p>
+                <p>Modelo: @offererTransport.model</p>
+                <!-- Add more vehicle details here -->
+            </div>
+        </div>
+        <div class="user-info">
+            <h2>Pacto Ofrecido:</h2>
+            <div class="vehicle-info">
+                <h3>Horario:</h3>
+                <p>@actualExchange.fechaYHora</p>
+                <h3>Sede:</h3>
+                <p>@actualExchange.sede</p>
+            </div>
+        </div>
+        <div class="user-info">
+            <h2>Dueño: @owner.userName</h2>
+            <div class="vehicle-info">
+                <h3>Se solicita:</h3>
+                <p>Tipo: @ownerTransport.type</p>
+                <p>Modelo: @ownerTransport.model</p>
+                <!-- Add more vehicle details here -->
+            </div>
+        </div>
+    </div>
+    <div class="buttons">
+        <button class="accept" @onclick="confirmarAccept">Aceptar Intercambio</button>
+        <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
+    </div>
+</body>
+
+@code {
+    [Parameter] public int? exchangeId { get; set; }
+
+    int loggedUserId;
+
+    bool isEmployee;
+
+    string cartelito;
+    bool mostrarCartel;
+
+    UnresolvedExchange actualExchange;
+
+    Transport ownerTransport;
+    Transport offererTransport;
+
+    User owner;
+    User offerer;
+
+    DialogoConfirmacion dialogoAccept = null!;
+    DialogoConfirmacion dialogoCancel = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            //Extrae la información del user loggeado
+            var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
+            loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
+            var getIsEmployee  = await sessionStorage.GetAsync<bool>("isEmployee");
+            isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
+
+            // get Exchange from its Id
+            actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
+
+            // get info del cartelito
+            var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
+            cartelito = getCartelito.Success ? getCartelito.Value : null;
+            mostrarCartel = true;
+            await sessionStorage.DeleteAsync("cartel?");
+
+            // Load the info after actualExchange is initialized
+            loadInfo();
+        }
+    }
+
+    private void loadInfo() { //cargar info de transportes y los usuarios
+        List<Transport> transports = listTransportUseCase.Execute();  // lista de transportes para conseguir los transportes del owner y offerer
+        ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault();
+        offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault();
+
+        List<User> users = userListUseCase.Execute();   // lista de usuarios para conseguir sus infos a través de sus transportes.
+        owner = users.Where(u => u.Id == ownerTransport.UserId).SingleOrDefault();
+        offerer = users.Where(u => u.Id == offererTransport.UserId).SingleOrDefault();
+
+        // aviso que cambia el estado, osea que se consiguieron los datos para poder renderizar el html
+        StateHasChanged();
+    }
+
+    public void confirmarAccept () {
+        dialogoAccept.Mostrar("¿Seguro que deseas marcar este intercambio como realizado?");
+    }
+
+    public void accept () {
+        ResolvedExchange newExchange = new ResolvedExchange(actualExchange.transportePosteadoId, actualExchange.transporteOfertadoId, true);
+        addResolvedExchangeUseCase.Execute(newExchange);
+        deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);
+        Navegador.NavigateTo("listarintercambiosresueltos", true);
+    }
+
+    public void confirmarCancel () {
+        dialogoCancel.Mostrar("¿Seguro que deseas marcar este intercambio como no realizado?");    
+    }
+
+    public void cancel () {
+        ResolvedExchange newExchange = new ResolvedExchange(actualExchange.transportePosteadoId, actualExchange.transporteOfertadoId, false);
+        addResolvedExchangeUseCase.Execute(newExchange);
+        deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);
+        Navegador.NavigateTo("listarintercambiosresueltos", true);
+    }
+
+}

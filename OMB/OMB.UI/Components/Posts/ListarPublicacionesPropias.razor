@@ -129,7 +129,7 @@
     private void browseToPost(Post post) {
       Transport transport = _transports.Find(trans => trans.Id == post.TransportId);
 
-      if (IsVehicle(transport.type)) {
+      if (transport != null && IsVehicle(transport.type)) {
         navegador.NavigateTo($"/vehiclepost/{transport.Id}", true);
       } else {
         navegador.NavigateTo($"/shippost/{transport.Id}", true);

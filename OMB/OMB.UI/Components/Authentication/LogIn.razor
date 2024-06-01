@@ -52,7 +52,12 @@
 
     async Task esEmpleado(Employee employee) {
         await Save(true, employee.Id);
-        navegador.NavigateTo("/homeemployee", true);
+        if (employee.Id != 1) {
+            navegador.NavigateTo("/homeemployee", true);
+        }
+        else {
+            navegador.NavigateTo("/", true);
+        }
     }
 
     async Task esCliente(User? user) {

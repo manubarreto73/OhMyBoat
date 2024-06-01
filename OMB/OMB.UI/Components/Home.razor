@@ -8,9 +8,6 @@
 @inject listTransportUseCase listTransportUseCase
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
-@using System.Net
-@using System.Net.Mail
-
 <DialogoError @ref=dialogo/>
 
 @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
@@ -45,16 +42,10 @@ else{
         i++; @* Incremento i para seguir iterando *@
     }
 </div>
-<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"><button class="btn btn-danger">Borrar Base de Datos (No toques!!)</button></a>
-<!--
-    <div class="cuadradito">
-        <button class="botoncito-de-decoracion"> Aquí estarán los filtros de busqueda en un futuro. </button>
-        <button @onclick="SendEmail">Enviar Mail</button>
-    </div>
-</div>-->
 }
 @code {
     int userId;
+    private bool isEmployee = true;
 
     List<Post> allPosts = new List<Post>(); // Primera lista con todos los posts
     List<Post> posts = new List<Post>(); // Lista con los posts después del filtrado
@@ -71,6 +62,8 @@ else{
     bool mostrarCartel;
 
     protected override async Task OnInitializedAsync() {
+        var result3  = await sessionStorage.GetAsync<bool>("isEmployee");
+        isEmployee = result3.Success ? result3.Value : false;
         // Busco el ID del usuario en la sesión
         var result2 = await sessionStorage.GetAsync<int>("userId");
         userId = result2.Success ? result2.Value : 0;
@@ -83,19 +76,11 @@ else{
         shipImages = listShipImagesUseCase.Execute();
         vehicleImages = listVehicleImagesUseCase.Execute();
 
-        // Sacamos los posts de las personas baneadas
-        @* posts.RemoveAll(p => 
-            null != users.Where(u => 
-                u.banned && (transports.Where(t => 
-                    (t.Id == p.getTransportId())).Count() != 0 && (u.Id == transports.Where(t => 
-                        t.Id == p.getTransportId()).SingleOrDefault().UserId))).SingleOrDefault()); *@
-
-        // Sacamos los posts de las personas baneadas
         foreach (Post post in allPosts) { // Lo implemente de otra forma
             Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
             User user = users.Find(u => u.Id == transport.UserId);
 
-            if (!post.paused && user.Id != userId) {
+            if (!post.paused && (isEmployee || user.Id != userId)) {
                 posts.Add(post);
             }
         }

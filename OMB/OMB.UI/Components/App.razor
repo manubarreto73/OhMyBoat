@@ -7,16 +7,11 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @if (isEmployee) {
-        if (userId == 1) {
-            <base href="/homeadmin" />
-        }
-        else {
-            <base href="/homeemployee" />
-        }
+    @if (isEmployee && userId != 1) {
+        <base href="/homeemployee" />
     }
     else {
-        <base href="/" />
+        <base href="/"/>
     }
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="app.css" />
@@ -41,13 +36,14 @@
 @code {
 
     private int userId;
-    private bool isEmployee;
+    private bool isEmployee = true;
 
     protected override async Task OnAfterRenderAsync (bool firtsRender) {
         var result  = await sessionStorage.GetAsync<bool>("isEmployee");
         isEmployee = result .Success ? result .Value : false;
         var result2 = await sessionStorage.GetAsync<int>("userId");
         userId = result2.Success ? result2.Value : 0;
+        StateHasChanged();
     }
 
 }

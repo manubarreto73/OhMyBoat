@@ -16,41 +16,43 @@
 <DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
 
-<body>
-    <div class="exchange-container">
-        <div class="user-info">
-            <h2>Ofertante: @offerer.userName</h2>
-            <div class="vehicle-info">
-                <h3>Ofrece:</h3>
-                <p>Tipo: @offererTransport.type</p>
-                <p>Modelo: @offererTransport.model</p>
-                <!-- Add more vehicle details here -->
+@if (ownerTransport != null && offererTransport != null) {  
+    <body>
+        <div class="exchange-container">
+            <div class="user-info">
+                <h2>Ofertante: @offerer.userName</h2>
+                <div class="vehicle-info">
+                    <h3>Ofrece:</h3>
+                    <p>Tipo: @offererTransport.type</p>
+                    <p>Modelo: @offererTransport.model</p>
+                    <!-- Add more vehicle details here -->
+                </div>
+            </div>
+            <div class="user-info">
+                <h2>Pacto Ofrecido:</h2>
+                <div class="vehicle-info">
+                    <h3>Horario:</h3>
+                    <p>@actualExchange.fechaYHora</p>
+                    <h3>Sede:</h3>
+                    <p>@actualExchange.sede</p>
+                </div>
+            </div>
+            <div class="user-info">
+                <h2>Dueño: @owner.userName</h2>
+                <div class="vehicle-info">
+                    <h3>Se solicita:</h3>
+                    <p>Tipo: @ownerTransport.type</p>
+                    <p>Modelo: @ownerTransport.model</p>
+                    <!-- Add more vehicle details here -->
+                </div>
             </div>
         </div>
-        <div class="user-info">
-            <h2>Pacto Ofrecido:</h2>
-            <div class="vehicle-info">
-                <h3>Horario:</h3>
-                <p>@actualExchange.fechaYHora</p>
-                <h3>Sede:</h3>
-                <p>@actualExchange.sede</p>
-            </div>
+        <div class="buttons">
+            <button class="accept" @onclick="confirmarAccept">Aceptar Intercambio</button>
+            <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
         </div>
-        <div class="user-info">
-            <h2>Dueño: @owner.userName</h2>
-            <div class="vehicle-info">
-                <h3>Se solicita:</h3>
-                <p>Tipo: @ownerTransport.type</p>
-                <p>Modelo: @ownerTransport.model</p>
-                <!-- Add more vehicle details here -->
-            </div>
-        </div>
-    </div>
-    <div class="buttons">
-        <button class="accept" @onclick="confirmarAccept">Aceptar Intercambio</button>
-        <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
-    </div>
-</body>
+    </body>
+}
 
 @code {
     [Parameter] public int? exchangeId { get; set; }
@@ -73,26 +75,21 @@
     DialogoConfirmacion dialogoAccept = null!;
     DialogoConfirmacion dialogoCancel = null!;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            //Extrae la información del user loggeado
-            var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
-            loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
-            var getIsEmployee  = await sessionStorage.GetAsync<bool>("isEmployee");
-            isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
-
-            // get Exchange from its Id
-            actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
-
-            // get info del cartelito
-            var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
-            cartelito = getCartelito.Success ? getCartelito.Value : null;
-            mostrarCartel = true;
-            await sessionStorage.DeleteAsync("cartel?");
-
-            // Load the info after actualExchange is initialized
-            loadInfo();
-        }
+    protected override async Task OnInitializedAsync () {
+        //Extrae la información del user loggeado
+        var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
+        loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
+        var getIsEmployee  = await sessionStorage.GetAsync<bool>("isEmployee");
+        isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
+        // get Exchange from its Id
+        actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
+        // get info del cartelito
+        var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
+        cartelito = getCartelito.Success ? getCartelito.Value : null;
+        mostrarCartel = true;
+        await sessionStorage.DeleteAsync("cartel?");
+        // Load the info after actualExchange is initialized
+        loadInfo();
     }
 
     private void loadInfo() { //cargar info de transportes y los usuarios

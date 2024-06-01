@@ -88,7 +88,7 @@
     }
 
     public String getOfferState(Offer offer) {
-        if (isPaused(offer)) {
+        if (offer.state != "active" && isPaused(offer)) {
             offer.state = "paused";
         }
         return offer.state;

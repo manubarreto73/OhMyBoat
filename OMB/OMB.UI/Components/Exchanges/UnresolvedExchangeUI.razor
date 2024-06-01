@@ -5,6 +5,7 @@
 @inject userListUseCase userListUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 @inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
+@inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject listPostUseCase listPostUseCase
 @inject offerListUseCase offerListUseCase
@@ -166,11 +167,12 @@
     }
     
     private void confirmarAccept() {
-        dialogoCancel.Mostrar("¿Seguro que deseas aceptar el intercambio?");
+        dialogoAccept.Mostrar("¿Seguro que deseas aceptar el intercambio?");
     }
 
     private async Task accept() {
         actualExchange.state = "Accepted";
+        modifyUnresolvedExchangeUseCase.Execute(actualExchange);
         StateHasChanged();
         mostrarCartel = true;
         cartelito = "Intercambio Aceptado Exitosamente";

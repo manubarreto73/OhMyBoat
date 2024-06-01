@@ -10,6 +10,7 @@ table {
     border: 1px solid grey;
     font-size: 12pt;
     border-collapse: collapse;
+    width: 60%
   }
   table thead th,
   table tfoot th {
@@ -50,4 +51,29 @@ table {
   [data-table-theme*=dark] td {
     padding: .5em;
     border: 1px solid grey;
+  }
+  img {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+  }
+  .StolenButton{
+    border-radius: 8px;
+    border: 2px solid red;
+    transition-duration: 0.4s;
+    background-color: red;
+    color: white;
+    text-align: center;
+    float: right;
+    top: -4px;
+    position: relative;
+  }
+  .StolenButton:hover{
+    background-color: white;
+    color: black;
+    border: 2px solid red;
+  }
+  td {
+    text-align: center;
   }

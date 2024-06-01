@@ -10,8 +10,7 @@
 @inject offerListUseCase offerListUseCase
 @inject NavigationManager Navegador
 
-<DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="cancel"/>
-<DialogoConfirmacion @ref="dialogoTry" OnConfirmado="cancel"/>
+<DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
 
 @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
@@ -40,6 +39,23 @@
                     </div>
                 </div>
                 <div class="user-info">
+                    <h2>Pacto Ofrecido:</h2>
+                    @if (!isFirstTime()) {
+                        <div class="vehicle-info">
+                            <h3>Horario:</h3>
+                            <p>@actualExchange.fechaYHora</p>
+                            <h3>Sede:</h3>
+                            <p>@actualExchange.sede</p>
+                            <!-- Add more vehicle details here -->
+                        </div>
+                    }
+                    @if (isFirstTime()) {
+                        <div class="vehicle-info">
+                            <p>A estimar</p>
+                        </div>
+                    }
+                </div>
+                <div class="user-info">
                     <h2>Dueño: @owner.userName</h2>
                     <div class="vehicle-info">
                         <h3>Se solicita:</h3>
@@ -50,15 +66,21 @@
                 </div>
             </div>
             <div class="buttons">
-                @if (isMyTurn()) {
-                    <button class="accept">Aceptar Intercambio</button>
-                    <button class="try" data-bs-toggle="modal"data-bs-target="#proponerHorarioModal"
-                    @onclick="()=>Try(actualExchange)">Ofrecer horario</button>
+                @if (!isAccepted()) {
+                    @if (isMyTurn()) {
+                        @if (!isFirstTime()) {
+                            <button class="accept" @onclick="confirmarAccept">Aceptar Intercambio</button>
+                        }
+                        <button class="try" data-bs-toggle="modal"data-bs-target="#proponerHorarioModal" @onclick="() => Try(actualExchange)">Ofrecer horario</button>
+                    }
+                    @if (!isMyTurn()) {
+                        <p> Esperando a que el usuario acepte la oferta u ofrezca una nueva fecha </p>
+                    }
+                    <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
                 }
-                @if (!isMyTurn()) {
-                    <p> Esperando a que el usuario acepte la oferta u ofrezca una nueva fecha </p>
+                @if (isAccepted()) {
+                    <p> Intercambio Aceptado! </p>
                 }
-                <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
             </div>
         </body>
     }
@@ -68,10 +90,9 @@
 <Emails @ref=emails/>
 
 @code {
-    DialogoConfirmacion dialogoAccept = null!;      // tres dialogos para las tres posibles confirmaciones
-    DialogoConfirmacion dialogoTry = null!;         // para cada confirmacion tengo que hacer un onConfirmado distinto
-    DialogoConfirmacion dialogoCancel = null!;
-	Emails emails = null!;
+    DialogoConfirmacion dialogoAccept = null!;      // dos dialogos para las dos posibles confirmaciones
+    DialogoConfirmacion dialogoCancel = null!;         // para cada confirmacion tengo que hacer un onConfirmado distinto
+	  Emails emails = null!;
 
     [Parameter] public int exchangeId { get; set; }
     UnresolvedExchange actualExchange;
@@ -100,10 +121,12 @@
             // get Exchange from its Id
             actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
 
-            var result  = await sessionStorage.GetAsync<string>("cartel?");
-            cartelito = result.Success ? result.Value : null;
+            // get info del cartelito
+            var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
+            cartelito = getCartelito.Success ? getCartelito.Value : null;
             mostrarCartel = true;
             await sessionStorage.DeleteAsync("cartel?");
+
             // Load the info after actualExchange is initialized
             loadInfo();
         }
@@ -131,22 +154,31 @@
     }
 
     private bool isMyTurn() {
-        return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
+        return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OffererStart" && iAmOfferer()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
     }
 
-    /*
-    private void confirmarCancel() {
-        dialogoCancel.Mostrar("¿Seguro que deseas cancelar el intercambio?");
+    private bool isFirstTime() { //             U//W//U
+        return actualExchange.state == "OffererStart";
+    }
+
+    private bool isAccepted() {
+        return actualExchange.state == "Accepted";
+    }
+    
+    private void confirmarAccept() {
+        dialogoCancel.Mostrar("¿Seguro que deseas aceptar el intercambio?");
     }
 
     private async Task accept() {
-        
+        actualExchange.state = "Accepted";
+        StateHasChanged();
+        mostrarCartel = true;
+        cartelito = "Intercambio Aceptado Exitosamente";
     }
 
-    private void confirmarTry() {
-        dialogoCancel.Mostrar("¿?");
+    public void Try(UnresolvedExchange exchange) {
+        proponerHorario.Cargar(exchange);
     }
-    */
 
     private void confirmarCancel() {
         dialogoCancel.Mostrar("¿Seguro que deseas cancelar el intercambio?");
@@ -188,10 +220,6 @@
         // envio el cartelcito notificando que se canceló el intercambio con exito y navego al home
         await sessionStorage.SetAsync("cartel?", "Intercambio cancelado exitosamente");
         Navegador.NavigateTo("/", true);
-    }
-
-    public void Try(UnresolvedExchange exchange) {
-        proponerHorario.Cargar(exchange);
     }
 
     public void HorarioPropuesto() {

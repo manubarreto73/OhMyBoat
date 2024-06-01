@@ -64,6 +64,9 @@
   }
 
   public string getNextState(UnresolvedExchange exchange) {
+    if (exchange.state == "OffererStart") {
+      return "OwnerChooses";
+    }
     if (exchange.state == "OffererChooses") {
       return "OwnerChooses";
     } else {

@@ -5,7 +5,7 @@ public class UnresolvedExchange : Exchange {
     public string state {get; set;}
 
     public UnresolvedExchange (int transportePosteadoId, int transporteOfertadoId) : base(transporteOfertadoId, transportePosteadoId) {
-        state = "OffererChooses";
+        state = "OffererStart";   // OffererStart | OffererChooses | OwnerChooses | Accepted | (posiblemente un Canceled tambien)
     }
 
     public override IClonable Clone(){

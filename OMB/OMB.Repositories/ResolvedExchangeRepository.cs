@@ -39,6 +39,8 @@ public class ResolvedExchangeRepository : IResolvedExchangeRepository {
             context.SaveChanges();
         }
     }
+
+    //Incompleto -> no borra los transportes correspondientes
     public void deleteResolvedExchange (int resolvedExchangeId){
         using(OMBContext context = new OMBContext()){
             var exists = context.ResolvedExchanges.Where(U => U.Id == resolvedExchangeId).SingleOrDefault();

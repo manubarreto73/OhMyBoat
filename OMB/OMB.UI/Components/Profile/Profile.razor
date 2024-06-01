@@ -5,6 +5,12 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject userListUseCase userListUseCase
 @inject NavigationManager Navegador
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject resolvedExchangeListUseCase resolvedExchangeListUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
+@inject listPostUseCase listPostUseCase
+@inject modifyPostUseCase modifyPostUseCase
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="Banear"/>
 
@@ -99,7 +105,32 @@
         dialogo.Mostrar(aux);
     }
 
+    private void cancelarIntercambios() {
+        //Ids de todos los transportes del usuario loggeado
+        List<int> transportIds = listTransportUseCase.Execute().Where(T => T.UserId == userId).ToList().Select(T => T.Id).ToList();
+        List<Post> posts = listPostUseCase.Execute().Where(P => transportIds.Contains(P.TransportId)).ToList();
+        if (user.banned == false) {
+            //Pongo en pausa todos los post
+            foreach (Post P in posts) {
+                P.paused = true;
+                modifyPostUseCase.Execute(P);
+            }
+        }
+        else {
+            foreach (Post P in posts) {
+                P.paused = false;
+                modifyPostUseCase.Execute(P);
+            }
+        }
+        //Elimino los trades no resueltos
+        List<UnresolvedExchange> trades = unresolvedExchangeListUseCase.Execute().Where(E => transportIds.Contains(E.transporteOfertadoId) || transportIds.Contains(E.transportePosteadoId)).ToList();
+        foreach (UnresolvedExchange U in trades) {
+            deleteUnresolvedExchangeUseCase.Execute(U.Id);
+        }
+    }
+
     public void Banear() {
+        cancelarIntercambios();
         user.banned = !user.banned;
         modifyUserUseCase.Execute(user);
     }

@@ -7,12 +7,15 @@
 @inject listTransportUseCase listTransportUseCase
 @inject vehicleListUseCase vehicleListUseCase
 @inject shipListUseCase shipListUseCase
+@inject listPostUseCase listPostUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 @inject addResolvedExchangeUseCase addResolvedExchangeUseCase
 @inject addVehicleHistoryUseCase addVehicleHistoryUseCase
 @inject addShipHistoryUseCase addShipHistoryUseCase
 @inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
 @inject modifyTransportUseCase modifyTransportUseCase
+@inject deletePostUseCase deletePostUseCase
+@inject modifyPostUseCase modifyPostUseCase
 
 @rendermode InteractiveServer
 
@@ -136,7 +139,26 @@
         int postedTransportId = cargarAlHistorial(actualExchange.transportePosteadoId);
         addResolvedExchangeUseCase.Execute(new ResolvedExchange(postedTransportId, offerTransportId, happen));
     }
+
+    public void deletePost(int id) {
+        Post post = listPostUseCase.Execute().Where(P => P.TransportId == id).SingleOrDefault();
+        if (post != null) {
+            deletePostUseCase.Execute(post.Id);
+        }
+    }
+
+    public void unpausePost(int id) {
+        Post post = listPostUseCase.Execute().Where(P => P.TransportId == id).SingleOrDefault();
+        if (post != null) {
+            post.paused = false;
+            modifyPostUseCase.Execute(post);
+        }
+    }
+
     public void accept () {
+        //Borro los post de los vehiculos
+        deletePost(ownerTransport.Id);
+        deletePost(offererTransport.Id);
         //Agrego el intercambio resuelto y borro el no resuelto
         agregarIntercambio(true);
         deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);
@@ -154,6 +176,9 @@
     }
 
     public void cancel () {
+        //Despauso los post
+        unpausePost(ownerTransport.Id);
+        unpausePost(offererTransport.Id);
         //Agrego el intercambio resuelto y borro el no resuelto
         agregarIntercambio(false);
         deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);

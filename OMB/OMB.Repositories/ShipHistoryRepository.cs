@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 public class ShipHistoryRepository : IShipHistoryRepository {
     public void addShip (ShipHistory ship) {
         using(OMBContext context = new OMBContext()) {
-            context.ShipsHistory.Add((ShipHistory)ship.Clone());
+            context.ShipsHistory.Add(ship);
             context.SaveChanges();
         }
     }

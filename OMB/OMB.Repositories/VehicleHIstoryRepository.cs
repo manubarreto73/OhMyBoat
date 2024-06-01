@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 public class VehicleHistoryRepository : IVehicleHistoryRepository{
     public void addVehicle (VehicleHistory vehicle){
         using(OMBContext context = new OMBContext()){
-            context.VehiclesHistory.Add((VehicleHistory)vehicle.Clone());
+            context.VehiclesHistory.Add(vehicle);
             context.SaveChanges();
         }
     }

@@ -56,6 +56,14 @@ public class OMBContext : DbContext{
             .WithMany(u => u.Transports)
             .HasForeignKey(s => s.UserId); // Ensure it's not nullable
 
+        modelBuilder.Entity<VehicleHistory>()
+            .ToTable("VehiclesHistory")
+            .HasBaseType<TransportHistory>();
+
+        modelBuilder.Entity<ShipHistory>()
+            .ToTable("ShipsHistory")
+            .HasBaseType<TransportHistory>();
+
         base.OnModelCreating(modelBuilder);
 
     }

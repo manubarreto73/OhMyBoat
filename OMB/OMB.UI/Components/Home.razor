@@ -95,8 +95,7 @@ else{
             Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
             User user = users.Find(u => u.Id == transport.UserId);
 
-            // Si el usuario no está baneado y no es el logueado, agrego el post
-            if (!user.banned && user.Id != userId) {
+            if (!post.paused && user.Id != userId) {
                 posts.Add(post);
             }
         }

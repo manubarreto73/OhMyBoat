@@ -80,19 +80,11 @@
         User postedTransportOwner = userListUseCase.Execute().Find(user => user.Id == postedTransport.UserId);
         return postedTransportOwner.userName;
     }
-
-    public string getOfferedTransport(Offer offer) {
-        Transport offeredTransport = listTransportUseCase.Execute().Find(transport => transport.Id == offer.transporteOfertadoId);
-        return offeredTransport.plate; //placeholder
-    }
-
-    public string getPostedTransport(Offer offer) {
-        return postedTransport.plate; //placeholder
-    }
     ////////////////////////////////////////////////////
 
     private void GetOfertas() {
       ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == post.getTransportId()).ToList();
+      ofertas.RemoveAll(o => o.state != "active");
       transports = listTransportUseCase.Execute();
       shipImages = listShipImagesUseCase.Execute();
       vehicleImages = listVehicleImagesUseCase.Execute();

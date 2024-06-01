@@ -5,6 +5,7 @@
 @inject offerListUseCase offerListUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 
 @rendermode InteractiveServer
 
@@ -83,10 +84,11 @@
 
     private void GetTransportesCargados() {
       List<Offer> ofertas = offerListUseCase.Execute();
+      List<UnresolvedExchange> exchanges = unresolvedExchangeListUseCase.Execute();
       _transports = listTransportUseCase.Execute();
       _transports = _transports.FindAll(tra => tra.UserId == userId);
       _transports.RemoveAll(t => ofertas.Where(o => o.transporteOfertadoId == t.Id).Where(o => o.transportePosteadoId == ship.Id).SingleOrDefault() != null);
-
+      _transports.RemoveAll(t => exchanges.Where(e => (e.transporteOfertadoId == t.Id) || (e.transportePosteadoId == t.Id)).SingleOrDefault() != null);
 
       GetImagenesTransportes();
     }

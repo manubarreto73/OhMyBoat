@@ -5,6 +5,7 @@
 @inject listTransportUseCase listTransportUseCase
 @inject offerListUseCase offerListUseCase
 @inject deleteOfferUseCase deleteOfferUseCase
+@inject listPostUseCase listPostUseCase
 
 <DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarOferta"/>
 
@@ -16,13 +17,16 @@
                     <h3>Oferta a @getOfferTarget(offer).userName </h3>
                     <h6>Ofreces @getOfferedTransport(offer).plate </h6>
                     <h6>Pedis @getPostedTransport(offer).plate </h6>
+                    <h6>Estado @getOfferState(offer) </h6>
                 </div>
             </div>
-            <div class="offer">
+            @if (getOfferState(offer) == "active") {
+                <div class="offer">
                 <button class="btn btn-danger" @onclick="()=>confirmarEliminarOferta(offer)">
                           <i class='bx bxs-trash-alt'></i>
                 </button>
-            </div>
+                </div>
+            }
         }
     } else {
         <h1>No hay ofertas realizadas</h1>
@@ -72,6 +76,22 @@
 
     public Transport getPostedTransport(Offer offer) {
         return transportList.Where(T => T.Id == offer.transportePosteadoId).SingleOrDefault();
+    }
+
+    public bool isPaused(Offer offer) {
+        Post postPosted = listPostUseCase.Execute().Where(P => P.TransportId == getPostedTransport(offer).Id).SingleOrDefault();
+        Post postOfferer = listPostUseCase.Execute().Where(P => P.TransportId == getOfferedTransport(offer).Id).SingleOrDefault();
+        if (postOfferer == null) {
+            return postPosted.paused;
+        }
+        return postPosted.paused || postOfferer.paused;
+    }
+
+    public String getOfferState(Offer offer) {
+        if (isPaused(offer)) {
+            offer.state = "paused";
+        }
+        return offer.state;
     }
 
     public void confirmarEliminarOferta(Offer offer) {

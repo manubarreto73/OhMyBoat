@@ -6,28 +6,42 @@
 @inject offerListUseCase offerListUseCase
 @inject deleteOfferUseCase deleteOfferUseCase
 @inject listPostUseCase listPostUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
 
 <DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarOferta"/>
 
 <div class="offers-container">
     @if (offerList.Any()) {
-        @foreach (var offer in offerList){
-            <div class="offer">
-                <div class="offer-info">
-                    <h3>Oferta a @getOfferTarget(offer).userName </h3>
-                    <h6>Ofreces @getOfferedTransport(offer).plate </h6>
-                    <h6>Pedis @getPostedTransport(offer).plate </h6>
-                    <h6>Estado @getOfferState(offer) </h6>
-                </div>
-            </div>
-            @if (getOfferState(offer) == "active") {
-                <div class="offer">
-                <button class="btn btn-danger" @onclick="()=>confirmarEliminarOferta(offer)">
-                          <i class='bx bxs-trash-alt'></i>
-                </button>
-                </div>
-            }
-        }
+        int i = 0;
+        <table width="10%" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Transporte Solicitado</th>
+                    <th>Estado</th>
+                    <th>Ofreciendo</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var offer in offerList){
+                    <tr>
+                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="80px" width="80px"/></td>
+                        <td>
+                            <h3>Oferta a @getOfferTarget(offer).userName </h3>
+                            <p>Ofreces tu @getOfferedTransport(offer).type.ToLower() @getOfferedTransport(offer).model </p>
+                            <p>Pedis @getPostedTransport(offer).type.ToLower() @getPostedTransport(offer).model</p>
+                            <hr>
+                            <p><strong>Tu oferta @getOfferStatus(offer) &nbsp;</strong>
+                            @if (getOfferState(offer) == "active") {
+                                <button class="btn btn-danger" @onclick="()=>confirmarEliminarOferta(offer)"> Cancelar </button>
+                            }</p>
+                        </td>
+                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgOff[i]))" height="80px" width="80px"/></td>
+                        @{i++;}
+                    </tr>
+                }
+            </tbody>
+        </table>
     } else {
         <h1>No hay ofertas realizadas</h1>
     }
@@ -43,6 +57,8 @@
     DialogoConfirmacion dialogoConfirmacion = null!;
 
     int loggedUserId;
+    List<byte[]> _imgOff = new List<byte[]>();
+    List<byte[]> _imgPost = new List<byte[]>();
 
     Offer offerAux;
 
@@ -62,8 +78,22 @@
     public void getOfferList () {
         //Ids de todos los transportes del usuario loggeado
         List<int> transportIds = listTransportUseCase.Execute().Where(T => T.UserId == loggedUserId).ToList().Select(T => T.Id).ToList();
+        
         //Todas las ofertas en las que se ofrecen transportes del usuario loggeado
         offerList = offerListUseCase.Execute().Where(O => transportIds.Contains(O.transporteOfertadoId)).ToList();
+
+        //Agrego Imagenes
+        List<ShipImage> shipImages;
+        List<VehicleImage> vehicleImages;
+        shipImages = listShipImagesUseCase.Execute();
+        vehicleImages = listVehicleImagesUseCase.Execute();
+        foreach (var oferta in offerList) {
+            byte[]? image = (0 != shipImages.Where(imagen => imagen.ShipId == oferta.transporteOfertadoId).Count()) ? shipImages.Where(imagen => imagen.ShipId == oferta.transporteOfertadoId).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == oferta.transporteOfertadoId).First().Image;
+            _imgOff.Add(image);
+
+            image = (0 != shipImages.Where(imagen => imagen.ShipId == oferta.transportePosteadoId).Count()) ? shipImages.Where(imagen => imagen.ShipId == oferta.transportePosteadoId).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == oferta.transportePosteadoId).First().Image;
+            _imgPost.Add(image);
+        }
     }
 
     public User getOfferTarget(Offer offer) {
@@ -85,6 +115,13 @@
             return postPosted.paused;
         }
         return postPosted.paused || postOfferer.paused;
+    }
+
+    public String getOfferStatus(Offer offer) {
+        if (offer.state != "active" && isPaused(offer)) {
+            offer.state = "paused";
+        }
+        return (offer.state == "paused") ? "está pausada" : (offer.state == "active") ? " está siendo evaluada" : (offer.state == "rejected") ? "fue rechazada" : "fue aceptada";
     }
 
     public String getOfferState(Offer offer) {

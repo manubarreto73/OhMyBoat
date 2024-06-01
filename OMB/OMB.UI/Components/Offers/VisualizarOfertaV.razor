@@ -13,17 +13,19 @@
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="resolver"/>
 
-<div>
-    <h3> Te han ofrecido un @offeredVehicle.type de marca @offeredVehicle.model </h3>
-	<h6> (Imagenes) </h6>
-	<h6> Ofrecido por @userOffering.userName </h6>
-    <h6> @offeredVehicle.description </h6>
-	<h6> Patente @offeredVehicle.plate </h6>
-    <h6> @offeredVehicle.kms kilometros </h6>
-	@if (offeredVehicle.type != "Ciclomotor" ){
-		<h6> @offeredVehicle.doors puertas </h6>
-	}
-</div>
+@if (offeredVehicle != null) {
+	<div>
+		<h3> Te han ofrecido un @offeredVehicle.type de marca @offeredVehicle.model </h3>
+		<h6> (Imagenes) </h6>
+		<h6> Ofrecido por @userOffering.userName </h6>
+		<h6> @offeredVehicle.description </h6>
+		<h6> Patente @offeredVehicle.plate </h6>
+		<h6> @offeredVehicle.kms kilometros </h6>
+		@if (offeredVehicle.type != "Ciclomotor" ){
+			<h6> @offeredVehicle.doors puertas </h6>
+		}
+	</div>
+}
 <div>
 	<button class="btn btn-primary" @onclick="confirmarAceptarOferta" data-bs-dismiss="modal">Aceptar oferta</button>
     <button class="btn btn-danger" @onclick="confirmarRechazarOferta" data-bs-dismiss="modal">Rechazar oferta</button>

@@ -5,8 +5,12 @@
 @inject NavigationManager Navegador
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
+@inject vehicleListUseCase vehicleListUseCase
+@inject shipListUseCase shipListUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 @inject addResolvedExchangeUseCase addResolvedExchangeUseCase
+@inject addVehicleHistoryUseCase addVehicleHistoryUseCase
+@inject addShipHistoryUseCase addShipHistoryUseCase
 @inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
 @inject modifyTransportUseCase modifyTransportUseCase
 
@@ -108,10 +112,33 @@
         dialogoAccept.Mostrar("¿Seguro que deseas marcar este intercambio como realizado?");
     }
 
+    private int cargarAlHistorial (int Id) {
+        int Tid = 0;
+        Vehicle? vehicle = vehicleListUseCase.Execute().Where(V => V.Id == Id).SingleOrDefault();
+        if (vehicle != null) {
+            VehicleHistory vehicleHistory = copyVehicle(vehicle);
+            addVehicleHistoryUseCase.Execute(vehicleHistory);
+            Tid = vehicleHistory.Id;
+        }
+        else {
+            Ship? ship = shipListUseCase.Execute().Where(S => S.Id == Id).SingleOrDefault();
+            if (ship != null) {
+                ShipHistory shipHistory = copyShip(ship);
+                addShipHistoryUseCase.Execute(shipHistory);
+                Tid = shipHistory.Id;
+            }
+        }
+        return Tid;
+    }
+
+    public void agregarIntercambio(bool happen) {
+        int offerTransportId = cargarAlHistorial(actualExchange.transporteOfertadoId);
+        int postedTransportId = cargarAlHistorial(actualExchange.transportePosteadoId);
+        addResolvedExchangeUseCase.Execute(new ResolvedExchange(postedTransportId, offerTransportId, happen));
+    }
     public void accept () {
-        //Creo el intercambio resuelto y borro el no resuelto
-        ResolvedExchange newExchange = new ResolvedExchange(actualExchange.transportePosteadoId, actualExchange.transporteOfertadoId, true);
-        addResolvedExchangeUseCase.Execute(newExchange);
+        //Agrego el intercambio resuelto y borro el no resuelto
+        agregarIntercambio(true);
         deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);
         //Cambiando dueños
         ownerTransport.UserId = offerer.Id;
@@ -127,10 +154,19 @@
     }
 
     public void cancel () {
-        ResolvedExchange newExchange = new ResolvedExchange(actualExchange.transportePosteadoId, actualExchange.transporteOfertadoId, false);
-        addResolvedExchangeUseCase.Execute(newExchange);
+        //Agrego el intercambio resuelto y borro el no resuelto
+        agregarIntercambio(false);
         deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);
+        //Redirigo al historial de intercambios
         Navegador.NavigateTo("listarintercambiosresueltos", true);
+    }
+
+    public VehicleHistory copyVehicle (Vehicle V) {
+        return new VehicleHistory(V.UserId, V.type, V.plate, V.description, V.model, V.kms, V.doors);
+    }
+
+    public ShipHistory copyShip (Ship S) {
+        return new ShipHistory(S.UserId, S.type, S.plate, S.description, S.model, S.eslora, S.manga, S.calado, S.hasEngine);
     }
 
 }

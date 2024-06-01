@@ -91,27 +91,27 @@
 	}
 
   // Obtiene el userName del dueño del post involucrado
-  public string getPostTarget(Exchange exchange) {
+  public string getPostTarget(UnresolvedExchange exchange) {
     Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
     User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
     return postedTransportOwner.userName;
   }
 
   // Obtiene el userName del dueño del transporte ofertado involucrado
-  public string getOfferTarget(Exchange exchange) {
+  public string getOfferTarget(UnresolvedExchange exchange) {
     Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
     User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId);
     return postedTransportOwner.userName;
   }
 
   // Obtiene la patente del transporte ofrecido
-  public string getOfferedTransport(Exchange exchange) {
+  public string getOfferedTransport(UnresolvedExchange exchange) {
     Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
     return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
   }
 
   // Obtiene la patente del transporte publicado
-  public string getPostedTransport(Exchange exchange) {
+  public string getPostedTransport(UnresolvedExchange exchange) {
     Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
     Post post = posts.Find(post => post.TransportId == postedTransport.Id);
     return $"{post.Title} {postedTransport.plate}";

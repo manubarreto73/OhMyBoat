@@ -69,7 +69,7 @@ builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 builder.Services.AddTransient<addTransportUseCase>();
 builder.Services.AddTransient<deleteTransportUseCase>();
-//builder.Services.AddTransient<modifyTransportUseCase>();
+builder.Services.AddTransient<modifyTransportUseCase>();
 builder.Services.AddTransient<listTransportUseCase>();
 builder.Services.AddScoped<ITransportRepository, TransportRepository>();
 

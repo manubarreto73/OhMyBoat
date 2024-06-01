@@ -27,6 +27,17 @@ public class TransportRepository : ITransportRepository {
         }
     }
 
+    //SOLO MODIFICA EL OWNER
+    public void modifyTransport (Transport transport){
+        using(OMBContext context = new OMBContext()){
+            var exists = context.Transports.Where(T => T.Id == transport.Id).SingleOrDefault();
+            if(exists != null){
+                exists.UserId = transport.UserId; 
+                context.SaveChanges();
+            }
+        }
+    }
+
     public List<Transport> listTransports(){
         List<Transport> aux = new List<Transport>();
         List<Transport> l;

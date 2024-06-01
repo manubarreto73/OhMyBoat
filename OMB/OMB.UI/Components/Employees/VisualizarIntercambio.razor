@@ -1,17 +1,16 @@
 @page "/visualizarintercambio/{exchangeId:int?}"
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@rendermode InteractiveServer
+
 @inject ProtectedSessionStorage sessionStorage
-@inject userListUseCase userListUseCase
-@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
-@inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
-@inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
-@inject listTransportUseCase listTransportUseCase
-@inject listPostUseCase listPostUseCase
-@inject offerListUseCase offerListUseCase
 @inject NavigationManager Navegador
+@inject userListUseCase userListUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 @inject addResolvedExchangeUseCase addResolvedExchangeUseCase
 @inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
+@inject modifyTransportUseCase modifyTransportUseCase
+
+@rendermode InteractiveServer
 
 <DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
@@ -110,9 +109,16 @@
     }
 
     public void accept () {
+        //Creo el intercambio resuelto y borro el no resuelto
         ResolvedExchange newExchange = new ResolvedExchange(actualExchange.transportePosteadoId, actualExchange.transporteOfertadoId, true);
         addResolvedExchangeUseCase.Execute(newExchange);
         deleteUnresolvedExchangeUseCase.Execute(actualExchange.Id);
+        //Cambiando dueños
+        ownerTransport.UserId = offerer.Id;
+        offererTransport.UserId = owner.Id;
+        modifyTransportUseCase.Execute(ownerTransport);
+        modifyTransportUseCase.Execute(offererTransport);
+        //Redirigo al historial de intercambios
         Navegador.NavigateTo("listarintercambiosresueltos", true);
     }
 

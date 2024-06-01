@@ -25,6 +25,12 @@
               <h6>Dueño de la publicación: @getPostTarget(exchange)</h6>
               <h6>Ofertado: @getOfferedTransport(exchange)</h6>
               <h6>Ofertante: @getOfferTarget(exchange)</h6>
+              @if (@exchange.happen) {
+                <h6>Intercambio realizado</h6>
+              }
+              else {
+                <h6>Intercambio no realizado</h6>
+              }
             </div>
           </div>
           i++;

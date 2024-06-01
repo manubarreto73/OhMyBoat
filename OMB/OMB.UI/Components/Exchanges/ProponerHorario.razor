@@ -79,7 +79,7 @@
 
   public string getNextState(UnresolvedExchange exchange) {
     if (exchange.state == "OffererStart") {
-      return "OwnerChooses";
+      return "OffererChooses";
     }
     if (exchange.state == "OffererChooses") {
       return "OwnerChooses";

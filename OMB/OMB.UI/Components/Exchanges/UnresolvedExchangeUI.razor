@@ -155,7 +155,7 @@
     }
 
     private bool isMyTurn() {
-        return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OffererStart" && iAmOfferer()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
+        return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OffererStart" && iAmOwner()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
     }
 
     private bool isFirstTime() { //             U//W//U

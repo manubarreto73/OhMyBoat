@@ -47,6 +47,6 @@ public class PostRepository : IPostRepository {
     }
 
     private Post Clone(Post post){
-        return new Post(post.TransportId, post.Title){posted = post.posted, Id = post.Id};
+        return new Post(post.TransportId, post.Title){posted = post.posted, Id = post.Id, paused = post.paused};
     }
 }

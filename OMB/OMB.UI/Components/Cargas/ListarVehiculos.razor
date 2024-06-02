@@ -7,6 +7,7 @@
 @inject addPostUseCase addPostUseCase
 @inject offerListUseCase offerListUseCase
 @inject modifyOfferUseCase modifyOfferUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 
 @rendermode InteractiveServer
 
@@ -48,9 +49,16 @@
                     <td>@vehiculo.model</td>
                     <td>@vehiculo.plate</td>
                     <td>
-                      <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
+                      @if(!intercambiandose(vehiculo)){
+                        <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(vehiculo)">
+                            <i class='bx bxs-trash-alt'></i>
+                        </button>
+                      }
+                      else{
+                        <div class="disabled"><button class="btn btn-danger" disabled>
                           <i class='bx bxs-trash-alt'></i>
-                      </button>
+                      </button></div>
+                      }
                     </td>
                   </tr>
                   i++;
@@ -93,6 +101,10 @@
     public void Cargar() {
       GetVehiculosCargados();
       StateHasChanged();
+    }
+
+    private bool intercambiandose(Vehicle vehicle){
+      return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == vehicle.Id) || (e.transporteOfertadoId == vehicle.Id))).Count() > 0;
     }
 
     private void GetVehiculosCargados() {

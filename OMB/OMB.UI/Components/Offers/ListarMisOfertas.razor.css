@@ -77,3 +77,10 @@ table {
   td {
     text-align: center;
   }
+  .izq{
+    float: left;
+    margin-left: 5%;
+  }
+  .hov{
+    cursor: pointer;
+  }

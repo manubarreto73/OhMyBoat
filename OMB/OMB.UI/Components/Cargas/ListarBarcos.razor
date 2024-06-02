@@ -4,6 +4,8 @@
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject modifyShipUseCase modifyShipUseCase
 @inject deleteShipUseCase deleteShipUseCase
+@inject offerListUseCase offerListUseCase
+@inject modifyOfferUseCase modifyOfferUseCase
 
 @rendermode InteractiveServer
 
@@ -115,6 +117,11 @@
     }
 
     private void eliminarBarco() {
+      List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == barcoAEliminar.Id).ToList();
+      foreach(Offer offer in ofertas){
+        offer.transportePosteadoId = 1;
+        modifyOfferUseCase.Execute(offer);
+      }
       deleteShipUseCase.Execute(barcoAEliminar.Id);
       GetBarcosCargados();
     }

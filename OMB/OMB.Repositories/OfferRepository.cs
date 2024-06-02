@@ -27,6 +27,7 @@ public class OfferRepository : IOfferRepository {
             var exists = context.Offers.Where(O => O.Id == offer.Id).SingleOrDefault();
             if (exists != null) {
                 exists.state = offer.state;
+                exists.transportePosteadoId = offer.transportePosteadoId;
             }
             context.SaveChanges();
         }

@@ -48,6 +48,7 @@
     transports.AddRange(ShipHistoryListUseCase.Execute());
     transports.AddRange(VehicleHistoryListUseCase.Execute());  // no hay usecases para transportHistory todavia
     exchanges = resolvedExchangeListUseCase.Execute();
+    exchanges.Reverse();
 
     posts = listPostUseCase.Execute();
   }

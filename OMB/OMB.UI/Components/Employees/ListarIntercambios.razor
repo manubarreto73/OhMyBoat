@@ -52,6 +52,7 @@
     users = userListUseCase.Execute();
     transports = listTransportUseCase.Execute();
     exchanges = unresolvedExchangeListUseCase.Execute().Where(E => E.state == "Accepted").ToList();
+    exchanges.Reverse();
 
     posts = listPostUseCase.Execute();
     vehicleImages = listVehicleImagesUseCase.Execute();

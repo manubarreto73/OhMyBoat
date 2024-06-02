@@ -34,7 +34,7 @@
                             <p>Pedis @getPostedTransport(offer).type.ToLower() @getPostedTransport(offer).model</p>
                             <hr>
                             <p><strong class="izq">Tu oferta @getOfferStatus(offer) </strong>
-                            @if (getOfferState(offer) == "active") {
+                            @if ((getOfferState(offer) == "active") || (getOfferState(offer) == "paused")) {
                                 <button class="StolenButton" @onclick="()=>confirmarEliminarOferta(offer)"> Cancelar </button>
                             }</p>
                         </td>

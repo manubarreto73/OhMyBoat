@@ -5,6 +5,8 @@
 @inject modifyVehicleUseCase modifyVehicleUseCase
 @inject deleteVehicleUseCase deleteVehicleUseCase
 @inject addPostUseCase addPostUseCase
+@inject offerListUseCase offerListUseCase
+@inject modifyOfferUseCase modifyOfferUseCase
 
 @rendermode InteractiveServer
 
@@ -116,8 +118,13 @@
     }
 
     private void eliminarVehiculo() {
+      List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == vehicleAux.Id).ToList();
+      foreach(Offer offer in ofertas){
+        offer.transportePosteadoId = 1;
+        modifyOfferUseCase.Execute(offer);
+      }
+
       deleteVehicleUseCase.Execute(vehicleAux.Id);
-      Console.WriteLine("Hello World!");
       GetVehiculosCargados();
     }
 

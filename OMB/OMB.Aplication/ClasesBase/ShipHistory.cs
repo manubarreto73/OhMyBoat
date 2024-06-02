@@ -1,14 +1,12 @@
 namespace OMB.Aplication.ClasesBase;
 public class ShipHistory : TransportHistory {
     
-    public string model {get; set;}
     public double eslora {get; set;}
     public double manga {get; set;}
     public double calado {get; set;}
     public bool hasEngine {get; set;}
 
-    public ShipHistory (int UserId, string type, string plate, string description, string model, double eslora, double manga, double calado, bool hasEngine) : base(UserId, type, plate, description){
-        this.model = model;
+    public ShipHistory (int UserId, string type, string plate, string description, string model, double eslora, double manga, double calado, bool hasEngine) : base(UserId, type, plate, description, model){
         this.eslora = eslora;
         this.manga = manga;
         this.calado = calado;

@@ -29,10 +29,10 @@
                     </thead>
                     <tbody>
                         @foreach (var offer in ofertas){
-                                <tr>
+                                <tr @onclick="() => irAOferta(offer)" style="cursor:pointer;">
                                     <td>
                                         <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"
-                                        height="80px" width="80px" @onclick="() => irAOferta(offer)" style="cursor:pointer;" />
+                                        height="80px" width="80px" />
                                         </td>
                                     <td>@_tipos[i]</td>
                                     <td>@_modelos[i]</td>

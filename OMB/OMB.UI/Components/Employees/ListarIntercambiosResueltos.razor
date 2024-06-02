@@ -16,15 +16,15 @@
         @foreach (var exchange in exchanges){
           <div class="exchange-info">
             <div>
-              <h4>Transporte publicado: @getPostedTransport(exchange)</h4>
-              <h6>Dueño del transporte publicado: @getPostTarget(exchange)</h6>
-              <h4>Transporte ofertado: @getOfferedTransport(exchange)</h4>
-              <h6>Ofertante transporte ofertado: @getOfferTarget(exchange)</h6>
+              <p><strong>Transporte publicado: @getPostedTransport(exchange)</strong> <br>
+              Dueño del transporte publicado: @getPostTarget(exchange)</p>
+              <p><strong>Transporte ofertado: @getOfferedTransport(exchange)</strong> <br>
+              Ofertante transporte ofertado: @getOfferTarget(exchange)</p>
               @if (@exchange.happen) {
-                <h6>Intercambio realizado</h6>
+                <p>-Intercambio concretado el @(exchange.fechaYHora.ToString("dd/MM/yyyy")) a las @(exchange.fechaYHora.ToString("HH:mm tt")) en la @(exchange.sede)</p>
               }
               else {
-                <h6>Intercambio no realizado</h6>
+                <p>-Intercambio no concretado</p>
               }
             </div>
           </div>

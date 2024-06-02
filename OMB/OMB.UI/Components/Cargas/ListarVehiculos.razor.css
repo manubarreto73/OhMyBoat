@@ -13,3 +13,8 @@ img {
 .img:hover {
   outline: solid black 2px;
 }
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

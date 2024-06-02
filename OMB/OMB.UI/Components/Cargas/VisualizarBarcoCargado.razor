@@ -4,6 +4,7 @@
 @inject listPostUseCase listPostUseCase
 @inject addPostUseCase addPostUseCase
 @inject deletePostUseCase deletePostUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -99,7 +100,12 @@
               <br>
               <input class="form-control" placeholder="Título para su publicación" type="text" @bind=title required>
             }
-            <button class="btn btn-primary" @onclick="()=>modificarBarco()">Modificar</button>
+            @if(!intercambiandose(barco)){
+              <button class="btn btn-primary" @onclick="()=>modificarBarco()">Modificar</button>
+            }
+            else{
+              <div class="disabled"><button class="btn btn-primary" disabled>Modificar</button></div>
+            }
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal" 
             data-bs-toggle="modal" data-bs-target="#listarBarcosModal">Cerrar</button>
             @if(!publicando && !publicado){
@@ -163,6 +169,10 @@
         deletePostUseCase.Execute(post.Id);
         publicado = false;
       }
+    }
+
+    private bool intercambiandose(Ship ship){
+      return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == ship.Id) || (e.transporteOfertadoId == ship.Id))).Count() > 0;
     }
 
     public void turnOff(){

@@ -4,6 +4,7 @@
 @inject addPostUseCase addPostUseCase
 @inject listPostUseCase listPostUseCase
 @inject deletePostUseCase deletePostUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -89,7 +90,14 @@
               <br>
               <input class="form-control" placeholder="Título para su publicación" type="text" @bind=title required>
             }
-            <button class="btn btn-primary" @onclick="()=>modificarVehiculo()">Modificar</button>
+
+            @if(!intercambiandose(vehiculo)){
+              <button class="btn btn-primary" @onclick="()=>modificarVehiculo()">Modificar</button>
+            }
+            else{
+              <div class="disabled"><button class="btn btn-primary" disabled>Modificar</button></div>
+            }
+
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal" 
             data-bs-toggle="modal" data-bs-target="#listarVehiculosModal">Cerrar</button>
             @if(!publicando && !publicado){
@@ -171,6 +179,10 @@
       title = "";
       GetImages();
       StateHasChanged();
+    }
+
+    private bool intercambiandose(Vehicle ve){
+      return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == ve.Id) || (e.transporteOfertadoId == ve.Id))).Count() > 0;
     }
 
     private void GetImages() {

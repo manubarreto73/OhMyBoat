@@ -8,6 +8,8 @@
 @inject listPostUseCase listPostUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject vehicleListUseCase vehicleListUseCase
+@inject NavigationManager navegador
 
 <DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="eliminarOferta"/>
 
@@ -25,13 +27,13 @@
             <tbody>
                 @foreach (var offer in offerList){
                     <tr>
-                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="145px" width="145px"/></td>
+                        <td><img class="hov" @onclick="() => travelToPost(offer)" src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="145px" width="145px"/></td>
                         <td>
                             <h4>Oferta a @getOfferTarget(offer).userName </h4>
                             <p>Ofreces tu @getOfferedTransport(offer).type.ToLower() @getOfferedTransport(offer).model </p>
                             <p>Pedis @getPostedTransport(offer).type.ToLower() @getPostedTransport(offer).model</p>
                             <hr>
-                            <p><strong>Tu oferta @getOfferStatus(offer) &nbsp;</strong>
+                            <p><strong class="izq">Tu oferta @getOfferStatus(offer) </strong>
                             @if (getOfferState(offer) == "active") {
                                 <button class="StolenButton" @onclick="()=>confirmarEliminarOferta(offer)"> Cancelar </button>
                             }</p>
@@ -73,6 +75,16 @@
         transportList = listTransportUseCase.Execute();
 
         getOfferList();
+    }
+
+    public void travelToPost(Offer oferta){
+        Transport t = vehicleListUseCase.Execute().Where(v => v.Id == oferta.transportePosteadoId).SingleOrDefault();
+
+        if (t != null) {
+            navegador.NavigateTo($"/vehiclepost/{t.Id}", true);
+        } else {
+            navegador.NavigateTo($"/shippost/{oferta.transportePosteadoId}", true);
+        }
     }
 
     public void getOfferList () {
@@ -118,7 +130,7 @@
     }
 
     public String getOfferStatus(Offer offer) {
-        if (offer.state != "active" && isPaused(offer)) {
+        if (offer.state == "active" && isPaused(offer)) {
             offer.state = "paused";
         }
         return (offer.state == "paused") ? "está pausada" : (offer.state == "active") ? " está siendo evaluada" : (offer.state == "rejected") ? "fue rechazada" : "fue aceptada";

@@ -71,6 +71,7 @@
     List<int> transportIds = transports.FindAll(T => T.UserId == loggedUserId).Select(T => T.Id).ToList();
     // Todas los intercambios donde se está involucrado un transporte del usuario
     exchanges = unresolvedExchanges.FindAll(Exc => transportIds.Contains(Exc.transporteOfertadoId) || transportIds.Contains(Exc.transportePosteadoId));
+    exchanges.Reverse();
     getImages();
   }
 

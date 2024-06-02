@@ -17,7 +17,7 @@
       @if (exchanges.Any()) {
         int i = 0;
         @foreach (var exchange in exchanges){
-          <div class="exchange-info" @onclick="()=>browseToExchange(exchange)">
+          <div class="exchange-info" @onclick="()=>browseToExchange(exchange)" style="cursor:pointer;">
             <div class="img">
               <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(images[i]))"/>
             </div>

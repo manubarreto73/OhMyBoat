@@ -33,17 +33,17 @@
               <tbody>
                 @{int i = 0;}
                 @foreach (var barco in _ships) {
-                  <tr style="cursor-pointer">
-                    <td @onclick="() => confirmarOfertar(barco)">
+                  <tr style="cursor:pointer;" @onclick="() => confirmarOfertar(barco)">
+                    <td>
                       <div class="img">
                         <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
                       </div>
                     </td>
-                    <td @onclick="() => confirmarOfertar(barco)">
+                    <td>
                       @barco.type[0].ToString().ToUpper()@barco.type.Substring(1)
                     </td>
-                    <td @onclick="() => confirmarOfertar(barco)">@barco.model</td>
-                    <td @onclick="() => confirmarOfertar(barco)">@barco.plate</td>
+                    <td>@barco.model</td>
+                    <td>@barco.plate</td>
                   </tr>
                   
                   i++;

@@ -1,7 +1,7 @@
 .exchanges-container {
   display: flex;
   justify-content: center;
-  width: 68%;
+  width: 80%;
 }
 
 .exchanges {
@@ -64,8 +64,8 @@
 
 .img {
   margin-right: 1rem;
-  width: 100px;
-  height: 100px;
+  width: 165px;
+  height: 165px;
 }
 
 .img img {
@@ -74,3 +74,12 @@
   object-fit: cover;
   border-radius: 5px;
 }
+td {
+  text-align: center;
+  cursor: pointer;
+}
+
+th {
+  text-align: center;
+}
+

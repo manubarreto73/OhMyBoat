@@ -6,6 +6,7 @@
 @inject deleteShipUseCase deleteShipUseCase
 @inject offerListUseCase offerListUseCase
 @inject modifyOfferUseCase modifyOfferUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 
 @rendermode InteractiveServer
 
@@ -46,9 +47,16 @@
                     <td>@barco.model</td>
                     <td>@barco.plate</td>
                     <td>
-                      <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(barco)">
+                      @if(!intercambiandose(barco)){
+                        <button class="btn btn-danger" @onclick="()=>confirmarEliminacion(barco)">
+                            <i class='bx bxs-trash-alt'></i>
+                        </button>
+                      }
+                      else{
+                        <div class="disabled"><button class="btn btn-danger" disabled>
                           <i class='bx bxs-trash-alt'></i>
-                      </button>
+                      </button></div>
+                      }
                     </td>
                   </tr>
                   i++;
@@ -85,6 +93,10 @@
       userId = result.Success ? result.Value : 0;
 
       GetBarcosCargados();
+    }
+
+    private bool intercambiandose(Ship ship){
+      return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == ship.Id) || (e.transporteOfertadoId == ship.Id))).Count() > 0;
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar

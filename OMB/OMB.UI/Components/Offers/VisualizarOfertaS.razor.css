@@ -1,0 +1,62 @@
+.custom-carousel-container {
+    position: relative;
+    max-width: 400px; /* Limit width to image size */
+    margin: auto; /* Center the carousel horizontally */
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 10%; /* Adjust width of the control buttons */
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    height: 50%;
+    width: 50%;
+}
+
+.small-carousel-image {
+    height: 350px;
+    width: 400px;
+    display: block;
+    margin: auto;
+    border: 2px solid #ddd; /* Light gray border */
+    border-radius: 15px; /* Softer edges */
+    padding: 5px; /* Padding inside the border */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.button-container {
+    width: 400px;
+    display: inline-block;
+    border: 2px solid #ddd; /* Darker gray border with increased width */
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 20px;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+.button-container button {
+    margin-right: 15px; /* Increased space between buttons */
+}
+
+.button-container button:last-child {
+    margin-right: 0;
+}
+
+.content-container {
+    max-width: 500px; /* Adjust as needed */
+    margin: auto; /* Center the container */
+    padding: 5px;
+    border: 5px solid #ddd; /* Darker gray border */
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+}
+
+.content-container h3 {
+    margin-top: 0; /* Remove top margin from heading */
+}
+
+.button-container {
+    margin-top: 15px; /* Adjust spacing between content and buttons */
+}

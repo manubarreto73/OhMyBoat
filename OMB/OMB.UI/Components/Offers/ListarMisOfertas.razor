@@ -27,7 +27,7 @@
             <tbody>
                 @foreach (var offer in offerList){
                     <tr>
-                        <td><img class="hov" @onclick="() => travelToPost(offer)" src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="145px" width="145px"/></td>
+                        <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="145px" width="145px"/></td>
                         <td>
                             <h4>Oferta a @getOfferTarget(offer).userName </h4>
                             <p>Ofreces tu @getOfferedTransport(offer).type.ToLower() @getOfferedTransport(offer).model </p>

@@ -10,23 +10,67 @@
 @inject deleteOfferUseCase deleteOfferUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject userListUseCase userListUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
 
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="resolver"/>
 
-<div>
-    <h3> Te han ofrecido un @offeredship.type de marca @offeredship.model </h3>
-	<h6> (Imagenes) </h6>
-	<h6> Ofrecido por @userOffering.userName </h6>
-    <h6> @offeredship.description </h6>
-	<h6> Patente @offeredship.plate </h6>
-    <h6> Eslora @offeredship.eslora </h6>
-	<h6> Manga @offeredship.manga </h6>
-	<h6> Calado @offeredship.calado </h6>
-</div>
-<div>
-	<button class="btn btn-primary" @onclick="confirmarAceptarOferta" data-bs-dismiss="modal">Aceptar oferta</button>
-    <button class="btn btn-danger" @onclick="confirmarRechazarOferta" data-bs-dismiss="modal">Rechazar oferta</button>
-</div>
+@if (offeredship != null){
+    <section class="text-center my-5">
+        <h3>Te han ofrecido un @offeredship.type.ToLower() @offeredship.model</h3>
+        
+        <!-- Bootstrap Carousel for Image Slideshow -->
+		<div class="content-container">
+        <div id="carouselExampleIndicators" class="carousel slide custom-carousel-container" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                @for (int i = 0; i < imagenes.Count; i++)
+                {
+                    <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")" aria-current="true" aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+            <div class="carousel-inner">
+                @for (int j = 0; j < imagenes.Count; j++)
+                {
+                    <div class="carousel-item @(j == 0 ? "active" : "")">
+                        <img src="@($"data:image/jpeg;base64,{Convert.ToBase64String(imagenes[j])}")" class="small-carousel-image" />
+                    </div>
+                }
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        <article class="my-3">
+            <p>
+                Ofrecido por @userOffering.userName <br>
+                @offeredship.type @offeredship.model <br>
+                @offeredship.description <br>
+                Patente @offeredship.plate <br>
+				Medidas: <br>
+                @offeredship.eslora de eslora <br>
+				@offeredship.manga de manga <br>
+				@offeredship.calado de calado <br>
+				@if(offeredship.hasEngine){
+					<span>Con motor</span>
+				}
+				else{
+					<span>Sin motor</span>
+				}
+            </p>
+        </article>
+
+        <div class="button-container">
+            <button class="btn btn-primary me-2" @onclick="confirmarAceptarOferta" data-bs-dismiss="modal">Aceptar oferta</button>
+            <button class="btn btn-danger" @onclick="confirmarRechazarOferta" data-bs-dismiss="modal">Rechazar oferta</button>
+        </div>
+		</div>
+    </section>
+}
 
 <Emails @ref=emails/>
 
@@ -36,9 +80,13 @@
 
 	Offer offer = new Offer(0, 0);
 
-	Ship offeredship = new Ship();
+	Ship offeredship;
 
 	User userOffering = new User();
+
+	List<byte[]> imagenes = new List<byte[]>();
+	int j = 0;
+	int limit;
 
 	DialogoConfirmacion dialogo = null!;
 	Emails emails = null!;
@@ -52,6 +100,10 @@
 		offeredship = shipListUseCase.Execute().Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault();
 
 		userOffering = userListUseCase.Execute().Where(U => U.Id == offeredship.UserId).SingleOrDefault();
+
+		imagenes = listShipImagesUseCase.Execute().Where(im => im.ShipId == offeredship.Id).Select(im => im.Image).ToList();
+
+		limit = imagenes.Count() - 1;
 
 		StateHasChanged();
 
@@ -161,5 +213,19 @@
     Post post = listPostUseCase.Execute().Find(post => post.TransportId == postedTransport.Id);
 		return post.Title;
 	}
+
+	public void MoveRight() {
+      if (j < limit) j++;
+      else j = 0;
+
+      StateHasChanged();
+    }
+
+    public void MoveLeft() {
+      if (j > 0) j--;
+      else j = limit;
+
+      StateHasChanged();
+    }
 
 }

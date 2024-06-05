@@ -11,14 +11,14 @@ public class Testing{
         using(OMBContext context = new OMBContext()){
         if(context.Users.Count() == 0){
             context.Users.Add(new User("-", "-", "Usuario No Disponible", "-", "auxiliar@gmail.com", "221123123", birthDate)); //1
-            context.Users.Add(new User("Manu", "Barreto", "manubarreto", "manuel123", "manubarreto@gmail.com", "221123123", birthDate)); //2
+            context.Users.Add(new User("Manu", "Barreto", "manubarreto", "manuel123", "manubarreto@gmail.com", "221123123", birthDate)); //2  PONER MAIL DE MANU DE VERDAD
             context.Users.Add(new User("Luis", "González", "luisgonzalez", "luiss123", "luisgonzalez@gmail.com", "221456456", birthDate)); //3
             context.Users.Add(new User("María", "Rodríguez", "mariarodriguez", "maria123", "mariarodriguez@gmail.com", "221789789", birthDate)); //4
             context.Users.Add(new User("Pedro", "Martínez", "pedromartinez", "pedro123", "pedromartinez@gmail.com", "221987654", birthDate)); //5
             context.Users.Add(new User("Ana", "Sánchez", "anasanchez", "anasan123", "anasanchez@gmail.com", "221654321", birthDate)); //6
             context.Users.Add(new User("Lucía", "Fernández", "luciafernandez", "lucia123", "luciafernandez@gmail.com", "221111222", birthDate)); //7
-            context.Users.Add(new User("Javier", "Díaz", "javierdiaz", "javier123", "javierdiaz@gmail.com", "221333444", birthDate)); //8
-            context.Users.Add(new User("Laura", "López", "lauralopez", "laura123", "lauralopez@gmail.com", "221555666", birthDate)); //9
+            context.Users.Add(new User("Joaquín", "Malchansky", "joaco", "123123123", "joacomk8@gmail.com", "221333444", birthDate)); //8
+            context.Users.Add(new User("Ivy", "Daguerre", "ivy", "123123123", "maildeivy@gmail.com", "221555666", birthDate)); //9 PONER MAIL DE IVY DE VERDAD
         }
         context.SaveChanges();
         }
@@ -42,7 +42,7 @@ public class Testing{
             context.Add(new Vehicle(2, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
             context.Add(new Vehicle(2, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
             context.Add(new Vehicle(2, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
-            context.Add(new Vehicle(2, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
+            context.Add(new Vehicle(8, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
             context.SaveChanges();
         }
         
@@ -55,7 +55,7 @@ public class Testing{
             context.Add(new Ship(2, "Crucero", "RTS222", "Es un modelo muy seguro, y muy fácil de conducir, ideal para principiantes", "188 JOY", 2, 3, 4, true));
             context.Add(new Ship(2, "Velero", "VYW323", "Espacio para dos personas, muy cómodo y muy rápido", "Cranchi Endurance 33", 4, 3, 2, false));
             context.Add(new Ship(2, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
-            context.Add(new Ship(2, "Lacha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
+            context.Add(new Ship(8, "Lacha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
             context.SaveChanges();
         }
         }

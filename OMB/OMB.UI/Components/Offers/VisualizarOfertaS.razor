@@ -51,16 +51,15 @@
                 @offeredship.type @offeredship.model <br>
                 @offeredship.description <br>
                 Patente @offeredship.plate <br>
-				Medidas: <br>
-                @offeredship.eslora de eslora <br>
-				@offeredship.manga de manga <br>
-				@offeredship.calado de calado <br>
-				@if(offeredship.hasEngine){
-					<span>Con motor</span>
-				}
-				else{
-					<span>Sin motor</span>
-				}
+								Medidas: <br>@offeredship.eslora de eslora <br>
+								@offeredship.manga de manga <br>
+								@offeredship.calado de calado <br>
+								@if(offeredship.hasEngine){
+									<span>Con motor</span>
+								}
+								else{
+									<span>Sin motor</span>
+								}
             </p>
         </article>
 
@@ -162,7 +161,6 @@
 		);
 
 		Navegador.NavigateTo("listarmisintercambios/", true);
-		
 	}
 
 	public void rechazarOferta () {

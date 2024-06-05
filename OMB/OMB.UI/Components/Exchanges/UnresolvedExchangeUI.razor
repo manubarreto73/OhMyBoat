@@ -173,9 +173,23 @@
     private async Task accept() {
         actualExchange.state = "Accepted";
         modifyUnresolvedExchangeUseCase.Execute(actualExchange);
+
         StateHasChanged();
         mostrarCartel = true;
         cartelito = "Intercambio Aceptado Exitosamente";
+
+        // Envia mail al otro involucrado
+        User user = getUser();
+        string title = getTitle();
+        emails.SendEmail(
+			"¡Intercambio aceptado!", // Subject
+			user.mail, // Mail
+			"¡Aceptaron tu intercambio!", // Titulo
+			$@"
+			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu intercambio de <b>{title}</b> fue aceptado</p>
+			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para ver mayor información</p>
+			" // Cuerpo
+		);
     }
 
     public void Try(UnresolvedExchange exchange) {
@@ -194,6 +208,11 @@
         }
     }
 
+    private string getTitle() {
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id);
+        return post.Title;
+    }
+
     private async Task cancel() {
         // borro el intercambio actual
         deleteUnresolvedExchangeUseCase.Execute(exchangeId);
@@ -207,7 +226,7 @@
         listPostUseCase.Execute().Where(Post => Post.TransportId == ownerTransport.Id || Post.TransportId == offererTransport.Id).ToList().ForEach(Post => Post.paused = false);
         Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id);
 
-        // Envia mail al que no cancelo el intercambio
+        // Envia mail al otro involucrado
         User user = getUser();
         emails.SendEmail(
 			"Intercambio cancelado", // Subject
@@ -228,6 +247,19 @@
         StateHasChanged();
         mostrarCartel = true;
         cartelito = "Horario propuesto con exito";
+
+        // Envia mail al otro involucrado
+        User user = getUser();
+        string title = getTitle();
+        emails.SendEmail(
+			"¡Horario propuesto!", // Subject
+			user.mail, // Mail
+			"Recibiste una propuesta de horario", // Titulo
+			$@"
+			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu intercambio de <b>{title}</b> recibió una propuesta de horario</p>
+			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para ver la propuesta</p>
+			" // Cuerpo
+		);
     }
 
     private void setFalse () {

@@ -6,6 +6,8 @@
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject userListUseCase userListUseCase
+@inject listPostUseCase listPostUseCase
 
 @rendermode InteractiveServer
 
@@ -59,6 +61,8 @@
     </div>
 </div>
 
+<Emails @ref=emails/>
+
 @code {
     int userId;
     
@@ -69,6 +73,7 @@
     Transport transporteAOfertar;
 
     Ship? ship = new Ship();
+    Emails emails = null!;
 
     protected override async Task OnInitializedAsync() {
       var result = await sessionStorage.GetAsync<int>("userId");
@@ -112,6 +117,29 @@
     private void OfertarDef() {
       addOfferUseCase.Execute(new Offer(ship.Id, transporteAOfertar.Id));
 
+      User user = getUser();
+      string title = getTitle();
+      // Manda mail al dueño
+      emails.SendEmail(
+        "¡Tenés una oferta!", // Subject
+        user.mail, // Mail
+        "¡Te hicieron una oferta!", // Titulo
+        $@"
+        <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu publicación <b>{title}</b> recibió una oferta!</p>
+        <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podeés ingresar a la página para ver la oferta</p>
+        " // Cuerpo
+      );
+
       GetTransportesCargados();
+    }
+
+    private User getUser() {
+      Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == ship.Id);
+      return userListUseCase.Execute().Find(user => user.Id == transport.UserId);
+    }
+
+    private string getTitle() {
+      Post post = listPostUseCase.Execute().Find(post => post.TransportId == ship.Id);
+      return post.Title;
     }
 }

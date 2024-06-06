@@ -5,6 +5,8 @@
 @inject listPostUseCase listPostUseCase
 @inject deletePostUseCase deletePostUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject offerListUseCase offerListUseCase
+@inject modifyOfferUseCase modifyOfferUseCase
 
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @rendermode InteractiveServer
@@ -166,6 +168,11 @@
     public void eliminarPublicacion(){
       var post = listPostUseCase.Execute().Where(p => p.getTransportId() == vehiculo.Id).SingleOrDefault();
       if (post != null) {
+        List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == post.getTransportId()).ToList();
+        foreach(Offer offer in ofertas){
+          offer.transportePosteadoId = 1;
+          modifyOfferUseCase.Execute(offer);
+        }
         deletePostUseCase.Execute(post.Id);
         publicado = false;
       }

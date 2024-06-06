@@ -5,8 +5,6 @@
 @inject NavigationManager Navegador
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase listTransportUseCase
-@inject vehicleListUseCase vehicleListUseCase
-@inject shipListUseCase shipListUseCase
 @inject listPostUseCase listPostUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 @inject addResolvedExchangeUseCase addResolvedExchangeUseCase
@@ -16,6 +14,10 @@
 @inject modifyTransportUseCase modifyTransportUseCase
 @inject deletePostUseCase deletePostUseCase
 @inject modifyPostUseCase modifyPostUseCase
+@inject shipListUseCase shipListUseCase
+@inject vehicleListUseCase vehicleListUseCase
+@inject listShipImagesUseCase listShipImagesUseCase
+@inject listVehicleImagesUseCase listVehicleImagesUseCase
 
 @rendermode InteractiveServer
 
@@ -26,36 +28,144 @@
     <body>
         <div class="exchange-container">
             <div class="user-info">
-                <h2>Ofertante: @offerer.userName</h2>
-                <div class="vehicle-info">
-                    <h3>Ofrece:</h3>
-                    <p>Tipo: @offererTransport.type</p>
-                    <p>Modelo: @offererTransport.model</p>
-                    <!-- Add more vehicle details here -->
+                <div class="img">
+                    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(imgOfferer))"/>
+                </div>
+                <h2 style="margin-bottom:1rem">Ofertante: @offerer.userName</h2>
+                <div class="transport-info">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center">Características</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><p><b>Tipo</b></p></td>
+                                <td><p>@offererTransport.type</p></td>
+                            </tr>
+                            <tr>
+                                <td><p><b>Modelo</b></p></td>
+                                <td><p>@offererTransport.model</p></td>
+                            </tr>
+                            <tr>
+                                <td><p><b>Patente</b></p></td>
+                                <td><p>@offererTransport.plate</p></td>
+                            </tr>
+                            <tr>
+                                <td><p><b>Descripción</b></p></td>
+                                <td><p>@offererTransport.description</p></td>
+                            </tr>
+                            @if (isVehicle(offererTransport.Id)) {
+                                <tr>
+                                    <td><p><b>Kilómetros</b></p></td>
+                                    <td><p>@offererVehicle.kms</p></td>
+                                </tr>
+                                @if (offererTransport.type != "Ciclomotor") {
+                                    <tr>
+                                        <td><p><b>Puertas</b></p></td>
+                                        <td><p>@offererVehicle.doors</p></td>
+                                    </tr>
+                                }
+                            } else {
+                                <tr>
+                                    <td><p><b>Eslora</b></p></td>
+                                    <td><p>@offererShip.eslora m</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>Manga</b></p></td>
+                                    <td><p>@offererShip.manga m</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>Calado</b></p></td>
+                                    <td><p>@offererShip.calado m</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>Tiene motor</b></p></td>
+                                    <td><p>@hasEngineToText(offererShip.hasEngine)</p></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="middle-info">
+                <div class="user-info" style="width:100%">
+                    <h2>Pacto Ofrecido</h2>
+                    <div class="transport-info">
+                        <h3>Horario:</h3>
+                        <p>@actualExchange.fechaYHora</p>
+                        <h3>Sede:</h3>
+                        <p>@actualExchange.sede</p>
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="accept" @onclick="confirmarAccept">Aceptar Intercambio</button>
+                    <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
                 </div>
             </div>
             <div class="user-info">
-                <h2>Pacto Ofrecido:</h2>
-                <div class="vehicle-info">
-                    <h3>Horario:</h3>
-                    <p>@actualExchange.fechaYHora</p>
-                    <h3>Sede:</h3>
-                    <p>@actualExchange.sede</p>
+                <div class="img">
+                    <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(imgOwner))"/>
+                </div>
+                <h2 style="margin-bottom:1rem">Dueño: @owner.userName</h2>
+                <div class="transport-info">
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th colspan="2" class="text-center">Características</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><p><b>Tipo</b></p></td>
+                                <td><p>@ownerTransport.type</p></td>
+                            </tr>
+                            <tr>
+                                <td><p><b>Modelo</b></p></td>
+                                <td><p>@ownerTransport.model</p></td>
+                            </tr>
+                            <tr>
+                                <td><p><b>Patente</b></p></td>
+                                <td><p>@ownerTransport.plate</p></td>
+                            </tr>
+                            <tr>
+                                <td><p><b>Descripción</b></p></td>
+                                <td><p>@ownerTransport.description</p></td>
+                            </tr>
+                            @if (isVehicle(ownerTransport.Id)) {
+                                <tr>
+                                    <td><p><b>Kilómetros</b></p></td>
+                                    <td><p>@ownerVehicle.kms</p></td>
+                                </tr>
+                                @if (ownerTransport.type != "Ciclomotor") {
+                                    <tr>
+                                        <td><p><b>Puertas</b></p></td>
+                                        <td><p>@ownerVehicle.doors</p></td>
+                                    </tr>
+                                }
+                            } else {
+                                <tr>
+                                    <td><p><b>Eslora</b></p></td>
+                                    <td><p>@ownerShip.eslora m</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>Manga</b></p></td>
+                                    <td><p>@ownerShip.manga m</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>Calado</b></p></td>
+                                    <td><p>@ownerShip.calado m</p></td>
+                                </tr>
+                                <tr>
+                                    <td><p><b>Tiene motor</b></p></td>
+                                    <td><p>@hasEngineToText(ownerShip.hasEngine)</p></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="user-info">
-                <h2>Dueño: @owner.userName</h2>
-                <div class="vehicle-info">
-                    <h3>Se solicita:</h3>
-                    <p>Tipo: @ownerTransport.type</p>
-                    <p>Modelo: @ownerTransport.model</p>
-                    <!-- Add more vehicle details here -->
-                </div>
-            </div>
-        </div>
-        <div class="buttons">
-            <button class="accept" @onclick="confirmarAccept">Aceptar Intercambio</button>
-            <button class="cancel" @onclick="confirmarCancel">Cancelar Intercambio</button>
         </div>
     </body>
 }
@@ -74,6 +184,15 @@
 
     Transport ownerTransport;
     Transport offererTransport;
+
+    Vehicle ownerVehicle = new Vehicle();
+    Vehicle offererVehicle = new Vehicle();
+
+    Ship ownerShip = new Ship();
+    Ship offererShip = new Ship();
+
+    byte[] imgOwner = new byte[0];
+    byte[] imgOfferer = new byte[0];
 
     User owner;
     User offerer;
@@ -103,6 +222,14 @@
         ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault();
         offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault();
 
+        // Busco la primer imágen de cada transporte
+        imgOwner = getImage(ownerTransport.Id);
+        imgOfferer = getImage(offererTransport.Id);
+
+        // Busco el resto de datos dependiendo de si son barcos o vehículos
+        getDetailsOwner(ownerTransport.Id);
+        getDetailsOfferer(offererTransport.Id);
+
         List<User> users = userListUseCase.Execute();   // lista de usuarios para conseguir sus infos a través de sus transportes.
         owner = users.Where(u => u.Id == ownerTransport.UserId).SingleOrDefault();
         offerer = users.Where(u => u.Id == offererTransport.UserId).SingleOrDefault();
@@ -110,6 +237,39 @@
         // aviso que cambia el estado, osea que se consiguieron los datos para poder renderizar el html
         StateHasChanged();
     }
+
+    private string hasEngineToText(bool hasEngine) {
+        if (hasEngine) return "Si";
+        else return "No";
+    }
+
+    private byte[] getImage(int transportId) {
+        if (isVehicle(transportId)) {
+            return listVehicleImagesUseCase.Execute().Find(img => img.VehicleId == transportId).Image;
+        } else {
+            return listShipImagesUseCase.Execute().Find(img => img.ShipId == transportId).Image;
+        }
+    }
+
+    private void getDetailsOwner(int transportId) {
+        if (isVehicle(transportId)) {
+            ownerVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId);
+        } else {
+            ownerShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId);
+        }
+    }
+
+    private void getDetailsOfferer(int transportId) {
+        if (isVehicle(transportId)) {
+            offererVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId);
+        } else {
+            offererShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId);
+        }
+    }
+
+    private bool isVehicle (int id) {
+		return !shipListUseCase.Execute().Any(S => S.Id == id);
+	}
 
     public void confirmarAccept () {
         dialogoAccept.Mostrar("¿Seguro que deseas marcar este intercambio como realizado?");

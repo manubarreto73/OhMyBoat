@@ -30,8 +30,8 @@
                         <td><img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_imgPost[i]))" height="145px" width="145px"/></td>
                         <td>
                             <h4>Oferta a @getOfferTarget(offer).userName </h4>
-                            <p>Ofreces tu @getOfferedTransport(offer).type.ToLower() @getOfferedTransport(offer).model </p>
-                            <p>Pedis @getPostedTransport(offer).type.ToLower() @getPostedTransport(offer).model</p>
+                            <p>Ofreces: tu @getOfferedTransport(offer).type.ToLower() @getOfferedTransport(offer).model </p>
+                            <p>Pedís: @getPostedTransport(offer).type.ToLower() @getPostedTransport(offer).model</p>
                             <hr>
                             <p><strong class="izq">Tu oferta @getOfferStatus(offer) </strong>
                             @if ((getOfferState(offer) == "active") || (getOfferState(offer) == "paused")) {

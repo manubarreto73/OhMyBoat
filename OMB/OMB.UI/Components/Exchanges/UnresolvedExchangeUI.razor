@@ -6,6 +6,7 @@
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
 @inject deleteUnresolvedExchangeUseCase deleteUnresolvedExchangeUseCase
 @inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
+@inject modifyPostUseCase modifyPostUseCase
 @inject listTransportUseCase listTransportUseCase
 @inject listPostUseCase listPostUseCase
 @inject offerListUseCase offerListUseCase
@@ -99,19 +100,17 @@
                 <div class="middle-info">
                     <div class="user-info" style="width: 100%;padding-inline:3rem;">
                         <h2>Pacto Ofrecido</h2>
-                        @if (!isFirstTime()) {
-                            <div class="transport-info">
+                        <div class="transport-info">
+                            @if (!isFirstTime()) {
                                 <h3>Horario:</h3>
                                 <p>@actualExchange.fechaYHora</p>
                                 <h3>Sede:</h3>
                                 <p>@actualExchange.sede</p>
-                            </div>
-                        }
-                        @if (isFirstTime()) {
-                            <div class="transport-info">
+                            }
+                            @if (isFirstTime()) {
                                 <h5>A estimar</h5>
-                            </div>
-                        }
+                            }
+                        </div>
                     </div>
                     <div class="buttons-container">
                         @if (!isAccepted() && !isMyTurn()) {
@@ -378,16 +377,13 @@
     private async Task cancel() {
         // borro el intercambio actual
         deleteUnresolvedExchangeUseCase.Execute(exchangeId);
-        // consigo las ofertas de ambos transportes del intercambio
-        List<Offer> ownerTransportOffers = offerListUseCase.Execute().Where(Offer => Offer.transportePosteadoId == ownerTransport.Id || Offer.transporteOfertadoId == ownerTransport.Id).ToList();
-        List<Offer> offererTransportOffers = offerListUseCase.Execute().Where(Offer => Offer.transportePosteadoId == offererTransport.Id || Offer.transporteOfertadoId == offererTransport.Id).ToList();
-        // para cada oferta de ambas listas seteo el estado en "active" (osea las despauso)
-        ownerTransportOffers.ForEach(Offer => Offer.state = "active");
-        offererTransportOffers.ForEach(Offer => Offer.state = "active");
         // consigo la lista de posts de los vehiculos y seteo su paused a false (osea, NO pausados)
-        listPostUseCase.Execute().Where(Post => Post.TransportId == ownerTransport.Id || Post.TransportId == offererTransport.Id).ToList().ForEach(Post => Post.paused = false);
+        List<Post> postsACambiar = listPostUseCase.Execute().Where(Post => Post.TransportId == ownerTransport.Id || Post.TransportId == offererTransport.Id).ToList();
+        postsACambiar.ForEach(post => post.paused = false);
+        postsACambiar.ForEach(post => modifyPostUseCase.Execute(post));
+        
+        // para el titulo del mail
         Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id);
-
         // Envia mail al otro involucrado
         User user = getUser();
         emails.SendEmail(

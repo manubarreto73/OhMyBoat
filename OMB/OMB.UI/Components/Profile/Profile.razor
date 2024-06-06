@@ -107,7 +107,7 @@
 
     private void cancelarIntercambios() {
         //Ids de todos los transportes del usuario loggeado
-        List<int> transportIds = listTransportUseCase.Execute().Where(T => T.UserId == userId).ToList().Select(T => T.Id).ToList();
+        List<int> transportIds = listTransportUseCase.Execute().Where(T => T.UserId == user.Id).ToList().Select(T => T.Id).ToList();
         List<Post> posts = listPostUseCase.Execute().Where(P => transportIds.Contains(P.TransportId)).ToList();
         if (user.banned == false) {
             //Pongo en pausa todos los post

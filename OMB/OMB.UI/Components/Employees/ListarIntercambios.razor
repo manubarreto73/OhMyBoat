@@ -67,7 +67,7 @@
   List<ShipImage> shipImages = new List<ShipImage>();
   List<byte[]> images = new List<byte[]>();
 
-  protected override async Task OnInitializedAsync() {
+  protected override void OnInitialized() {
     // Inicializo listas para usarlas después
     users = userListUseCase.Execute();
     transports = listTransportUseCase.Execute();

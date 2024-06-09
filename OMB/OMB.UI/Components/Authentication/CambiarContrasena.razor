@@ -36,8 +36,8 @@
         userId = result.Success ? result.Value : 0;
         usuario = userListUseCase.Execute().Find(user => user.Id == userId);
     }
-    
-    async void Aceptar(){
+
+    async Task Aceptar() {
 
         if (string.IsNullOrEmpty(claveActual) || string.IsNullOrEmpty(nuevaClaveUno) || string.IsNullOrEmpty(nuevaClaveDos)) {
             dialogo.Mostrar("Debe completar todos los campos");
@@ -45,6 +45,10 @@
         }
 
         await Read();
+
+        if (usuario == null) {
+            throw new Exception("Usuario no encontrado");
+        }
 
         if (usuario.password != claveActual) {
             dialogo.Mostrar("La clave ingresada es incorrecta");

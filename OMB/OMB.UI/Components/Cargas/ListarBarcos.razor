@@ -118,7 +118,8 @@
       _images = new List<byte[]>();
 
       foreach (var barco in _ships) {
-        byte[] image = _allImages.Find(imagen => imagen.ShipId == barco.Id).Image;
+        var imagen = _allImages.Find(imagen => imagen.ShipId == barco.Id);
+        byte[] image = imagen?.Image ?? Array.Empty<byte>();
         _images.Add(image);
       }
     }

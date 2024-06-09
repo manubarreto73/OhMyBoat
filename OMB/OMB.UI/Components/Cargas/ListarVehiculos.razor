@@ -119,7 +119,8 @@
       _images = new List<byte[]>();
 
       foreach (var vehiculo in _vehicles) {
-        byte[] image = _allImages.Find(imagen => imagen.VehicleId == vehiculo.Id).Image;
+        var imagen = _allImages.Find(imagen => imagen.VehicleId == vehiculo.Id);
+        byte[] image = imagen?.Image ?? Array.Empty<byte>();
         _images.Add(image);
       }
     }

@@ -86,10 +86,10 @@
       int offTrans = exchange.transporteOfertadoId;
 
       if(isVehicle(offTrans)){
-        imgOffer.Add(vehicleImages.Find(img => img.VehicleId == offTrans).Image);
+        imgOffer.Add(vehicleImages.Where(img => img.VehicleId == offTrans).FirstOrDefault(new VehicleImage(1, new byte[1])).Image);
       }
       else{
-        imgOffer.Add(shipImages.Find(img => img.ShipId == offTrans).Image);
+        imgOffer.Add(shipImages.Where(img => img.ShipId == offTrans).FirstOrDefault(new ShipImage(1, new byte[1])).Image);
       }
 
       if (isVehicle(transportId)) {

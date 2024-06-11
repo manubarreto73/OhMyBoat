@@ -55,10 +55,15 @@
 
   // Obtiene el userName del dueño del post involucrado
   public string getPostTarget(ResolvedExchange exchange) {
-    if(transports != null && postedTransport != null && users != null){
-      TransportHistory postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-      User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
-      return postedTransportOwner.userName;
+    if(transports != null && users != null){
+      TransportHistory? postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
+      if(postedTransport != null){
+        User? postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
+      
+        if(postedTransportOwner != null){
+          return postedTransportOwner.userName;
+        }
+      }
     }
     return "";
   }

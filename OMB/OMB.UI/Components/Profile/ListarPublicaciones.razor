@@ -95,7 +95,7 @@
     private void GetPosts(int profileId) {
       // Filtro entre todos los transportes para encontrar los que corresponden con los posts
       foreach (Post post in _allPosts) {
-        Transport transport = _allTransports.Find(trans => trans.Id == post.TransportId);
+        Transport? transport = _allTransports.Find(trans => trans.Id == post.TransportId);
 
         if (transport != null) {
           if ((transport.UserId == profileId)) {
@@ -109,7 +109,7 @@
     }
 
     private void GetTransportImage(Transport transport) {
-      byte[] image = null;
+      byte[]? image = null;
 
       if (IsVehicle(transport.type)) {
         image = _vehicleImages.Find(img => img.VehicleId == transport.Id).Image;
@@ -127,7 +127,7 @@
     }
 
     private void browseToPost(Post post) {
-      Transport transport = _transports.Find(trans => trans.Id == post.TransportId);
+      Transport transport = _transports.Find(trans => trans.Id == post.TransportId) ?? new Ship();
 
       if (IsVehicle(transport.type)) {
         navegador.NavigateTo($"/vehiclepost/{transport.Id}", true);

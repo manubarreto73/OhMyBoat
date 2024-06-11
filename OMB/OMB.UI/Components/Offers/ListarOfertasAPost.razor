@@ -61,7 +61,7 @@
     List<string> _modelos = new List<string>();
     List<byte[]> _images = new List<byte[]>();
     int loggedUserId;
-    Transport postedTransport;
+    Transport? postedTransport;
     Post post;
 
     protected override async Task OnInitializedAsync() {
@@ -77,8 +77,8 @@
     }
 
     public string getOfferTarget(Offer offer) {
-        User postedTransportOwner = userListUseCase.Execute().Find(user => user.Id == postedTransport.UserId);
-        return postedTransportOwner.userName;
+        User? postedTransportOwner = userListUseCase.Execute().Find(user => user.Id == postedTransport.UserId);
+        return (postedTransportOwner != null) ? postedTransportOwner.userName : "";
     }
     ////////////////////////////////////////////////////
 

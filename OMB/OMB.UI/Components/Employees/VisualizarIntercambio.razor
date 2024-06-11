@@ -207,10 +207,10 @@
         var getIsEmployee  = await sessionStorage.GetAsync<bool>("isEmployee");
         isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
         // get Exchange from its Id
-        actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
+        actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId)) ?? new UnresolvedExchange(1, 1);
         // get info del cartelito
         var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
-        cartelito = getCartelito.Success ? getCartelito.Value : null;
+        cartelito = getCartelito.Success ? getCartelito.Value : "";
         mostrarCartel = true;
         await sessionStorage.DeleteAsync("cartel?");
         // Load the info after actualExchange is initialized

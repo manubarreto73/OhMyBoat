@@ -4,10 +4,10 @@ public abstract class Transport : IClonable {
 
     public int Id {get; set;}
     public int UserId {get; set;}
-    public string type {get; set;}
-    public string plate {get; set;}
-    public string description {get; set;}
-    public string model {get; set;}
+    public string type {get; set;} = "";
+    public string plate {get; set;} = "";
+    public string description {get; set;} = "";
+    public string model {get; set;} = "";
     public User? owner{get; set;}
     public Post? post{get; set;}
     public Transport (int UserId, string type, string model, string plate, string description){

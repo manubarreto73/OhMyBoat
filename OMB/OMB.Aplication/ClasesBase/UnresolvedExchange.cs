@@ -6,8 +6,8 @@ public class UnresolvedExchange : Exchange {
 
     public int transportePosteadoId {get; set;}
     public int transporteOfertadoId {get; set;}
-    public Transport transportePosteado {get; set;}
-    public Transport transporteOfertado {get; set;}
+    public Transport? transportePosteado {get; set;}
+    public Transport? transporteOfertado {get; set;}
 
     public UnresolvedExchange (int transportePosteadoId, int transporteOfertadoId) {
         this.transporteOfertadoId = transporteOfertadoId;

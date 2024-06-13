@@ -212,7 +212,7 @@
         actualExchange = unresolvedExchangeList.Find(e => e.Id == exchangeId);
         // get info del cartelito
         var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
-        cartelito = getCartelito.Success ? getCartelito.Value : null;
+        cartelito = getCartelito.Success ? getCartelito.Value : "";
         mostrarCartel = true;
         await sessionStorage.DeleteAsync("cartel?");
         // Load the info after actualExchange is initialized

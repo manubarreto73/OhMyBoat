@@ -42,7 +42,7 @@
   List<Post> posts = new List<Post>();
   List<User> users = new List<User>();
 
-  protected override async Task OnInitializedAsync() {
+  protected override void OnInitialized() {
     // Inicializo listas para usarlas después
     users = userListUseCase.Execute();
     transports.AddRange(ShipHistoryListUseCase.Execute());
@@ -55,9 +55,17 @@
 
   // Obtiene el userName del dueño del post involucrado
   public string getPostTarget(ResolvedExchange exchange) {
-    TransportHistory postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-    User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
-    return postedTransportOwner.userName;
+    if(transports != null && users != null){
+      TransportHistory? postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
+      if(postedTransport != null){
+        User? postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
+      
+        if(postedTransportOwner != null){
+          return postedTransportOwner.userName;
+        }
+      }
+    }
+    return "";
   }
 
   // Obtiene el userName del dueño del transporte ofertado involucrado

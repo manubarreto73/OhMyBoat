@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/{filtroParam:nonfile?}"
 @rendermode InteractiveServer
 @inject NavigationManager navegador
 @inject listPostUseCase listPostUseCase
@@ -8,6 +8,7 @@
 @inject listTransportUseCase listTransportUseCase
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
+
 <DialogoError @ref=dialogo/>
 
 @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
@@ -24,24 +25,47 @@
     <h1 class="publicaciones-title">No hay publicaciones disponibles aún</h1>
 }
 else{
-<!--<div class="container-de-containers">-->
-<div class="publicaciones-container">
-    <h1 class="publicaciones-title">Publicaciones</h1>
-    @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
-    @foreach (var p in posts){
-        <div class="publicacion" @onclick="async () => await browseToPost(p)">
-
-            <div class="img">
-                <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
+    <div class="container-de-containers">
+        <div class="publicaciones-container">
+            <h1 class="publicaciones-title">Publicaciones</h1>
+            @{ int i = 0; } @* Lo uso para iterar sobre las fotos *@
+            @foreach (var p in posts){
+                <div class="publicacion" @onclick="async () => await browseToPost(p)">
+                    <div class="img">
+                        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
+                    </div>
+                    <div class="publicacion-info">
+                        <h3>@p.getTitle()</h3>
+                        <h6>@_descripciones[i]</h6>
+                    </div>
+                </div>
+                i++; @* Incremento i para seguir iterando *@
+            }
+        </div>
+        <div class="filtros">
+            <div>
+                <p>@posts.Count resultados</p>
             </div>
-            <div class="publicacion-info">
-                <h3>@p.getTitle()</h3>
-                <h6>@_descripciones[i]</h6>
+            @if (filtrosAplicados.Count != 0) {
+                <div class="filtro-aplicados">
+                    @foreach (string filtro in filtrosAplicados) {
+                        <div @onclick="()=>eliminarFiltro(filtro)" class="filtro-aplicado">
+                            @filtro
+                            <div class="eliminar-filtro"></div>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="filtro">
+                <h4 class="titulo-filtro">Tipo de transporte</h4>
+                @foreach (string tipo in tiposTransporte) {
+                    @if (!esFiltro(tipo)) {
+                        <p @onclick="()=>filtrar(tipo)">@tipo<span class="cantidad-tipo">(@cantidadTipo(tipo))</span></p>
+                    }
+                }
             </div>
         </div>
-        i++; @* Incremento i para seguir iterando *@
-    }
-</div>
+    </div>
 }
 
 @code {
@@ -50,17 +74,34 @@ else{
 
     List<Post> allPosts = new List<Post>(); // Primera lista con todos los posts
     List<Post> posts = new List<Post>(); // Lista con los posts después del filtrado
-    List<Transport> transports = new List<Transport>();
-    List<User> users = new List<User>();
+    List<Transport> transports = new List<Transport>(); // All transports
+    List<User> users = new List<User>(); // All users
 
-    List<ShipImage> shipImages = new List<ShipImage>();
-    List<VehicleImage> vehicleImages = new List<VehicleImage>();
+    List<ShipImage> shipImages = new List<ShipImage>(); // All shipImages
+    List<VehicleImage> vehicleImages = new List<VehicleImage>(); // All vehicleImages
     List<byte[]> _images = new List<byte[]>();
     List<string> _descripciones = new List<string>();
 
     DialogoError dialogo = null!;
     string? cartelito;
     bool mostrarCartel;
+
+    [Parameter]
+    public string? filtroParam { get; set; }
+    List<string> tiposTransporte = new List<string> {"Auto", "Camioneta", "Ciclomotor", "Velero", "Crucero", "Lancha", "Catamaran"};
+    List<string> filtrosAplicados = new List<string>();
+
+    protected override async Task OnParametersSetAsync() {
+        filtrosAplicados = new List<string>();
+        if (!string.IsNullOrEmpty(filtroParam)) {
+            foreach (string filtro in filtroParam.Split("&")) {
+                filtrosAplicados.Add(filtro);
+            }
+        }
+
+        getPosts();
+        getPhotosAndDescriptions();
+    }
 
     protected override async Task OnInitializedAsync() {
         var result3  = await sessionStorage.GetAsync<bool>("isEmployee");
@@ -76,21 +117,57 @@ else{
         allPosts = listPostUseCase.Execute();
         shipImages = listShipImagesUseCase.Execute();
         vehicleImages = listVehicleImagesUseCase.Execute();
+        
+        getPosts();
+
+        // Reordenamos los posts
+        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+
+        // Generamos la lista de fotos y descripciones para ambos tipos de post
+        getPhotosAndDescriptions();
+
+        var result  = await sessionStorage.GetAsync<string>("cartel?");
+        cartelito = result.Success ? result.Value : null;
+        mostrarCartel = true;
+        await sessionStorage.DeleteAsync("cartel?");
+    }
+
+    private void getPosts() {
+        posts = new List<Post>();
 
         foreach (Post post in allPosts) { // Lo implemente de otra forma
             Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
             User user = users.Find(u => u.Id == transport.UserId);
 
+            // Si el tipo de transporte no concuerda con el filtro, no se agrega
+            if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(transport.type)) continue;
+
             if (!post.paused && (isEmployee || user.Id != userId)) {
                 posts.Add(post);
             }
         }
-            
-        // Reordenamos los posts
-        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+    }
 
-        // Generamos la lista de fotos para ambos tipos de post
-        // Generamos la lista de descripciones
+    private bool esFiltro(string tipo) {
+        if (string.IsNullOrEmpty(filtroParam)) return false;
+        return filtroParam.Contains(tipo, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private int cantidadTipo(string tipo) {
+        int cant = 0;
+
+        foreach (Post post in allPosts) {
+            Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
+            if (transport.type == tipo) cant++;
+        }
+
+        return cant;
+    }
+
+    private void getPhotosAndDescriptions() {
+        _descripciones = new List<string>();
+        _images = new List<byte[]>();
+
         foreach (var post in posts) {
             string descripcion = transports.Find(T => T.Id == post.getTransportId()).description;
             _descripciones.Add(descripcion);
@@ -98,11 +175,6 @@ else{
             byte[]? image = (0 != shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).Count()) ? shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == post.getTransportId()).First().Image;
             _images.Add(image);
         }
-
-        var result  = await sessionStorage.GetAsync<string>("cartel?");
-        cartelito = result.Success ? result.Value : null;
-        mostrarCartel = true;
-        await sessionStorage.DeleteAsync("cartel?");
     }
 
     private void setFalse () {
@@ -127,5 +199,20 @@ else{
     private bool IsVehicle(Post post) {
         Transport transport = transports.Find(trans => trans.Id == post.TransportId);
         return (transport.type == "Ciclomotor" || transport.type == "Auto" || transport.type == "Camioneta");
+    }
+
+    private void filtrar(string filtro) {
+        if (string.IsNullOrEmpty(filtroParam)) {
+            navegador.NavigateTo($"/{filtro}", true);
+        } else {
+            navegador.NavigateTo($"/{filtroParam}&{filtro}", true);
+        }
+    }
+
+    private void eliminarFiltro(string filtro) {
+        List<string> filtros = filtroParam.Split("&").ToList();
+        filtros.Remove(filtro);
+
+        navegador.NavigateTo($"/{String.Join("&", filtros)}", true);
     }
 }

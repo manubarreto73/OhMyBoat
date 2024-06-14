@@ -126,6 +126,77 @@
   box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
 }
 
+.filtros {
+  max-width: 20%;
+  margin-top: 60px;
+  margin-left: 20px;
+  padding-inline: 20px;
+  border-radius: 10px;
+}
+
+.filtro p {
+  display: block;
+  margin: 0;
+  margin-bottom: 0.2rem;
+  cursor: pointer;
+}
+
+.cantidad-tipo {
+  margin-left: 0.3rem;
+  opacity: 0.6;
+}
+
+.titulo-filtro {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.filtro-aplicados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.filtro-aplicado {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  padding-inline: 0.5rem;
+  padding-block: 0.1rem;
+  background-color: rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+}
+
+.eliminar-filtro {
+  position: relative;
+  margin-left: 1rem;
+  width: 10px;
+  height: 10px;
+}
+
+.eliminar-filtro::after {
+  position: absolute;
+  content: "";
+  top: 4px;
+  left: -1px;
+  width: 12px;
+  height: 1px;
+  transform: rotate(45deg);
+  background-color: black;
+}
+
+.eliminar-filtro::before {
+  position: absolute;
+  content: "";
+  top: 4px;
+  left: -1px;
+  width: 12px;
+  height: 1px;
+  transform: rotate(-45deg);
+  background-color: black;
+}
+
 .botoncito-de-decoracion {
   background-color: #1076ebb2;
   color: #fff; 

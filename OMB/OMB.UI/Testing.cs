@@ -55,7 +55,7 @@ public class Testing{
             context.Add(new Ship(2, "Crucero", "RTS222", "Es un modelo muy seguro, y muy fácil de conducir, ideal para principiantes", "188 JOY", 2, 3, 4, true));
             context.Add(new Ship(2, "Velero", "VYW323", "Espacio para dos personas, muy cómodo y muy rápido", "Cranchi Endurance 33", 4, 3, 2, false));
             context.Add(new Ship(8, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
-            context.Add(new Ship(8, "Lacha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
+            context.Add(new Ship(8, "Lancha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
             context.SaveChanges();
         }
         }

@@ -71,7 +71,10 @@
 
     public void getOfferList (Post post) {
         this.post = post;
-        postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == post.getTransportId()); //necesario?
+        var transportList = listTransportUseCase.Execute();
+        postedTransport = transportList.Find(transport => transport.Id == post.getTransportId());
+        if (postedTransport == null)
+            throw new Exception("Transporte no encontrado");
         GetOfertas();
         StateHasChanged();
     }

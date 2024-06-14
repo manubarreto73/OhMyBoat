@@ -24,6 +24,16 @@
 <DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
 
+@if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
+    <div class="alert alert-info">
+        @cartelito
+        <button class="btn" @onclick="() => setFalse()" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
+            </svg>
+        </button>
+    </div>
+}
 @if (ownerTransport != null && offererTransport != null) {  
     <body>
         <div class="exchange-container">
@@ -173,10 +183,6 @@
 @code {
     [Parameter] public int? exchangeId { get; set; }
 
-    int loggedUserId;
-
-    bool isEmployee;
-
     string cartelito;
     bool mostrarCartel;
 
@@ -201,13 +207,9 @@
     DialogoConfirmacion dialogoCancel = null!;
 
     protected override async Task OnInitializedAsync () {
-        //Extrae la información del user loggeado
-        var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
-        loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
-        var getIsEmployee  = await sessionStorage.GetAsync<bool>("isEmployee");
-        isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
         // get Exchange from its Id
-        actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId)) ?? new UnresolvedExchange(1, 1);
+        var unresolvedExchangeList = await Task.Run(() => unresolvedExchangeListUseCase.Execute());
+        actualExchange = unresolvedExchangeList.Find(e => e.Id == exchangeId);
         // get info del cartelito
         var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
         cartelito = getCartelito.Success ? getCartelito.Value : "";
@@ -221,7 +223,8 @@
         List<Transport> transports = listTransportUseCase.Execute();  // lista de transportes para conseguir los transportes del owner y offerer
         ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault();
         offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault();
-
+        if (ownerTransport == null || offererTransport == null)
+            throw new Exception("Transportes nulos");
         // Busco la primer imágen de cada transporte
         imgOwner = getImage(ownerTransport.Id);
         imgOfferer = getImage(offererTransport.Id);
@@ -241,6 +244,10 @@
     private string hasEngineToText(bool hasEngine) {
         if (hasEngine) return "Si";
         else return "No";
+    }
+
+    private void setFalse () {
+        this.mostrarCartel = false;
     }
 
     private byte[] getImage(int transportId) {

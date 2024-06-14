@@ -22,7 +22,34 @@
     </div>
 }
 @if(posts.Count() == 0) {
-    <h1 class="publicaciones-title">No hay publicaciones disponibles aún</h1>
+    <div class="container-de-containers">
+        <div class="publicaciones-container">
+            <h1>No hay publicaciones disponibles aún</h1>
+        </div>
+        <div class="filtros">
+            <div>
+                <p>@posts.Count resultados</p>
+            </div>
+            @if (filtrosAplicados.Count != 0) {
+                <div class="filtro-aplicados">
+                    @foreach (string filtro in filtrosAplicados) {
+                        <div @onclick="()=>eliminarFiltro(filtro)" class="filtro-aplicado">
+                            @filtro
+                            <div class="eliminar-filtro"></div>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="filtro">
+                <h4 class="titulo-filtro">Tipo de transporte</h4>
+                @foreach (string tipo in tiposTransporte) {
+                    @if (!esFiltro(tipo)) {
+                        <p @onclick="()=>filtrar(tipo)">@tipo<span class="cantidad-tipo">(@cantidadTipo(tipo))</span></p>
+                    }
+                }
+            </div>
+        </div>
+    </div>
 }
 else{
     <div class="container-de-containers">

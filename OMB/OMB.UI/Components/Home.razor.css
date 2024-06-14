@@ -34,7 +34,7 @@
   background-color: black;
 }
 
-.publicaciones-container h1::before {
+.publicaciones-title::before {
   position: absolute;
   left: 0;
   top: 28px;

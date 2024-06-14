@@ -1,11 +1,85 @@
 @page "/verestadisticas"
+@using ChartJs.Blazor.PieChart
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Util
+@using ChartJs.Blazor.BarChart
+@using System.Drawing
 
 <div>
 En esta página se podrán visualizar las estadísticas
 </div>
 
+<div class = "chart-container">
+    <Chart Config="_config"></Chart>
+</div>
+<div class = "bar-container">
+    <Chart Config="_barConfig"></Chart>
+</div>
+
 @code {
+    private PieConfig _config;
+    private BarConfig _barConfig;
+
+    protected override void OnInitialized()
+    {
+        //Config Pie Chart
+        _config = new PieConfig
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle()
+                {
+                    Display = true,
+                    Text = "Intercambios concretados"
+                }
+            }
+        };
+        //End config pie chart
+        //Dataset pie chart
+        foreach (string color in new[] { "Concretados", "No concretados" })
+        {
+            _config.Data.Labels.Add(color);
+        }
+
+        PieDataset<int> dataset = new PieDataset<int>(new[] { 6, 5})
+        {
+            BackgroundColor = new[]
+            {
+                ColorUtil.ColorHexString(3, 4, 94),
+                ColorUtil.ColorHexString(0xCA, 0xF0, 0xF8),
+            }
+        };
+
+        _config.Data.Datasets.Add(dataset);
+        //End of dataset pie chart
 
 
+        _barConfig = new BarConfig(horizontal: true)
+            {
+                Options = new BarOptions
+                {
+                    Responsive = true,
+                    Title = new OptionsTitle
+                    {
+                        Display = true,
+                        Text = "Cantidad de intercambios por sede"
+                    }
+                }
+            };
 
+        foreach (string color in new[] { "Sede 1", "Sede 2", "Sede 3", "Sede 4"})
+        {
+            _barConfig.Data.Labels.Add(color);
+        }
+        BarDataset<int> barData = new BarDataset<int>(new[] {500, 1000, 1500, 2000}){
+            Label="Gritos",
+            BackgroundColor = ColorUtil.ColorHexString(0x3a, 0x0c, 0xa3),
+            BorderColor = ColorUtil.ColorHexString(0x3a, 0x7c, 0xa5),
+            BorderWidth = 1
+            };
+            
+
+        _barConfig.Data.Datasets.Add(barData);
+    }
 }

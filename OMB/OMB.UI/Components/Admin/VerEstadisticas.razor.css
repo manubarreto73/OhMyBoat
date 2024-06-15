@@ -1,17 +1,7 @@
-.chart-container {
-    width: 600px;
-    height: 600px;
-    margin: 0 auto;
-    text-align: center;
-    float: left;
-    margin-left: -15%;
-}
-
-.bar-container {
-    width: 700px;
-    height: 700px;
-    margin: 0 auto;
-    text-align: center;
-    float: right;
-    margin-right: 5%;
+.chart-container, .bar-container {
+    width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
+    max-width: 600px; /* Ancho máximo para evitar que se extiendan demasiado */
+    margin: 0 auto; /* Centra horizontalmente */
+    text-align: center; /* Centra el contenido */
+    margin-bottom: 40px; /* Espacio entre los contenedores de gráficos */
 }

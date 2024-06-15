@@ -1,0 +1,17 @@
+.chart-container {
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;
+    text-align: center;
+    float: left;
+    margin-left: -15%;
+}
+
+.bar-container {
+    width: 700px;
+    height: 700px;
+    margin: 0 auto;
+    text-align: center;
+    float: right;
+    margin-right: 5%;
+}

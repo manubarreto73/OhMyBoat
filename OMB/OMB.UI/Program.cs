@@ -13,6 +13,7 @@ using OMB.Aplication.VehicleHistoryUseCases;
 using OMB.Aplication.ShipHistoryUseCases;
 using OMB.Aplication.ResolvedExchangeUseCases;
 using OMB.Aplication.UnresolvedExchangeUseCases;
+using OMB.Aplication.SedeUseCases;
 using OMB.Repositories;
 using OMB.Aplication.Interfaces;
 //Cosas para la sesión
@@ -102,6 +103,12 @@ builder.Services.AddTransient<deleteUnresolvedExchangeUseCase>();
 builder.Services.AddTransient<modifyUnresolvedExchangeUseCase>();
 builder.Services.AddTransient<unresolvedExchangeListUseCase>();
 builder.Services.AddScoped<IUnresolvedExchangeRepository, UnresolvedExchangeRepository>();
+
+builder.Services.AddTransient<addSedeUseCase>();
+builder.Services.AddTransient<deleteSedeUseCase>();
+builder.Services.AddTransient<modifySedeUseCase>();
+builder.Services.AddTransient<listSedesUseCase>();
+builder.Services.AddScoped<ISedeRepository, SedeRepository>();
 
 // FIN DE LO QUE AGREGAMOS NOSOTROS
 

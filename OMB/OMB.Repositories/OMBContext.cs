@@ -27,6 +27,7 @@ public class OMBContext : DbContext{
     public DbSet<ShipHistory> ShipsHistory {get; set;}
     public DbSet<ResolvedExchange> ResolvedExchanges {get; set;}
     public DbSet<UnresolvedExchange> UnresolvedExchanges {get; set;}
+    public DbSet<Sede> Sedes { get; set; }
 
     #nullable restore
 

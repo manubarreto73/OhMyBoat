@@ -7,6 +7,14 @@ namespace OMB.UI;
 public class Testing{
 
     public static void Initialize(){
+        using(OMBContext context = new OMBContext()){
+        if(context.Sedes.Count() == 0) {
+            context.Sedes.Add(new Sede("Sede 1", -34.83293595689235, -57.8829434918476));
+            context.Sedes.Add(new Sede("Sede 2", -34.82872143387457, -57.95478334351441));
+            context.Sedes.Add(new Sede("Sede 3", -34.85655905691365, -57.83745271400811));
+        }
+        context.SaveChanges();
+        }
         DateOnly birthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-21));
         using(OMBContext context = new OMBContext()){
         if(context.Users.Count() == 0){

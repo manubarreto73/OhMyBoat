@@ -1,0 +1,32 @@
+@inject listSedesUseCase listSedesUseCase
+@inject IJSRuntime JS
+
+<div id="map" style="height: 500px; width: 80%; margin: auto;"></div>
+
+<script type="text/javascript">
+    var map = L.map('map').setView([-34.8565, -57.9069], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    function mark(lat, long, name) {
+      L.marker([lat, long]).addTo(map).bindTooltip(name, {direction: "top", offset: [-15, 0]});
+    }
+</script>
+
+@code {
+  double lattitude = -34.9212;
+  double longitude = -57.9546;
+  List<Sede> sedes = new List<Sede>();
+
+  protected override async Task OnAfterRenderAsync(bool firstRender) {
+    if (firstRender) {
+      sedes = listSedesUseCase.Execute();
+
+      foreach (Sede sede in sedes) {
+        await JS.InvokeVoidAsync("mark", sede.latitude, sede.longitude, sede.name);
+      }
+    }
+  }
+}

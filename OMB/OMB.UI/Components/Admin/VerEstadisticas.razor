@@ -9,6 +9,9 @@
 @using Microsoft.AspNetCore.Components
 @using System.Collections.Generic
 @inject resolvedExchangeListUseCase resolvedExchangeListUseCase
+@using QuestPDF.Fluent
+@using QuestPDF.Helpers
+@using QuestPDF.Infrastructure
 
 <div class = "chart-container">
     <Chart Config="_config"></Chart>
@@ -35,6 +38,7 @@
         </li>
     }
   </ul>
+  <button class="btn btn-primary" @onclick="genPDF">Descargar PDF</button>
 </div>
 
 @code {
@@ -42,6 +46,7 @@
     private BarConfig _barConfig;
     private listElement[] exchanges = new listElement[7]{new listElement("Auto"), new listElement("Camioneta"), new listElement("Ciclomotor"), new listElement("Crucero"), new listElement("Velero"), new listElement("Lancha"), new listElement("Catamaran")};
     List<ResolvedExchange> resolvedExchanges;
+    
 
     protected override void OnInitialized()
     {
@@ -85,21 +90,24 @@
         };
         int concreted = resolvedExchanges.Where(r => r.happen).Count();
         int total = resolvedExchanges.Count();
-        foreach (string color in new[] { "Concretados "+concreted/total*100+"% ", "No concretados "+(total-concreted)/total*100+"% " })
-        {
-            _config.Data.Labels.Add(color);
-        }
 
-        PieDataset<int> dataset = new PieDataset<int>(new[] {concreted, total-concreted})
-        {
-            BackgroundColor = new[]
+        if (total > 0) {
+            foreach (string color in new[] { "Concretados "+concreted/total*100+"% ", "No concretados "+(total-concreted)/total*100+"% " })
             {
-                ColorUtil.ColorHexString(3, 4, 94),
-                ColorUtil.ColorHexString(0xCA, 0xF0, 0xF8),
+                _config.Data.Labels.Add(color);
             }
-        };
+
+            PieDataset<int> dataset = new PieDataset<int>(new[] {concreted, total-concreted})
+            {
+                BackgroundColor = new[]
+                {
+                    ColorUtil.ColorHexString(3, 4, 94),
+                    ColorUtil.ColorHexString(0xCA, 0xF0, 0xF8),
+                }
+            };
         
-        _config.Data.Datasets.Add(dataset);
+            _config.Data.Datasets.Add(dataset);
+        }
     }
 
     private void inicializarIntercambiosPorSede () {
@@ -146,4 +154,42 @@
 
         _barConfig.Data.Datasets.Add(barData);
     }
+
+    private void genPDF() {
+        QuestPDF.Settings.License = LicenseType.Community;
+        Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(2, Unit.Centimetre);
+                page.PageColor(Colors.White);
+                page.DefaultTextStyle(x => x.FontSize(20));
+                
+                page.Header()
+                    .Text("Hello PDF!")
+                    .SemiBold().FontSize(36).FontColor(Colors.Blue.Medium);
+                
+                page.Content()
+                    .PaddingVertical(1, Unit.Centimetre)
+                    .Column(x =>
+                    {
+                        x.Spacing(20);
+                        
+                        x.Item().Text(Placeholders.LoremIpsum());
+                        x.Item().Image(Placeholders.Image(200, 100));
+                    });
+                
+                page.Footer()
+                    .AlignCenter()
+                    .Text(x =>
+                    {
+                        x.Span("Page ");
+                        x.CurrentPageNumber();
+                    });
+            });
+        })
+        .GeneratePdf("hello.pdf");
+    }
+
 }

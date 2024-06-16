@@ -1,97 +1,109 @@
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
 @inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
+@inject listSedesUseCase listSedesUseCase
 
 @rendermode InteractiveServer
 
 <div class="modal fade" id="proponerHorarioModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+    <div class="modal-dialog">
     <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Seleccionar horario</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
+        <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Seleccionar horario</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
         <div class="modal-body">
-          <form>
-            <div class="form-group mb-3">
-              <label>Fecha</label>
-              <input type="date" @bind=fechaExchange class="form-control">
-            </div>
-            <div class="form-group mb-3">
-              <label>Horario</label>
-              <input type="time" @bind=horaExchange class="form-control">
-            </div>
-            <div class="form-group">
-              <label>Sede</label>
-              <select @bind=sede class="form-select">
-                  <option value="" style="display:none"></option>
-                  <option value="Sede 1">Sede 1</option>
-                  <option value="Sede 2">Sede 2</option>
-                  <option value="Sede 3">Sede 3</option>
-                  <option value="Sede 4">Sede 4</option>
-              </select>
-            </div>
-          </form>
+            <form>
+                <div class="form-group mb-3">
+                    <label>Fecha</label>
+                    <input type="date" @bind=fechaExchange class="form-control">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Horario</label>
+                    <input type="time" @bind=horaExchange class="form-control">
+                </div>
+                    @if (sedes != null)
+                    {
+                    <div class="form-group">
+                        <label>Sede</label>
+                        <select @bind=nombreSede class="form-select">
+                            <option value="" style="display:none"></option>
+                            @foreach (string? nombre in sedes.Select(sede => sede.name).ToList())
+                            {
+                                @if (nombre != null)
+                                {
+                                <option value="@nombre">@nombre</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-success" data-bs-dismiss="modal" @onclick="Aceptar">Confirmar</button>
         </div>
-      </div>
+    </div>
     </div>
 </div>
 
 @code {
-  UnresolvedExchange exchange = new UnresolvedExchange(0, 0);
-  DateTime fechaExchange = new DateTime();
-  DateTime horaExchange = new DateTime();
-  string sede = "";
+    UnresolvedExchange exchange;
+    DateTime fechaExchange = new DateTime();
+    DateTime horaExchange = new DateTime();
+    Sede sede;
+    List<Sede> sedes;
+    string nombreSede = "";
 
-  public void Cargar(UnresolvedExchange exchange) {
-    this.exchange = exchange;
-    fechaExchange = exchange.fechaYHora.Date;
-    horaExchange = new DateTime(0001, 1, 1, exchange.fechaYHora.Hour, exchange.fechaYHora.Minute, exchange.fechaYHora.Second);
-    sede = exchange.sede;
+    public void Cargar(UnresolvedExchange exchangeparam) {
+    exchange = exchangeparam;
+    sedes = listSedesUseCase.Execute();
+        sede = sedes.Find(sede => sede.Id == exchangeparam.sedeId);
+        fechaExchange = exchangeparam.fechaYHora.Date;
+        horaExchange = new DateTime(0001, 1, 1, exchangeparam.fechaYHora.Hour, exchangeparam.fechaYHora.Minute, exchangeparam.fechaYHora.Second);
 
-    StateHasChanged();
-  }
-
-  public void Aceptar() {
-    DateOnly date = new DateOnly(fechaExchange.Year, fechaExchange.Month, fechaExchange.Day);
-    TimeOnly time = new TimeOnly(horaExchange.Hour, horaExchange.Minute);
-    DateTime dateTime = new DateTime(date, time);
-
-    exchange.fechaYHora = dateTime;
-    exchange.state = getNextState(exchange);
-    exchange.sede = sede;
-    modifyUnresolvedExchangeUseCase.Execute(exchange);
-
-    HorarioPropuesto();
-  }
-
-  public string getFechaExchange() {
-    return exchange.fechaYHora.Date.ToString("yyyy-MM-dd");
-  }
-
-  public string getHoraExchange() {
-    return exchange.fechaYHora.TimeOfDay.ToString();
-  }
-
-  public string getNextState(UnresolvedExchange exchange) {
-    if (exchange.state == "OffererStart") {
-      return "OffererChooses";
+        StateHasChanged();
     }
-    if (exchange.state == "OffererChooses") {
-      return "OwnerChooses";
-    } else {
-      return "OffererChooses";
+
+    public void Aceptar() {
+        
+        DateOnly date = new DateOnly(fechaExchange.Year, fechaExchange.Month, fechaExchange.Day);
+        TimeOnly time = new TimeOnly(horaExchange.Hour, horaExchange.Minute);
+        DateTime dateTime = new DateTime(date, time);
+        exchange.fechaYHora = dateTime;
+        exchange.state = getNextState(exchange);
+        sede = sedes.Find(sede => sede.name == nombreSede);
+        exchange.sedeId = sede.Id;
+        modifyUnresolvedExchangeUseCase.Execute(exchange);
+
+        HorarioPropuesto();
     }
-  }
 
-  [Parameter]
-  public EventCallback OnProponerHorario { get; set; }
+    public string getFechaExchange() {
+        return exchange.fechaYHora.Date.ToString("yyyy-MM-dd");
+    }
 
-  void HorarioPropuesto() {
-    OnProponerHorario.InvokeAsync();
-  }
+    public string getHoraExchange() {
+        return exchange.fechaYHora.TimeOfDay.ToString();
+    }
+
+    public string getNextState(UnresolvedExchange exchange) {
+        if (exchange.state == "OffererStart") {
+            return "OffererChooses";
+        }
+        if (exchange.state == "OffererChooses") {
+            return "OwnerChooses";
+        } 
+        else {
+            return "OffererChooses";
+        }
+    }
+
+    [Parameter]
+    public EventCallback OnProponerHorario { get; set; }
+
+    void HorarioPropuesto() {
+        OnProponerHorario.InvokeAsync();
+    }
 }

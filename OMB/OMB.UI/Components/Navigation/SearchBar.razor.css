@@ -6,11 +6,12 @@ form {
 }
 
 input {
-    border: 2px solid blac;
+    border: 2px solid black;
     color: #001529;
     border-radius: 10px;
     font-size: 18px;
     padding: 5px;
+    width: 500px;
 }
 
 .btn-primary {

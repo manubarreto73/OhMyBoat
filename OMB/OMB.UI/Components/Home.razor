@@ -24,8 +24,9 @@
 <div class="container-de-containers">
     <div class="publicaciones-container">
         @if(posts.Count() == 0) {
-            <h1>No hay publicaciones disponibles aún</h1>
-        } else {
+            <h1>No existen publicaciones</h1>
+        } 
+        else {
             <h1 class="publicaciones-title">Publicaciones</h1>
             int i = 0; @* Lo uso para iterar sobre las fotos *@
             @foreach (var p in posts){
@@ -46,6 +47,13 @@
         <div>
             <p>@posts.Count resultados</p>
         </div>
+        <form onsubmit="return false">
+            <input type="text" placeholder="Buscar post..." @bind="busqueda">
+            <button class="btn btn-primary" @onclick="()=>aplicarBusqueda()">
+                Buscar
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
         @if (filtrosAplicados.Count != 0) {
             <div class="filtro-aplicados">
                 @foreach (string filtro in filtrosAplicados) {
@@ -66,8 +74,6 @@
         </div>
     </div>
 </div>
-
-<Maps />
 
 @code {
     int userId;
@@ -91,6 +97,8 @@
     public string? filtroParam { get; set; }
     List<string> tiposTransporte = new List<string> {"Auto", "Camioneta", "Ciclomotor", "Velero", "Crucero", "Lancha", "Catamaran"};
     List<string> filtrosAplicados = new List<string>();
+    
+    public string? busqueda;
 
     protected override async Task OnParametersSetAsync() {
         filtrosAplicados = new List<string>();
@@ -143,15 +151,37 @@
             // Si el tipo de transporte no concuerda con el filtro, no se agrega
             if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(transport.type)) continue;
 
+            // Si existe un criterio de búsqueda y el post no lo contiene, no se agrega
+            if (!string.IsNullOrEmpty(busqueda) && !contieneBusqueda(post)) continue;
+
             if (!post.paused && (isEmployee || user.Id != userId)) {
                 posts.Add(post);
             }
         }
+
+        busqueda = "";
     }
 
     private bool esFiltro(string tipo) {
         if (string.IsNullOrEmpty(filtroParam)) return false;
         return filtroParam.Contains(tipo, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool contieneBusqueda(Post post) {
+        Console.WriteLine(busqueda);
+        return (!string.IsNullOrEmpty(busqueda) && post.Title.Contains(busqueda));
+    }
+
+    private void aplicarBusqueda () {
+        getPosts();
+
+        // Reordenamos los posts
+        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+
+        // Generamos la lista de fotos y descripciones para ambos tipos de post
+        getPhotosAndDescriptions();
+
+        StateHasChanged();
     }
 
     private int cantidadTipo(string tipo) {

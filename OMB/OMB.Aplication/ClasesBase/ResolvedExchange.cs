@@ -15,7 +15,7 @@ public class ResolvedExchange : Exchange{
     }
 
     public override IClonable Clone(){
-        return new ResolvedExchange(this.transportePosteadoId, this.transporteOfertadoId, this.happen){Id=this.Id, fechaYHora=this.fechaYHora, sede=this.sede};
+        return new ResolvedExchange(this.transportePosteadoId, this.transporteOfertadoId, this.happen){Id=this.Id, fechaYHora=this.fechaYHora, sede=this.sede, transporteOfertado=(this.transporteOfertado != null)? (TransportHistory)this.transporteOfertado.Clone() : null, transportePosteado=(this.transportePosteado != null)? (TransportHistory)this.transportePosteado.Clone() : null};
     }
 
 }

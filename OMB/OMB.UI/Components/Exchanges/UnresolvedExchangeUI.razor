@@ -14,6 +14,7 @@
 @inject vehicleListUseCase vehicleListUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject listSedesUseCase listSedesUseCase
 @inject NavigationManager Navegador
 
 <DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
@@ -103,9 +104,9 @@
                         <div class="transport-info">
                             @if (!isFirstTime()) {
                                 <h3>Horario:</h3>
-                                <p>@actualExchange.fechaYHora</p>
+                                <p>@actualExchange?.fechaYHora</p>
                                 <h3>Sede:</h3>
-                                <p>@actualExchange.sede</p>
+                                <p>@sede?.name</p>
                             }
                             @if (isFirstTime()) {
                                 <h5>A estimar</h5>
@@ -205,18 +206,19 @@
 @code {
     DialogoConfirmacion dialogoAccept = null!;      // dos dialogos para las dos posibles confirmaciones
     DialogoConfirmacion dialogoCancel = null!;         // para cada confirmacion tengo que hacer un onConfirmado distinto
-	Emails emails = null!;
+    Emails emails = null!;
 
     [Parameter] public int exchangeId { get; set; }
     UnresolvedExchange actualExchange;
+    Sede? sede;
 
     User owner = new User();
-    Transport ownerTransport;
+    Transport? ownerTransport;
     Vehicle ownerVehicle = new Vehicle();
     Ship ownerShip = new Ship();
 
     User offerer = new User();
-    Transport offererTransport;
+    Transport? offererTransport;
     Vehicle offererVehicle = new Vehicle();
     Ship offererShip = new Ship();
 
@@ -241,6 +243,13 @@
 
             // get Exchange from its Id
             actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
+            if (actualExchange == null)
+                throw new Exception("Intercambio no encontrado");
+            
+            // Obtener la sede
+            sede = listSedesUseCase.Execute().Where(sede => sede.Id == actualExchange.sedeId).SingleOrDefault();
+            if (sede == null)
+                throw new Exception("Sede no encontrada");
 
             // get info del cartelito
             var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
@@ -250,7 +259,7 @@
 
             // Load the info after actualExchange is initialized
             loadInfo();
-        }
+            }
     }
 
     private void loadInfo() { //cargar info de transportes y los usuarios
@@ -319,7 +328,7 @@
         return (actualExchange.state == "OffererChooses" && iAmOfferer()) || (actualExchange.state == "OffererStart" && iAmOwner()) || (actualExchange.state == "OwnerChooses" && iAmOwner());
     }
 
-    private bool isFirstTime() { //             U//W//U
+    private bool isFirstTime() {
         return actualExchange.state == "OffererStart";
     }
 

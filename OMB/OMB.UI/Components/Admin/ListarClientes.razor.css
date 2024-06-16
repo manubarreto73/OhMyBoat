@@ -1,0 +1,29 @@
+/* Estilos personalizados para la tabla de clientes */
+body {
+  font-family: Arial, sans-serif;
+}
+
+h3 {
+  color: #333;
+}
+
+.table {
+  margin-top: 20px;
+}
+
+.table thead th {
+  color: #fff;
+  background-color: #343a40;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f5f5f5;
+}
+
+.badge-success {
+  background-color: #28a745;
+}
+
+.badge-danger {
+  background-color: #dc3545;
+}

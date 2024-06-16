@@ -5,6 +5,9 @@
 @inject shipListUseCase shipListUseCase
 @inject userListUseCase userListUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
+@inject offerListUseCase offerListUseCase
+@inject modifyOfferUseCase modifyOfferUseCase
+@inject deletePostUseCase deletePostUseCase
 @inject NavigationManager Navegador
 @rendermode InteractiveServer
 
@@ -68,12 +71,16 @@
           <p><i class='bx bxs-error'></i><strong>  Publicación Pausada </strong></p>
         </div>
       }
+	  @if(loggedUserId == 1 && isEmployee) {
+        <button class="btn btn-danger" @onclick="() => confirmarEliminarPost()">Eliminar post</button>
+      }
     </div>
   </div>
 }
 
 <ListarTransportesAOfertar @ref="listarTransportes" />
 <ListarOfertasAPost @ref="listarOfertas" />
+<DialogoConfirmacion @ref="dialogo" OnConfirmado="eliminarPost"/>
 
 @code {
   [Parameter] public int? postId { get; set; }
@@ -89,6 +96,7 @@
   int limit = 0;  	  // para manejar el cap de imagenes
   int i = 0;
   int loggedUserId = 0;
+  	DialogoConfirmacion dialogo = null!;
 
   protected override void OnInitialized() {
     images.Add(new byte[0]);
@@ -152,5 +160,18 @@
 
     StateHasChanged();
   }
+
+	public void confirmarEliminarPost() {
+		dialogo.Mostrar("¿Seguro qué deseas eliminar el post?");
+	}
+	public void eliminarPost() {
+		List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == actualPost.getTransportId()).ToList();
+		foreach(Offer offer in ofertas){
+			offer.transportePosteadoId = 1;
+			modifyOfferUseCase.Execute(offer);
+		}
+		deletePostUseCase.Execute(actualPost.Id);
+		Navegador.NavigateTo("/");
+	}
 
 }

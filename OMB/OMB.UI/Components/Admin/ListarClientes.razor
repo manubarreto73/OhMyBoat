@@ -1,0 +1,59 @@
+@page "/listarclientes"
+@inject userListUseCase userListUseCase
+@inject listTransportUseCase transportListUseCase
+@inject NavigationManager navegador
+
+<h3 class="text-center my-4">Lista de Clientes</h3>
+<div class="container">
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Cantidad de publicaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (User cliente in listaClientes) {
+                <tr @onclick="() => redirigirAlPerfil(cliente)" >
+                    <td>@cliente.userName</td>
+                    <td>@cliente.mail</td>
+                    <td>@cantidadPublicaciones(cliente)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    
+    List<User> listaClientes = new List<User>();
+    List<Transport> listaTransportes;
+
+    protected override void OnInitialized() {
+
+        listaTransportes = transportListUseCase.Execute();
+
+        listaClientes = userListUseCase.Execute().OrderBy(user => user.userName).ToList();
+
+        eliminarAlDefault();
+        
+    }
+
+    protected void eliminarAlDefault() {
+        User notFound = listaClientes.Where(user => user.Id == 1).SingleOrDefault();
+        if (notFound == null) {
+            throw new Exception("Usuario no encontrado");
+        }
+        listaClientes.Remove(notFound);
+    }
+
+    protected void redirigirAlPerfil (User user) {
+        navegador.NavigateTo("/profile/" + user.userName, true);
+    }
+
+    protected int cantidadPublicaciones (User user) {
+        return listaTransportes.Where(T => T.UserId == user.Id).Count();
+    }
+
+}

@@ -35,7 +35,7 @@ public class ResolvedExchangeRepository : IResolvedExchangeRepository {
     public List<ResolvedExchange> resolvedExchangeList (){
         using(OMBContext context = new OMBContext()){
             List<ResolvedExchange> copia = new List<ResolvedExchange>();
-            List<ResolvedExchange> original = context.ResolvedExchanges.ToList();
+            List<ResolvedExchange> original = context.ResolvedExchanges.Include(r => r.transporteOfertado).Include(r => r.transportePosteado).ToList();
             foreach (ResolvedExchange resolvedExchange in original)
                 copia.Add((ResolvedExchange)resolvedExchange.Clone());
             return copia;

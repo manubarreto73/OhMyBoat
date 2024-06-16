@@ -6,6 +6,9 @@
 @using ChartJs.Blazor.Util
 @using ChartJs.Blazor.BarChart
 @using System.Drawing
+@using Microsoft.AspNetCore.Components
+@using System.Collections.Generic
+@inject resolvedExchangeListUseCase resolvedExchangeListUseCase
 
 <div class = "chart-container">
     <Chart Config="_config"></Chart>
@@ -14,15 +17,57 @@
     <Chart Config="_barConfig"></Chart>
 </div>
 
+<div class="container">
+  <p class="titulo"><strong><small>Tipo de transporte más intercambiado</small></strong></p>
+  <ul class="responsive-table">
+    <li class="table-header">
+      <div class="col col-1">Tipo:</div>
+      <div class="col col-2">@exchanges[0].type</div>
+      <div class="col col-3">Intercambios:</div>
+      <div class="col col-4">@exchanges[0].exchanges</div>
+    </li>
+    @for(int i = 1; i < 7; i++){
+        <li class="table-row">
+        <div class="col col-1" data-label="Job Id">Tipo:</div>
+        <div class="col col-2" data-label="Customer Name">@exchanges[i].type</div>
+        <div class="col col-3" data-label="Amount">Intercambios:</div>
+        <div class="col col-4" data-label="Payment Status">@exchanges[i].exchanges</div>
+        </li>
+    }
+  </ul>
+</div>
+
 @code {
     private PieConfig _config;
     private BarConfig _barConfig;
+    private listElement[] exchanges = new listElement[7]{new listElement("Auto"), new listElement("Camioneta"), new listElement("Ciclomotor"), new listElement("Crucero"), new listElement("Velero"), new listElement("Lancha"), new listElement("Catamaran")};
+    List<ResolvedExchange> resolvedExchanges;
 
     protected override void OnInitialized()
     {
+        resolvedExchanges = resolvedExchangeListUseCase.Execute();
         inicializarIntercambiosResueltos();
         
         inicializarIntercambiosPorSede();
+
+        inicializarListaTransportes();
+    }
+
+    class listElement
+    {
+        public string type { get; set; }
+        public int exchanges { get; set; }
+        public listElement(string type){
+            this.type = type;
+        }
+    }
+
+    private void inicializarListaTransportes(){
+        for(int i = 0; i < 7; i++){
+            exchanges[i].exchanges = resolvedExchanges.Where(r => r.transporteOfertado.type == exchanges[i].type).Count();
+            exchanges[i].exchanges += resolvedExchanges.Where(r => r.transportePosteado.type == exchanges[i].type).Count();
+        }
+        exchanges = exchanges.OrderByDescending(t => t.exchanges).ToArray();
     }
 
     private void inicializarIntercambiosResueltos () {
@@ -35,16 +80,17 @@
                 {
                     Display = true,
                     Text = "Intercambios concretados"
-                }
+                },
             }
         };
-
-        foreach (string color in new[] { "Concretados", "No concretados" })
+        int concreted = resolvedExchanges.Where(r => r.happen).Count();
+        int total = resolvedExchanges.Count();
+        foreach (string color in new[] { "Concretados "+concreted/total*100+"% ", "No concretados "+(total-concreted)/total*100+"% " })
         {
             _config.Data.Labels.Add(color);
         }
 
-        PieDataset<int> dataset = new PieDataset<int>(new[] { 6, 5})
+        PieDataset<int> dataset = new PieDataset<int>(new[] {concreted, total-concreted})
         {
             BackgroundColor = new[]
             {
@@ -52,7 +98,7 @@
                 ColorUtil.ColorHexString(0xCA, 0xF0, 0xF8),
             }
         };
-
+        
         _config.Data.Datasets.Add(dataset);
     }
 
@@ -66,21 +112,22 @@
                     {
                         Display = true,
                         Text = "Cantidad de intercambios por sede"
-                    }/*,
+                    },
                     Scales = new BarScales
                     {
-                        YAxes = new List<BarLinearCartesianAxis>
+                        YAxes = new List<CartesianAxis>
                         {
-                            new BarLinearCartesianAxis
+                            new LinearCartesianAxis
                             {
-                                Ticks = new BarLinearCartesianTicks
+                                Ticks = new LinearCartesianTicks
                                 {
+                                    Min = 0,
                                     BeginAtZero = true
                                 }
                             }
                         }
                     }
-                    */
+                    
                 }
             };
         

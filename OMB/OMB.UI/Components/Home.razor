@@ -39,8 +39,8 @@
         <div>
             <p>@posts.Count resultados</p>
         </div>
-        <form onsubmit="return false">
-            <input type="text" placeholder="Buscar post..." @bind="busqueda">
+        <form style="padding:0;margin-bottom:1rem;" onsubmit="return false">
+            <input style="width: 100%;" type="text" placeholder="Buscar publicación..." @bind="busqueda">
             <button class="btn btn-primary" @onclick="()=>aplicarBusqueda()">
                 Buscar
                 <i class="bi bi-search"></i>
@@ -158,7 +158,39 @@
             }
         }
 
-        busqueda = "";
+        @* busqueda = ""; *@
+    }
+
+    private bool esFiltro(string tipo) {
+        if (string.IsNullOrEmpty(filtroParam)) return false;
+        return filtroParam.Contains(tipo, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool contieneBusqueda(Post post) {
+        return (!string.IsNullOrEmpty(busqueda) && post.Title.ToLower().Contains(busqueda.ToLower()));
+    }
+
+    private void aplicarBusqueda () {
+        getPosts();
+
+        // Reordenamos los posts
+        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+
+        // Generamos la lista de fotos y descripciones para ambos tipos de post
+        getPhotosAndDescriptions();
+
+        StateHasChanged();
+    }
+
+    private int cantidadTipo(string tipo) {
+        int cant = 0;
+
+        foreach (Post post in allPosts) {
+            Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
+            if (transport.type == tipo) cant++;
+        }
+
+        return cant;
     }
 
     private void getPhotosAndDescriptions() {

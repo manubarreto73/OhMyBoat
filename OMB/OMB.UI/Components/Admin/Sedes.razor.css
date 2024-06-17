@@ -1,0 +1,29 @@
+.container {
+  width: 80%;
+}
+
+.title {
+  position: relative;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+}
+
+.title::before {
+  position: absolute;
+  left: 0;
+  top: 28px;
+  content: "";
+  width: calc(1rem - 7px);
+  height: 2px;
+  background-color: black;
+}
+
+.title::after {
+  position: absolute;
+  left: 132px;
+  top: 28px;
+  content: "";
+  width: calc(100% - 132px);
+  height: 2px;
+  background-color: black;
+}

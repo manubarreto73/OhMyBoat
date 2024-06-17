@@ -28,12 +28,20 @@ public class SedeRepository : ISedeRepository {
   public void modifySede(Sede sede) {
     using(OMBContext context = new OMBContext()) {
       var exists = context.Sedes.Where(S => S.Id == sede.Id).SingleOrDefault();
+      Sede? aux = null;
       if (exists != null) {
-        exists.name = sede.name;
-        exists.longitude = sede.longitude;
-        exists.latitude = sede.latitude;
-        exists.isActive = sede.isActive;
-        context.SaveChanges();
+        if(sede.name != exists.name) {
+          aux = context.Sedes.Where(S => S.name == sede.name).SingleOrDefault();
+        }
+        if (aux == null) {
+          exists.name = sede.name;
+          exists.longitude = sede.longitude;
+          exists.latitude = sede.latitude;
+          exists.isActive = sede.isActive;
+          context.SaveChanges();
+        } else {
+          throw new Exception("Sede ya registrada");
+        }
       }
     }
   }

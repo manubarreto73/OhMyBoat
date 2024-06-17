@@ -1,9 +1,269 @@
 @page "/sedes"
+@inject NavigationManager navegador
+@inject listSedesUseCase listSedesUseCase
+@inject addSedeUseCase addSedeUseCase
+@inject modifySedeUseCase modifySedeUseCase
+@inject IJSRuntime JS
 
-<Maps />
+<DialogoError @ref="dialogo"/>
+
+<div class="container">
+  <h1 class="title">Sedes</h1>
+  <div id="map" style="height: 500px; width: 100%; margin: auto;"></div>
+</div>
+
+<div class="modal fade" id="visualizarSedeModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ver sede</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form>
+        <div class="modal-body form-body">
+          <div class="form-group">
+            <label class="mb-2">Nombre sede</label>
+            <input class="form-control" type="text" @bind=sede.name required>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" @onclick="Modificar">Modificar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="agregarSedeModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar sede</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form>
+        <div class="modal-body form-body">
+          <div class="form-group">
+            <label class="mb-2">Nombre sede</label>
+            <input class="form-control" type="text" @bind=newName required>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-success" @onclick="AgregarSede">Agregar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+    let agregado = false;
+
+    var map = L.map('map').setView([-34.8765, -57.9069], 12);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+
+    map.on("click", createMarker);
+
+    const newIcon = L.Icon.extend({
+      options: {
+        iconUrl: 'my-marker-icon.png',
+        iconRetinaUrl: 'my-marker-icon-2x.png',
+        shadowUrl: 'my-marker-shadow.png',
+        shadowRetinaUrl: 'my-marker-shadow.png',
+        iconSize: [25, 41], // Default Leaflet icon size
+        iconAnchor: [12, 41], // Point of the icon which will correspond to marker's location
+        popupAnchor: [1, -34], // Point from which the popup should open relative to the iconAnchor
+        tooltipAnchor: [16, -28], // Point from which the tooltip should open relative to the iconAnchor
+        shadowSize: [41, 41] // Default Leaflet shadow size
+      }
+    });
+
+    function createMarker(e) {
+      if (!agregado) {
+        const marker = L.marker(e.latlng, { draggable: true, icon: new newIcon() });
+        marker.on("click", cargarSede);
+        marker.addTo(map);
+        agregado = true;
+
+        cargarSede(e);
+      }
+    }
+
+    function modifySede(e) {
+      const title = e.target.options.title;
+
+      map.eachLayer(function(layer) {
+        if (layer.options.title && layer.options.title != title) {
+          layer.dragging.disable();
+        }
+      });
+
+      e.target.setIcon(new newIcon());
+    }
+
+    function cargarSede(e) {
+      const latLng = e.latlng;
+      const lat = latLng.lat;
+      const lng = latLng.lng;
+
+      DotNet.invokeMethodAsync("OMB.UI", "SaveLatLng", lat, lng)
+        .then(() => {
+          const modal = new bootstrap.Modal(document.getElementById('agregarSedeModal'), { keyboard: false });
+          modal.show();
+        })
+        .catch(err => console.error("Error invoking method:", err));
+    }
+
+    function mark(lat, long, name) {
+      const marker = L.marker([lat, long], { title: name, draggable: true });
+      marker.on("click", showOptions);
+      marker.on("dragend", modifySede);
+
+      marker.addTo(map).bindTooltip(name, { direction: "top", offset: [-15, 0], permanent: true });
+    }
+
+    function showOptions(e) {
+      const name = e.target.options.title;
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+
+      DotNet.invokeMethodAsync("OMB.UI", "ShowOptions", name, lat, lng)
+        .then(() => {
+          const modal = new bootstrap.Modal(document.getElementById('visualizarSedeModal'), { keyboard: false });
+          modal.show();
+        })
+        .catch(err => console.error("Error invoking method:", err));
+    }
+</script>
 
 @code {
+  DialogoError dialogo = null!;
 
+  List<Sede> sedes = new List<Sede>();
+  Sede sede = new Sede();
 
+  double kmEntreSedes = 1;
+  double newLat = 0;
+  double newLng = 0;
+  string newName = "";
 
+  protected override async Task OnAfterRenderAsync(bool firstRender) {
+    if (firstRender) {
+      sedes = listSedesUseCase.Execute();
+
+      foreach (Sede sede in sedes) {
+        await JS.InvokeVoidAsync("mark", sede.latitude, sede.longitude, sede.name);
+      }
+    }
+  }
+
+  // Todo esto es para poder llamar a LocalShowOptionsAync desde el JavaScript
+  private static Func<string, double, double, Task>? ShowOptionsAsync;
+  private static Func<double, double, Task>? SaveLatLngAsync;
+
+  protected override void OnInitialized() {
+    base.OnInitialized();
+    ShowOptionsAsync = LocalShowOptionsAync;
+    SaveLatLngAsync = LocalSaveLatLngAync;
+  }
+
+  public void Dispose() {
+    ShowOptionsAsync = null;
+    SaveLatLngAsync = null;
+  }
+
+  private async Task LocalShowOptionsAync(string name, double lat, double lng) {
+    sede = listSedesUseCase.Execute().Find(s => s.name == name);
+    sede.latitude = lat;
+    sede.longitude = lng;
+    StateHasChanged();
+  }
+
+  [JSInvokable]
+  public static async Task ShowOptions(string value, double lat, double lng) {
+    if (ShowOptionsAsync is {} actionAsync) {
+      await actionAsync(value, lat, lng);
+    }
+  }
+
+  private async Task LocalSaveLatLngAync(double lat, double lng) {
+    newLat = lat;
+    newLng = lng;
+  }
+
+  [JSInvokable]
+  public static async Task SaveLatLng(double lat, double lng) {
+    if (SaveLatLngAsync is {} actionAsync) {
+      await actionAsync(lat, lng);
+    }
+  }
+
+  private void Modificar() {
+    if (String.IsNullOrWhiteSpace(sede.name) || !distanciaValida(sede)) return;
+
+    try {
+      modifySedeUseCase.Execute(sede);
+      navegador.NavigateTo("/sedes", true);
+    }
+    catch (Exception ex) {
+      if (ex.Message == "Sede ya registrada") {
+        dialogo.Mostrar("Nombre de sede ya registrado.");
+      }
+    }
+  }
+
+  private void AgregarSede() {
+    Sede newSede = new Sede(newName, newLat, newLng);
+
+    if (String.IsNullOrWhiteSpace(newName) || !distanciaValida(newSede)) return;
+
+    try {
+      addSedeUseCase.Execute(newSede);
+      navegador.NavigateTo("/sedes", true);
+    }
+    catch (Exception ex) {
+      if (ex.Message == "Sede ya registrada") {
+        dialogo.Mostrar("Nombre de sede ya registrado.");
+      }
+    }
+  }
+
+  private bool distanciaValida(Sede sede1) {
+    foreach (Sede sede in sedes) {
+      if (sede1.Id != sede.Id && distance(sede1, sede) < kmEntreSedes) {
+        dialogo.Mostrar($"La sede debe estar a más de {kmEntreSedes}km de distancia del resto.");
+        return false;
+      }
+    }
+    return true;
+  }
+
+  // Calcula la distancia entre dos coodenadas (Horrible)
+  private double distance(Sede sede1, Sede sede2) {
+    double lat1 = sede1.latitude;
+    double lng1 = sede1.longitude;
+    double lat2 = sede2.latitude;
+    double lng2 = sede2.longitude;
+
+    int r = 6371; // Radio de la tierra en km
+    double dLat = degToRad(lat2 - lat1);
+    double dLng = degToRad(lng2 - lng1);
+
+    double a = Math.Sin(dLat/2) * Math.Sin(dLat/2) +
+      Math.Cos(degToRad(lat1)) * Math.Cos(degToRad(lat2)) * 
+      Math.Sin(dLng/2) * Math.Sin(dLng/2);
+
+    double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1-a));
+    double d = r * c; // Distance in km
+    return d;
+  }
+
+  private double degToRad(double deg) {
+    return deg * (Math.PI/180);
+  }
 }

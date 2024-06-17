@@ -115,6 +115,9 @@ builder.Services.AddTransient<modifySedeUseCase>();
 builder.Services.AddTransient<listSedesUseCase>();
 builder.Services.AddScoped<ISedeRepository, SedeRepository>();
 
+
+builder.Services.AddControllers();  // para el controller del pdf
+builder.Services.AddHttpClient();
 // FIN DE LO QUE AGREGAMOS NOSOTROS
 
 var app = builder.Build();
@@ -128,9 +131,11 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
+app.UseRouting();
 app.UseAntiforgery();
+
+app.MapControllers();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -16,6 +16,11 @@ using OMB.Aplication.UnresolvedExchangeUseCases;
 using OMB.Aplication.SedeUseCases;
 using OMB.Repositories;
 using OMB.Aplication.Interfaces;
+using QuestPDF;
+
+// please kindly ensure what license is appropriate for your project
+//QuestPDF.Settings.License = LicenseType.Community;
+
 //Cosas para la sesión
 var builder = WebApplication.CreateBuilder(args);
 

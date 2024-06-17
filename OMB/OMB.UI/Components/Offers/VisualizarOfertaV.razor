@@ -73,11 +73,12 @@
 
 	[Parameter] public int? offerId {get; set;}
 
-	Offer offer;
+	Offer offer = new Offer();
 
-	Vehicle offeredVehicle;
+	Vehicle offeredVehicle = new Vehicle();
 
-	User userOffering;
+	User userOffering = new User();
+
 	List<byte[]> imagenes = new List<byte[]>();
 
 	DialogoConfirmacion dialogo = null!;
@@ -86,17 +87,17 @@
 	bool accion = false;
 	int limit;
 
-	protected override async Task OnAfterRenderAsync(bool firstRender) {
+	protected override void OnAfterRender(bool firstRender) {
 
-		offer = offerListUseCase.Execute().Where(O => O.Id == offerId).SingleOrDefault();
+		offer = offerListUseCase.Execute().Where(O => O.Id == offerId).SingleOrDefault() ?? throw new Exception("offer not found");
 
-		offeredVehicle = vehicleListUseCase.Execute().Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault();
+		offeredVehicle = vehicleListUseCase.Execute().Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault() ?? throw new Exception("vehicle not found");
 
 		imagenes = listVehicleImagesUseCase.Execute().Where(i => i.VehicleId == offeredVehicle.Id).Select(v => v.Image).ToList();
 
 		limit = imagenes.Count() - 1;
 
-		userOffering = userListUseCase.Execute().Where(U => U.Id == offeredVehicle.UserId).SingleOrDefault();
+		userOffering = userListUseCase.Execute().Where(U => U.Id == offeredVehicle.UserId).SingleOrDefault() ?? throw new Exception("user not found");
 
 		StateHasChanged();
 
@@ -113,11 +114,9 @@
 	}
 
 	private void pausePost (int transportId) {
-		Post post = listPostUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault();
-		if (post != null) {
-			post.paused = true;
-			modifyPostUseCase.Execute(post);
-		}
+		Post post = listPostUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault() ?? throw new Exception("post not found");
+		post.paused = true;
+		modifyPostUseCase.Execute(post);
 	}
 
 	private void borrarOfertas (int transportId) {
@@ -145,7 +144,7 @@
 		User ofertante = getUser(offer.transporteOfertadoId);
 		string titulo = getTitle(offer.transportePosteadoId);
 
-		emails.SendEmail(
+		Task.Run(() => emails.SendEmail(
 			"¡Oferta aceptada!", // Subject
 			ofertante.mail, // Mail
 			"¡Oferta aceptada!", // Titulo
@@ -153,7 +152,7 @@
 			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu oferta a <b>{titulo}</b> ha sido aceptada!</p>
 			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Ya podés entrar a la página para concretar el horario de intercambio</p>
 			" // Cuerpo
-		);
+		)).GetAwaiter().GetResult();
 
 		Navegador.NavigateTo("listarmisintercambios/", true);
 	}
@@ -166,7 +165,7 @@
 		User ofertante = getUser(offer.transporteOfertadoId);
 		string titulo = getTitle(offer.transportePosteadoId);
 
-		emails.SendEmail(
+		Task.Run(() => emails.SendEmail(
 			"Oferta rechazada", // Subject
 			ofertante.mail, // Mail
 			"Oferta rechazada", // Titulo
@@ -174,7 +173,7 @@
 			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu oferta a <b>{titulo}</b> ha sido rechazada</p>
 			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para seguir buscando el transporte de tus sueños</p>
 			" // Cuerpo
-		);
+		)).GetAwaiter().GetResult();
 
 		Navegador.NavigateTo("shippost/" + offer.transportePosteadoId, true);
 	}
@@ -188,13 +187,13 @@
 	}
 
 	public User getUser(int transportId) {
-		Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == transportId);
-		return userListUseCase.Execute().Find(user => user.Id == transport.UserId);
+        Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == transportId) ?? throw new Exception("transport not found");
+        return userListUseCase.Execute().Find(user => user.Id == transport.UserId) ?? throw new Exception("user not found");
 	}
 
 	public string getTitle(int transportId) {
-		Transport postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == transportId);
-    Post post = listPostUseCase.Execute().Find(post => post.TransportId == postedTransport.Id);
+        Transport postedTransport = listTransportUseCase.Execute().Find(transport => transport.Id == transportId) ?? throw new Exception("transport not found");
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == postedTransport.Id) ?? throw new Exception("post not found");
 		return post.Title;
 	}
 

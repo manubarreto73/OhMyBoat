@@ -37,7 +37,7 @@
                   <tr style="cursor-pointer">
                     <td @onclick="() => confirmarOfertar(transport)">
                         <div class="img">
-                        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" height="80px" width="80px"/>
+                           <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" height="80px" width="80px" />
                         </div>
                     </td>
                     <td @onclick="() => confirmarOfertar(transport)">
@@ -65,62 +65,65 @@
 
 @code {
     int userId;
-    
+
     List<Transport> _transports = new List<Transport>();
     List<byte[]> _images = new List<byte[]>();
 
     DialogoConfirmacion dialogo = null!;
-    Transport transporteAOfertar;
+    Transport? transporteAOfertar;
 
-    Ship? ship = new Ship();
+    Ship ship = new Ship();
     Emails emails = null!;
 
     protected override async Task OnInitializedAsync() {
-      var result = await sessionStorage.GetAsync<int>("userId");
-      userId = result.Success ? result.Value : 0;
+        var result = await sessionStorage.GetAsync<int>("userId");
+        userId = result.Success ? result.Value : 0;
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar
     public void Cargar(Ship s) {
-      ship = s;
-      GetTransportesCargados();
-      StateHasChanged();
+        ship = s;
+        GetTransportesCargados();
+        StateHasChanged();
     }
 
     private void GetTransportesCargados() {
-      List<Offer> ofertas = offerListUseCase.Execute();
-      List<UnresolvedExchange> exchanges = unresolvedExchangeListUseCase.Execute();
-      _transports = listTransportUseCase.Execute();
-      _transports = _transports.FindAll(tra => tra.UserId == userId);
-      _transports.RemoveAll(t => ofertas.Where(o => o.transporteOfertadoId == t.Id).Where(o => o.transportePosteadoId == ship.Id).SingleOrDefault() != null);
-      _transports.RemoveAll(t => exchanges.Where(e => (e.transporteOfertadoId == t.Id) || (e.transportePosteadoId == t.Id)).Count() != 0);
+        List<Offer> ofertas = offerListUseCase.Execute();
+        List<UnresolvedExchange> exchanges = unresolvedExchangeListUseCase.Execute();
+        _transports = listTransportUseCase.Execute();
+        _transports = _transports.FindAll(tra => tra.UserId == userId);
+        _transports.RemoveAll(t => ofertas.Where(o => o.transporteOfertadoId == t.Id).Where(o => o.transportePosteadoId == ship.Id).SingleOrDefault() != null);
+        _transports.RemoveAll(t => exchanges.Where(e => (e.transporteOfertadoId == t.Id) || (e.transportePosteadoId == t.Id)).Count() != 0);
 
-      GetImagenesTransportes();
+        GetImagenesTransportes();
     }
 
     private void GetImagenesTransportes() {
-      List<ShipImage> _shImages = listShipImagesUseCase.Execute();
-      List<VehicleImage> _veImages = listVehicleImagesUseCase.Execute();
-      _images = new List<byte[]>();
+        List<ShipImage> _shImages = listShipImagesUseCase.Execute();
+        List<VehicleImage> _veImages = listVehicleImagesUseCase.Execute();
+        _images = new List<byte[]>();
 
-      foreach (var trans in _transports) {
-        byte[] image = (_shImages.Any(imagen => imagen.ShipId == trans.Id)) ? _shImages.Where(imagen => imagen.ShipId == trans.Id).First().Image : _veImages.Where((imagen => imagen.VehicleId == trans.Id)).First().Image;
-        _images.Add(image);
-      }
+        foreach (var trans in _transports) {
+            byte[] image = (_shImages.Any(imagen => imagen.ShipId == trans.Id)) ? _shImages.Where(imagen => imagen.ShipId == trans.Id).First().Image : _veImages.Where((imagen => imagen.VehicleId == trans.Id)).First().Image;
+            _images.Add(image);
+        }
     }
 
     private void confirmarOfertar(Transport transporte) {
-      transporteAOfertar = transporte;
-      dialogo.Mostrar("¿Seguro qué deseas ofertar tu " + transporteAOfertar.type + " " + transporteAOfertar.model + "?");
+        transporteAOfertar = transporte;
+        dialogo.Mostrar("¿Seguro qué deseas ofertar tu " + transporteAOfertar.type + " " + transporteAOfertar.model + "?");
     }
 
     private void OfertarDef() {
-      addOfferUseCase.Execute(new Offer(ship.Id, transporteAOfertar.Id));
+        if (transporteAOfertar == null)
+            throw new Exception("De todas formas no se debería llegar acá");
 
-      User user = getUser();
-      string title = getTitle();
-      // Manda mail al dueño
-      emails.SendEmail(
+        addOfferUseCase.Execute(new Offer(ship.Id, transporteAOfertar.Id));
+
+        User user = getUser();
+        string title = getTitle();
+        // Manda mail al dueño
+        Task.Run(() => emails.SendEmail(
         "¡Tenés una oferta!", // Subject
         user.mail, // Mail
         "¡Te hicieron una oferta!", // Titulo
@@ -128,18 +131,18 @@
         <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu publicación <b>{title}</b> recibió una oferta!</p>
         <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podeés ingresar a la página para ver la oferta</p>
         " // Cuerpo
-      );
+        )).GetAwaiter().GetResult();
 
-      GetTransportesCargados();
+        GetTransportesCargados();
     }
 
     private User getUser() {
-      Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == ship.Id);
-      return userListUseCase.Execute().Find(user => user.Id == transport.UserId);
+        Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == ship.Id) ?? throw new Exception("transport not found");
+        return userListUseCase.Execute().Find(user => user.Id == transport.UserId) ?? throw new Exception("user not found");
     }
 
     private string getTitle() {
-      Post post = listPostUseCase.Execute().Find(post => post.TransportId == ship.Id);
-      return post.Title;
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ship.Id) ?? throw new Exception("post not found");
+        return post.Title;
     }
 }

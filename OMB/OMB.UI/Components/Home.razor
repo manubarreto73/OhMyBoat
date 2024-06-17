@@ -27,7 +27,7 @@
                         <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
                     </div>
                     <div class="publicacion-info">
-                        <h3>@p.getTitle()</h3>
+                        <h3>@p.Title</h3>
                         <h6>@_descripciones[i]</h6>
                     </div>
                 </div>
@@ -131,7 +131,7 @@
 
         foreach (Post post in allPosts) {
             // Buscar el transporte asociado al post
-            Transport? transport = transports.FirstOrDefault(trans => trans.Id == post.getTransportId());
+            Transport? transport = transports.FirstOrDefault(trans => trans.Id == post.TransportId);
             if (transport == null) {
                 throw new Exception("transport not found");
             }
@@ -166,13 +166,13 @@
         _images = new List<byte[]>();
 
         foreach (var post in posts) {
-            var transport = transports.FirstOrDefault(T => T.Id == post.getTransportId());
+            var transport = transports.FirstOrDefault(T => T.Id == post.TransportId);
             if (transport != null) {
                 string descripcion = transport.description;
                 _descripciones.Add(descripcion);
 
-                var shipImage = shipImages.FirstOrDefault(imagen => imagen.ShipId == post.getTransportId());
-                var vehicleImage = vehicleImages.FirstOrDefault(imagen => imagen.VehicleId == post.getTransportId());
+                var shipImage = shipImages.FirstOrDefault(imagen => imagen.ShipId == post.TransportId);
+                var vehicleImage = vehicleImages.FirstOrDefault(imagen => imagen.VehicleId == post.TransportId);
                 byte[]? image = shipImage != null ? shipImage.Image : vehicleImage?.Image;
 
                 if (image != null) {
@@ -187,9 +187,9 @@
     private async Task browseToPost(Post p) {
         try {
             if (IsVehicle(p)) {
-                navegador.NavigateTo("/vehiclepost/" + p.getTransportId(), true);
+                navegador.NavigateTo("/vehiclepost/" + p.TransportId, true);
             } else {
-                navegador.NavigateTo("/shippost/" + p.getTransportId(), true);
+                navegador.NavigateTo("/shippost/" + p.TransportId, true);
             }
         }
         catch (TaskCanceledException) {

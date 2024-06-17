@@ -49,17 +49,17 @@
 </div>
 
 @code {
-    UnresolvedExchange exchange;
+    UnresolvedExchange exchange = new UnresolvedExchange();
     DateTime fechaExchange = new DateTime();
     DateTime horaExchange = new DateTime();
-    Sede sede;
-    List<Sede> sedes;
+    Sede sede = new Sede();
+    List<Sede> sedes = new List<Sede>();
     string nombreSede = "";
 
     public void Cargar(UnresolvedExchange exchangeparam) {
     exchange = exchangeparam;
     sedes = listSedesUseCase.Execute();
-        sede = sedes.Find(sede => sede.Id == exchangeparam.sedeId);
+        sede = sedes.Find(sede => sede.Id == exchangeparam.sedeId) ?? throw new Exception("sede not found");
         fechaExchange = exchangeparam.fechaYHora.Date;
         horaExchange = new DateTime(0001, 1, 1, exchangeparam.fechaYHora.Hour, exchangeparam.fechaYHora.Minute, exchangeparam.fechaYHora.Second);
 
@@ -73,7 +73,7 @@
         DateTime dateTime = new DateTime(date, time);
         exchange.fechaYHora = dateTime;
         exchange.state = getNextState(exchange);
-        sede = sedes.Find(sede => sede.name == nombreSede);
+        sede = sedes.Find(sede => sede.name == nombreSede) ?? throw new Exception("sede not found");
         exchange.sedeId = sede.Id;
         modifyUnresolvedExchangeUseCase.Execute(exchange);
 

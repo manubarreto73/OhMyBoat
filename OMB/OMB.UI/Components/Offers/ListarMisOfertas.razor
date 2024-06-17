@@ -62,7 +62,7 @@
     List<byte[]> _imgOff = new List<byte[]>();
     List<byte[]> _imgPost = new List<byte[]>();
 
-    Offer offerAux;
+    Offer offerAux = new Offer();
 
     protected override async Task OnInitializedAsync() {
         //Inicializo en offerList las ofertas hechas por el usuario loggeado
@@ -78,7 +78,7 @@
     }
 
     public void travelToPost(Offer oferta){
-        Transport t = vehicleListUseCase.Execute().Where(v => v.Id == oferta.transportePosteadoId).SingleOrDefault();
+        Transport t = vehicleListUseCase.Execute().Where(v => v.Id == oferta.transportePosteadoId).SingleOrDefault() ?? throw new Exception("transport not found");
 
         if (t != null) {
             navegador.NavigateTo($"/vehiclepost/{t.Id}", true);
@@ -109,20 +109,20 @@
     }
 
     public User getOfferTarget(Offer offer) {
-        return userList.Where(U => U.Id == getPostedTransport(offer).UserId).SingleOrDefault();
+        return userList.Where(U => U.Id == getPostedTransport(offer).UserId).SingleOrDefault() ?? throw new Exception("user not found");
     }
 
     public Transport getOfferedTransport(Offer offer) {
-        return transportList.Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault();
+        return transportList.Where(T => T.Id == offer.transporteOfertadoId).SingleOrDefault() ?? throw new Exception("transport not found");
     }
 
     public Transport getPostedTransport(Offer offer) {
-        return transportList.Where(T => T.Id == offer.transportePosteadoId).SingleOrDefault();
+        return transportList.Where(T => T.Id == offer.transportePosteadoId).SingleOrDefault() ?? throw new Exception("transport not found");
     }
 
     public bool isPaused(Offer offer) {
-        Post postPosted = listPostUseCase.Execute().Where(P => P.TransportId == getPostedTransport(offer).Id).SingleOrDefault();
-        Post postOfferer = listPostUseCase.Execute().Where(P => P.TransportId == getOfferedTransport(offer).Id).SingleOrDefault();
+        Post postPosted = listPostUseCase.Execute().Where(P => P.TransportId == getPostedTransport(offer).Id).SingleOrDefault() ?? throw new Exception("post not found");
+        Post postOfferer = listPostUseCase.Execute().Where(P => P.TransportId == getOfferedTransport(offer).Id).SingleOrDefault() ?? throw new Exception("post not found");
         if (postOfferer == null) {
             return postPosted.paused;
         }

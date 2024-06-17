@@ -2,8 +2,8 @@
 @using System.Net.Mail
 
 @code {
-  public async Task SendEmail(string subject, string to, string titulo, string cuerpo) {
-    var body = $@"
+    public async Task SendEmail(string subject, string to, string titulo, string cuerpo) {
+        var body = $@"
     <body style='margin: 0;padding: 0;-webkit-text-size-adjust: 100%;background-color: #ffffff;color: #000000;'>
     <table style='border-collapse: collapse;table-layout: fixed;border-spacing: 0;mso-table-lspace: 0pt;mso-table-rspace: 0pt;vertical-align: top;min-width: 320px;margin: 0 auto;background-color: #ffffff;width: 100%;'cellpadding='0'cellspacing='0'>
         <tbody>
@@ -61,7 +61,7 @@
                             <tr>
                                 <td style='overflow-wrap: break-word;word-break: break-word;padding: 5px 50px 25px;font-family: ""Raleway"", sans-serif;'align='left'>
                                 <div style='font-size: 14px;color: #f4f4f4;line-height: 140%;text-align: center;word-wrap: break-word;'>
-                                    {cuerpo}
+                                {cuerpo}
                                 </div>
                                 </td>
                             </tr>
@@ -80,36 +80,36 @@
     </body>
     ";
 
-    var message = new MailMessage();
-    message.To.Add(new MailAddress(to)); // Aca iría el mail de la persona
-    message.From = new MailAddress("ohmyboatt@gmail.com");
-    message.Subject = subject;
-    message.Body = string.Format(body);
-    message.IsBodyHtml = true;
+        var message = new MailMessage();
+        message.To.Add(new MailAddress(to)); // Aca iría el mail de la persona
+        message.From = new MailAddress("ohmyboatt@gmail.com");
+        message.Subject = subject;
+        message.Body = string.Format(body);
+        message.IsBodyHtml = true;
 
-    // Create  the file attachment for this email message.
-    string file = @"wwwroot\Oh_My_Boat_logo_2.jpg";
-    Attachment data = new Attachment(file);
-    // Add the file attachment to this email message.
-    message.Attachments.Add(data);
-    message.Attachments[0].ContentId = "Logo.jpg";
+        // Create  the file attachment for this email message.
+        string file = @"wwwroot\Oh_My_Boat_logo_2.jpg";
+        Attachment data = new Attachment(file);
+        // Add the file attachment to this email message.
+        message.Attachments.Add(data);
+        message.Attachments[0].ContentId = "Logo.jpg";
 
-    using (var smtp = new SmtpClient()) {
-        var credential = new NetworkCredential {
+        using (var smtp = new SmtpClient()) {
+            var credential = new NetworkCredential {
             UserName = "ohmyboatt@gmail.com",  // Nuestro mail
             Password = "zpvp izli biid bhop"  // Contraseña de la aplicación de google
         };
 
-        smtp.Credentials = credential;
-        smtp.Host = "smtp.gmail.com";
-        smtp.Port = 587;
-        smtp.EnableSsl = true;
-        try {
-            await smtp.SendMailAsync(message);
-        }
-        catch (Exception ex) {
-            Console.WriteLine($"Error reading file: {ex.Message}");
-        }
+            smtp.Credentials = credential;
+            smtp.Host = "smtp.gmail.com";
+            smtp.Port = 587;
+            smtp.EnableSsl = true;
+            try {
+                await smtp.SendMailAsync(message);
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"Error reading file: {ex.Message}");
+            }
     }
   }
 }

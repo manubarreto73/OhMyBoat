@@ -76,7 +76,7 @@
     DialogoConfirmacion dialogo = null!;
     Ship barcoAOfertar = new Ship();
 
-    Vehicle? vehicle = new Vehicle();
+    Vehicle vehicle = new Vehicle();
     Emails emails = null!;
 
     protected override async Task OnInitializedAsync() {
@@ -104,13 +104,17 @@
     }
 
     private void GetImagenesBarcos() {
-      _allImages = listShipImagesUseCase.Execute();
-      _images = new List<byte[]>();
+        // Suponiendo que _allImages y _ships están inicializados y no son null
+        _allImages = listShipImagesUseCase.Execute();
+        _images = new List<byte[]>();
 
-      foreach (var barco in _ships) {
-        byte[] image = _allImages.Find(imagen => imagen.ShipId == barco.Id).Image;
-        _images.Add(image);
-      }
+        foreach (var barco in _ships) {
+            // Usar el operador null-conditional para evitar null reference exception
+            var imagenBarco = _allImages?.Find(imagen => imagen.ShipId == barco.Id);
+            if (imagenBarco?.Image != null) {
+                _images.Add(imagenBarco.Image);
+            }
+        }
     }
 
     private void confirmarOfertar(Ship barco) {
@@ -124,7 +128,7 @@
       User user = getUser();
       string title = getTitle();
       // Manda mail al dueño
-      emails.SendEmail(
+      Task.Run(() => emails.SendEmail(
         "¡Tenés una oferta!", // Subject
         user.mail, // Mail
         "¡Te hicieron una oferta!", // Titulo
@@ -132,18 +136,18 @@
         <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu publicación <b>{title}</b> recibió una oferta!</p>
         <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podeés ingresar a la página para ver la oferta</p>
         " // Cuerpo
-      );
+        )).GetAwaiter().GetResult();
 
       GetBarcosCargados();
     }
 
     private User getUser() {
-      Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == vehicle.Id);
-      return userListUseCase.Execute().Find(user => user.Id == transport.UserId);
+        Transport transport = listTransportUseCase.Execute().Find(trans => trans.Id == vehicle.Id) ?? throw new Exception("transport not found");
+        return userListUseCase.Execute().Find(user => user.Id == transport.UserId) ?? throw new Exception("user not found");
     }
 
     private string getTitle() {
-      Post post = listPostUseCase.Execute().Find(post => post.TransportId == vehicle.Id);
-      return post.Title;
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == vehicle.Id) ?? throw new Exception("post not found");
+        return post.Title;
     }
 }

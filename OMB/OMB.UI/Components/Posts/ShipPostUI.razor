@@ -83,95 +83,94 @@
 <DialogoConfirmacion @ref="dialogo" OnConfirmado="eliminarPost"/>
 
 @code {
-  [Parameter] public int? postId { get; set; }
-  bool isOwner;
-  bool isEmployee;
-  Post actualPost;
-  Ship actualShip = new Ship();
+    [Parameter] public int? postId { get; set; }
+    bool isOwner;
+    bool isEmployee;
+    Post actualPost = new Post();
+    Ship actualShip = new Ship();
 
-  ListarTransportesAOfertar listarTransportes = null!; 
-  ListarOfertasAPost listarOfertas = null!;
+    ListarTransportesAOfertar listarTransportes = null!; 
+    ListarOfertasAPost listarOfertas = null!;
 
-  List<byte[]> images = new List<byte[]>(); // para las imagenes del post
-  int limit = 0;  	  // para manejar el cap de imagenes
-  int i = 0;
-  int loggedUserId = 0;
-  	DialogoConfirmacion dialogo = null!;
+    List<byte[]> images = new List<byte[]>(); // para las imagenes del post
+    int limit = 0;  	  // para manejar el cap de imagenes
+    int i = 0;
+    int loggedUserId = 0;
+    DialogoConfirmacion dialogo = null!;
 
-  protected override void OnInitialized() {
-    images.Add(new byte[0]);
-  }
+    protected override void OnInitialized() {
+        images.Add(new byte[0]);
+    }
 
-  protected override async Task OnAfterRenderAsync(bool firstRender) {
-    if (firstRender) {
-      //Extrae el ID del usuario loggeado del sessionStorage
-      var result3  = await sessionStorage.GetAsync<bool>("isEmployee");
-      isEmployee = result3.Success ? result3.Value : false;
-      var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
-      loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
-      //Busco al owner del post
-      actualPost = await Task.Run(() => listPostUseCase.Execute().Find(post => post.getTransportId() == postId));
-      if (actualPost != null) {
-        actualShip = await Task.Run(() => shipListUseCase.Execute().Find(ship => ship.Id == actualPost.getTransportId()));
-        if (actualShip != null) {
-          User owner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == actualShip.UserId));
-            
-          //Checkeo si el owner y el usuario loggeado son el mismo user y guardo el resultado
-          isOwner = ((owner.Id == loggedUserId) && !isEmployee);
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            //Extrae el ID del usuario loggeado del sessionStorage
+            var result3  = await sessionStorage.GetAsync<bool>("isEmployee");
+            isEmployee = result3.Success ? result3.Value : false;
+            var getLoggedUserId = await sessionStorage.GetAsync<int>("userId");
+            loggedUserId = getLoggedUserId.Success ? getLoggedUserId.Value : 0;
+            //Busco al owner del post
+            actualPost = await Task.Run(() => listPostUseCase.Execute().Find(post => post.TransportId == postId)) ?? throw new Exception("post not found");
+            if (actualPost != null) {
+                actualShip = await Task.Run(() => shipListUseCase.Execute().Find(ship => ship.Id == actualPost.TransportId)) ?? throw new Exception("ship not found");
+                if (actualShip != null) {
+                    User owner = await Task.Run(() => userListUseCase.Execute().Find(user => user.Id == actualShip.UserId)) ?? throw new Exception("user not found");
 
-          GetImages();
+                    //Checkeo si el owner y el usuario loggeado son el mismo user y guardo el resultado
+                    isOwner = ((owner.Id == loggedUserId) && !isEmployee);
+
+                    GetImages();
+                }
+            }
+
+            StateHasChanged();
         }
-      }
-
-      // le aviso a blazor que se tiene que re-renderizar la pagina
-      StateHasChanged();
-    }
-  }
-
-  private void Ofertar() {
-    listarTransportes.Cargar(actualShip);
-  }
-
-  private void CargarOfertas() {
-    listarOfertas.getOfferList(actualPost);
-  }
-
-  private void GetImages() {
-    images = new List<byte[]>();
-    var shipImages = listShipImagesUseCase.Execute().Where(img => img.ShipId == actualShip.Id);
-
-    foreach (var img in shipImages) {
-      images.Add(img.Image);
     }
 
-    limit = images.Count() - 1;
-  }
+    private void Ofertar() {
+        listarTransportes.Cargar(actualShip);
+    }
 
-  public void MoveRight() {  // para moverse por el slider de imagenes
-    if (i < limit) i++;
-    else i = 0;
+    private void CargarOfertas() {
+        listarOfertas.getOfferList(actualPost);
+    }
 
-    StateHasChanged();
-  }
+    private void GetImages() {
+        images = new List<byte[]>();
+        var shipImages = listShipImagesUseCase.Execute().Where(img => img.ShipId == actualShip.Id);
 
-  public void MoveLeft() {  // para moverse por el slider de imagenes
-    if (i > 0) i--;
-    else i = limit;
+        foreach (var img in shipImages) {
+            images.Add(img.Image);
+        }
 
-    StateHasChanged();
-  }
+        limit = images.Count() - 1;
+    }
 
-	public void confirmarEliminarPost() {
-		dialogo.Mostrar("¿Seguro qué deseas eliminar el post?");
-	}
-	public void eliminarPost() {
-		List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == actualPost.getTransportId()).ToList();
-		foreach(Offer offer in ofertas){
-			offer.transportePosteadoId = 1;
-			modifyOfferUseCase.Execute(offer);
-		}
-		deletePostUseCase.Execute(actualPost.Id);
-		Navegador.NavigateTo("/");
-	}
+    public void MoveRight() {  // para moverse por el slider de imagenes
+        if (i < limit) i++;
+        else i = 0;
+
+        StateHasChanged();
+    }
+
+    public void MoveLeft() {  // para moverse por el slider de imagenes
+        if (i > 0) i--;
+        else i = limit;
+
+        StateHasChanged();
+    }
+
+    public void confirmarEliminarPost() {
+        dialogo.Mostrar("¿Seguro qué deseas eliminar el post?");
+    }
+    public void eliminarPost() {
+        List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == actualPost.TransportId).ToList();
+        foreach(Offer offer in ofertas){
+            offer.transportePosteadoId = 1;
+            modifyOfferUseCase.Execute(offer);
+        }
+        deletePostUseCase.Execute(actualPost.Id);
+        Navegador.NavigateTo("/");
+    }
 
 }

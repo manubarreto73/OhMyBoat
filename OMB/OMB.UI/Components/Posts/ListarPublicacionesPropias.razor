@@ -59,7 +59,7 @@
 
 @code {
     int userId;
-    
+
     List<Post> _allPosts = new List<Post>();
     List<Post> _posts = new List<Post>();
     List<Transport> _allTransports = new List<Transport>();
@@ -72,67 +72,75 @@
     DialogoError dialogoError = null!;
 
     protected override async Task OnInitializedAsync() {
-      var result = await sessionStorage.GetAsync<int>("userId");
-      userId = result.Success ? result.Value : 0;
+        var result = await sessionStorage.GetAsync<int>("userId");
+        userId = result.Success ? result.Value : 0;
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar
     public void Cargar() {
-      // Traigo todas las fotos así no tengo que traerlas con cada post
-      _vehicleImages = listVehicleImagesUseCase.Execute();
-      _shipImages = listShipImagesUseCase.Execute();
-      _allPosts = listPostUseCase.Execute();
-      _allTransports = listTransportUseCase.Execute();
-      
-      _images = new List<byte[]>();
-      _posts = new List<Post>();
-      _transports = new List<Transport>();
+        // Traigo todas las fotos así no tengo que traerlas con cada post
+        _vehicleImages = listVehicleImagesUseCase.Execute();
+        _shipImages = listShipImagesUseCase.Execute();
+        _allPosts = listPostUseCase.Execute();
+        _allTransports = listTransportUseCase.Execute();
 
-      GetPosts(userId);
-      StateHasChanged();
+        _images = new List<byte[]>();
+        _posts = new List<Post>();
+        _transports = new List<Transport>();
+
+        GetPosts(userId);
+        StateHasChanged();
     }
 
     private void GetPosts(int profileId) {
-      // Filtro entre todos los transportes para encontrar los que corresponden con los posts
-      foreach (Post post in _allPosts) {
-        Transport transport = _allTransports.Find(trans => trans.Id == post.TransportId);
+        // Filtro entre todos los transportes para encontrar los que corresponden con los posts
+        foreach (Post post in _allPosts) {
+            Transport transport = _allTransports.Find(trans => trans.Id == post.TransportId) ?? throw new Exception("transport not found");
 
-        if (transport != null) {
-          if ((transport.UserId == profileId) && (!post.paused)) {
-            _transports.Add(transport);
-            _posts.Add(post);
+            if (transport != null) {
+                if ((transport.UserId == profileId) && (!post.paused)) {
+                    _transports.Add(transport);
+                    _posts.Add(post);
 
-            GetTransportImage(transport);
-          }
+                    GetTransportImage(transport);
+                }
+            }
         }
-      }
     }
 
     private void GetTransportImage(Transport transport) {
-      byte[] image = null;
+        byte[]? image = null;  // Usa un tipo anulable para indicar que 'image' puede ser nulo
 
-      if (IsVehicle(transport.type)) {
-        image = _vehicleImages.Find(img => img.VehicleId == transport.Id).Image;
-      } else {
-        image = _shipImages.Find(img => img.ShipId == transport.Id).Image;
-      }
+        if (IsVehicle(transport.type)) {
+            var vehicleImage = _vehicleImages.Find(img => img.VehicleId == transport.Id);
+            if (vehicleImage != null) {
+                image = vehicleImage.Image;
+            }
+        }
+        else {
+            var shipImage = _shipImages.Find(img => img.ShipId == transport.Id);
+            if (shipImage != null) {
+                image = shipImage.Image;
+            }
+        }
 
-      if (image != null) {
-        _images.Add(image);
-      }
+        if (image != null) {
+            _images.Add(image);
+        }
     }
 
     private bool IsVehicle(string type) {
-      return (type == "Ciclomotor" || type == "Auto" || type == "Camioneta");
+        return (type == "Ciclomotor" || type == "Auto" || type == "Camioneta");
     }
 
     private void browseToPost(Post post) {
-      Transport transport = _transports.Find(trans => trans.Id == post.TransportId);
+        Transport transport = _transports.Find(trans => trans.Id == post.TransportId) ?? throw new Exception("transport not found");
 
-      if (transport != null && IsVehicle(transport.type)) {
-        navegador.NavigateTo($"/vehiclepost/{transport.Id}", true);
-      } else {
-        navegador.NavigateTo($"/shippost/{transport.Id}", true);
-      }
+        if (IsVehicle(transport.type)) {
+            navegador.NavigateTo($"/vehiclepost/{transport.Id}", true);
+        } 
+        else {
+            navegador.NavigateTo($"/shippost/{transport.Id}", true);
+        }
     }
 }

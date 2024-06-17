@@ -78,27 +78,27 @@
 <ListarPublicaciones @ref="listarPublicaciones" />
 
 @code {
-  User user = new User();
-  [Parameter] public string? userUsername { get; set; }
-  bool isEmployee;
-  int userId;
-  DialogoConfirmacion dialogo = null!;
+    User user = new User();
+    [Parameter] public string? userUsername { get; set; }
+    bool isEmployee;
+    int userId;
+    DialogoConfirmacion dialogo = null!;
 
-  ListarVehiculos listarVehiculos = null!;
-  ListarBarcos listarBarcos = null!;
-  ListarPublicaciones listarPublicaciones = null!;
+    ListarVehiculos listarVehiculos = null!;
+    ListarBarcos listarBarcos = null!;
+    ListarPublicaciones listarPublicaciones = null!;
 
-  protected override async Task OnInitializedAsync() {
-      //Busca la información del user a mostrar a travez de su userName
-      var foundUser = userListUseCase.Execute().Find(user => user.userName == userUsername);
-      user = foundUser ?? new User();
+    protected override async Task OnInitializedAsync() {
+        //Busca la información del user a mostrar a travez de su userName
+        var foundUser = userListUseCase.Execute().Find(user => user.userName == userUsername);
+        user = foundUser ?? new User();
 
-      //Extrae la información del user loggeado, para mostrarle el boton ban si es daniel
-      var result  = await sessionStorage.GetAsync<bool>("isEmployee");
-      isEmployee = result .Success ? result.Value : false;
-      var result2 = await sessionStorage.GetAsync<int>("userId");
-      userId = result2.Success ? result2.Value : 0;
-  }
+        //Extrae la información del user loggeado, para mostrarle el boton ban si es daniel
+        var result  = await sessionStorage.GetAsync<bool>("isEmployee");
+        isEmployee = result .Success ? result.Value : false;
+        var result2 = await sessionStorage.GetAsync<int>("userId");
+        userId = result2.Success ? result2.Value : 0;
+    }
 
     private void ConfirmarBaneo() {
         string aux = (user.banned) ? $"¿Seguro que desea desbanear al usuario {user.userName}?" : $"¿Seguro que desea banear al usuario {user.userName}?";
@@ -136,14 +136,14 @@
     }
 
     private void AbrirListarVehiculos() {
-      listarVehiculos.Cargar();
+        listarVehiculos.Cargar();
     }
-    
+
     private void AbrirListarBarcos() {
-      listarBarcos.Cargar();
+        listarBarcos.Cargar();
     }
 
     private void AbrirListarPublicaciones() {
-      listarPublicaciones.Cargar(user.Id);
+        listarPublicaciones.Cargar(user.Id);
     }
 }

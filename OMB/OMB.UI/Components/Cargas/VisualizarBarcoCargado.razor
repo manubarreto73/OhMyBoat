@@ -151,7 +151,7 @@
 
     public void Cargar(Ship barco) {
       this.barco = new Ship(barco.UserId, barco.type, barco.plate, barco.description, barco.model, barco.eslora, barco.manga, barco.calado, barco.hasEngine){Id = barco.Id};
-      publicado = listPostUseCase.Execute().Where(p => p.getTransportId() == barco.Id).Count() > 0;
+        publicado = listPostUseCase.Execute().Where(p => p.TransportId == barco.Id).Count() > 0;
       tieneMotor = barco.hasEngine ? "si" : "no";
       i = 0;
       publicando = false;
@@ -166,9 +166,9 @@
     }
 
     public void eliminarPublicacion(){
-      var post = listPostUseCase.Execute().Where(p => p.getTransportId() == barco.Id).SingleOrDefault();
+        var post = listPostUseCase.Execute().Where(p => p.TransportId == barco.Id).SingleOrDefault();
       if (post != null) {
-        List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == post.getTransportId()).ToList();
+            List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == post.TransportId).ToList();
         foreach(Offer offer in ofertas){
           offer.transportePosteadoId = 1;
           modifyOfferUseCase.Execute(offer);

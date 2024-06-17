@@ -9,18 +9,18 @@ public class UnresolvedExchange : Exchange
     public int transporteOfertadoId { get; set; }
     public Transport? transportePosteado { get; set; }
     public Transport? transporteOfertado { get; set; }
-    public int sedeId { get; set; } = 1; //Me pide que haya un Id acá por defecto. Nunca vamos a usarlo, no jode que esté linkeado a una sede por defecto
+    public int sedeId { get; set; } = 1; //Me pide que haya un Id acï¿½ por defecto. Nunca vamos a usarlo, no jode que estï¿½ linkeado a una sede por defecto
     public Sede? sede { get; set; }
 
     public UnresolvedExchange(int transportePosteadoId, int transporteOfertadoId) {
-    this.transporteOfertadoId = transporteOfertadoId;
-    this.transportePosteadoId = transportePosteadoId;
-    this.state = "OffererStart";   // OffererStart | OffererChooses | OwnerChooses | Accepted | (posiblemente un Canceled tambien)
+        this.transporteOfertadoId = transporteOfertadoId;
+        this.transportePosteadoId = transportePosteadoId;
+        this.state = "OffererStart";   // OffererStart | OffererChooses | OwnerChooses | Accepted | (posiblemente un Canceled tambien)
     }
     public UnresolvedExchange() {
-    this.transporteOfertadoId = 0;
-    this.transportePosteadoId = 0;
-    this.state = "OffererStart";
+        this.transporteOfertadoId = 0;
+        this.transportePosteadoId = 0;
+        this.state = "OffererStart";
     }
 
     public override IClonable Clone() {

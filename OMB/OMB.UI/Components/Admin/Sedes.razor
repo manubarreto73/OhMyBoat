@@ -3,9 +3,15 @@
 @inject listSedesUseCase listSedesUseCase
 @inject addSedeUseCase addSedeUseCase
 @inject modifySedeUseCase modifySedeUseCase
+@inject deleteSedeUseCase deleteSedeUseCase
+@inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
+@inject listTransportUseCase listTransportUseCase
+@inject userListUseCase userListUseCase
+@inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
 @inject IJSRuntime JS
 
 <DialogoError @ref="dialogo"/>
+<DialogoConfirmacion @ref="dialogoConfirmacion" OnConfirmado="Eliminar"/>
 
 <div class="container">
   <h1 class="title">Sedes</h1>
@@ -27,8 +33,12 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-            <button type="button" class="btn btn-success" @onclick="Modificar">Modificar</button>
+            @if (sedes.Count() == 1) {
+              <button type="button" class="btn btn-danger" disabled>Eliminar</button>
+            } else {
+              <button type="button" class="btn btn-danger" @onclick="confirmarEliminacion">Eliminar</button>
+            }
+            <button type="button" class="btn btn-primary" @onclick="Modificar">Modificar</button>
         </div>
       </form>
     </div>
@@ -58,8 +68,10 @@
   </div>
 </div>
 
+<Emails @ref=emails/>
+
 <script type="text/javascript">
-    let agregado = false;
+    let agregado = false; // Boolean para no agregar más de una sede a la vez
 
     var map = L.map('map').setView([-34.8765, -57.9069], 12);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -69,6 +81,7 @@
 
     map.on("click", createMarker);
 
+    // Icono gris usado cuando se crea un marcador o se está moviendo uno
     const newIcon = L.Icon.extend({
       options: {
         iconUrl: 'my-marker-icon.png',
@@ -83,6 +96,7 @@
       }
     });
 
+    // Crea el marcador para crear sedes
     function createMarker(e) {
       if (!agregado) {
         const marker = L.marker(e.latlng, { draggable: true, icon: new newIcon() });
@@ -94,6 +108,7 @@
       }
     }
 
+    // Detiene el dragging de todos los marcadores menos el movido y cambia el icono
     function modifySede(e) {
       const title = e.target.options.title;
 
@@ -106,6 +121,7 @@
       e.target.setIcon(new newIcon());
     }
 
+    // Busca la longitud y latitud elegidas y llama a SaveLatLng
     function cargarSede(e) {
       const latLng = e.latlng;
       const lat = latLng.lat;
@@ -143,6 +159,8 @@
 
 @code {
   DialogoError dialogo = null!;
+  DialogoConfirmacion dialogoConfirmacion = null!;
+  Emails emails = null!;
 
   List<Sede> sedes = new List<Sede>();
   Sede sede = new Sede();
@@ -154,7 +172,7 @@
 
   protected override async Task OnAfterRenderAsync(bool firstRender) {
     if (firstRender) {
-      sedes = listSedesUseCase.Execute();
+      sedes = listSedesUseCase.Execute().FindAll(s => s.isActive == true);
 
       foreach (Sede sede in sedes) {
         await JS.InvokeVoidAsync("mark", sede.latitude, sede.longitude, sede.name);
@@ -162,7 +180,7 @@
     }
   }
 
-  // Todo esto es para poder llamar a LocalShowOptionsAync desde el JavaScript
+  // Todo esto es para poder llamar a ShowOptions y SaveLatLng desde el JavaScript
   private static Func<string, double, double, Task>? ShowOptionsAsync;
   private static Func<double, double, Task>? SaveLatLngAsync;
 
@@ -177,6 +195,7 @@
     SaveLatLngAsync = null;
   }
 
+  // Busca la sede seleccionada para mostrarla en el modal
   private async Task LocalShowOptionsAync(string name, double lat, double lng) {
     sede = listSedesUseCase.Execute().Find(s => s.name == name);
     sede.latitude = lat;
@@ -191,6 +210,7 @@
     }
   }
 
+  // Guarda los valores de latitud y longitud cuando se mueve una marca
   private async Task LocalSaveLatLngAync(double lat, double lng) {
     newLat = lat;
     newLng = lng;
@@ -201,6 +221,55 @@
     if (SaveLatLngAsync is {} actionAsync) {
       await actionAsync(lat, lng);
     }
+  }
+
+  private void confirmarEliminacion() {
+    dialogoConfirmacion.Mostrar("¿Seguro qué deseas eliminar la sede?");
+  }
+
+  private void Eliminar() {
+    deleteSedeUseCase.Execute(sede.Id);
+    EnviarMails();
+    navegador.NavigateTo("/sedes", true);
+  }
+  
+  // Envia mails a todos los intercambios no resueltos que tienen la sede eliminada seleccionada
+  private void EnviarMails() {
+    List<UnresolvedExchange> intercambios = unresolvedExchangeListUseCase.Execute();
+    List<Transport> transports = listTransportUseCase.Execute();
+    List<User> users = userListUseCase.Execute();
+    sedes = listSedesUseCase.Execute();
+
+    foreach (UnresolvedExchange intercambio in intercambios) {
+      if (intercambio.sedeId == sede.Id) {
+        // Cambio la sede del intercambio a otra activa
+        intercambio.sedeId = sedes.Find(s => s.isActive == true).Id;
+        intercambio.state = "OffererChooses";
+        modifyUnresolvedExchangeUseCase.Execute(intercambio);
+
+        Transport posteado = transports.Find(t => t.Id == intercambio.transportePosteado.Id);
+        Transport ofertado = transports.Find(t => t.Id == intercambio.transporteOfertado.Id);
+
+        User dueño = users.Find(u => u.Id == posteado.UserId);
+        User ofertante = users.Find(u => u.Id == ofertado.UserId);
+
+        EnviarMail(dueño);
+        EnviarMail(ofertante);
+      }
+    }
+  }
+
+  private void EnviarMail(User user) {
+    // Manda mail al empleado
+    emails.SendEmail(
+      "¡Sede mofificada!", // Subject
+      user.mail, // Mail
+      "Se modificó la sede de tu intercambio", // Titulo
+      $@"
+      <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Se cambió la sede de uno de tus intercambios</p>
+      <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Entrá a la página para seleccionar una nueva</p>
+      " // Cuerpo
+    );
   }
 
   private void Modificar() {
@@ -233,6 +302,7 @@
     }
   }
 
+  // Chequea contra todas las otras sedes si la ubicación elegida es válida
   private bool distanciaValida(Sede sede1) {
     foreach (Sede sede in sedes) {
       if (sede1.Id != sede.Id && distance(sede1, sede) < kmEntreSedes) {
@@ -263,6 +333,7 @@
     return d;
   }
 
+  // Transforma grados a radianes
   private double degToRad(double deg) {
     return deg * (Math.PI/180);
   }

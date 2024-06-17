@@ -20,7 +20,7 @@ public class SedeRepository : ISedeRepository {
     using(OMBContext context = new OMBContext()) {
       var exists = context.Sedes.Where(S => S.Id == sedeId).SingleOrDefault();
       if (exists != null) {
-        context.Remove(exists);
+        exists.isActive = false;
         context.SaveChanges();
       }
     }

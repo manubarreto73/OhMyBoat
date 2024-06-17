@@ -9,17 +9,17 @@ public class Sede : IClonable
     public bool isActive { get; set; }
 
     public Sede(string name, double latitude, double longitude) {
-    this.name = name;
-    this.latitude = latitude;
-    this.longitude = longitude;
-    this.isActive = true;
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.isActive = true;
     }
 
     public Sede() {
-    this.name = "";
-    this.latitude = 0;
-    this.longitude = 0;
-    this.isActive = false;
+        this.name = "";
+        this.latitude = 0;
+        this.longitude = 0;
+        this.isActive = false;
     }
 
     public IClonable Clone(){

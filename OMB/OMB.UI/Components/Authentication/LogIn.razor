@@ -5,7 +5,7 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
-
+<body>
 <DialogoError @ref=dialogo/>
 
 <div class="container">
@@ -22,8 +22,8 @@
                             <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
                         </div>
                         <div class="d-flex justify-content-between mb-3">
-                            <button type="submit" class="btn btn-black btn-sm" @onclick="() => navegarAlRegistro()" >Registrarse</button>
-                            <button type="submit" class="btn btn-black btn-sm" @onclick="() => Aceptar()" >Iniciar sesión</button>
+                            <button type="button" class="btn btn-black btn-sm" @onclick="() => navegarAlRegistro()" >Registrarse</button>
+                            <button type="submit" class="btn btn-black btn-sm" @onclick="() => Aceptar()" @onclick:preventDefault>Iniciar sesión</button>
                         </div>
                     </form>
                 </div>
@@ -31,6 +31,7 @@
         </div>
     </div>
 </div>
+</body>
 
 
 @code {

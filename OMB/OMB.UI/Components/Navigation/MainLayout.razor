@@ -8,13 +8,13 @@
     <main>
         <div class="top-row px-4">
             @if (isEmployee && userId != 1) {
-                <a class="navbar-brand" href="homeemployee">
+                <a class="navbar-brand" style="cursor:pointer;" href="homeemployee">
                     Oh My Boat!
                     <img src="Oh_My_Boat_logo_4.jpg" alt="">
                 </a>
             }
             else {
-                <a class="navbar-brand" @onclick="() => NavigateToHome()">
+                <a class="navbar-brand" style="cursor:pointer;" @onclick="() => NavigateToHome()">
                     Oh My Boat!
                     <img src="Oh_My_Boat_logo_4.jpg" alt="">
                 </a>

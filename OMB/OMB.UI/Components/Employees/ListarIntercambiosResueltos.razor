@@ -37,53 +37,53 @@
 </div>
 
 @code {
-  List<ResolvedExchange> exchanges = new List<ResolvedExchange>();
-  List<TransportHistory> transports = new List<TransportHistory>();
-  List<Post> posts = new List<Post>();
-  List<User> users = new List<User>();
+      List<ResolvedExchange> exchanges = new List<ResolvedExchange>();
+      List<TransportHistory> transports = new List<TransportHistory>();
+      List<Post> posts = new List<Post>();
+      List<User> users = new List<User>();
 
-  protected override void OnInitialized() {
-    // Inicializo listas para usarlas después
-    users = userListUseCase.Execute();
-    transports.AddRange(ShipHistoryListUseCase.Execute());
-    transports.AddRange(VehicleHistoryListUseCase.Execute());  // no hay usecases para transportHistory todavia
-    exchanges = resolvedExchangeListUseCase.Execute();
-    exchanges.Reverse();
+    protected override void OnInitialized() {
+        // Inicializo listas para usarlas después
+        users = userListUseCase.Execute();
+        transports.AddRange(ShipHistoryListUseCase.Execute());
+        transports.AddRange(VehicleHistoryListUseCase.Execute());  // no hay usecases para transportHistory todavia
+        exchanges = resolvedExchangeListUseCase.Execute();
+        exchanges.Reverse();
 
-    posts = listPostUseCase.Execute();
-  }
-
-  // Obtiene el userName del dueño del post involucrado
-  public string getPostTarget(ResolvedExchange exchange) {
-    if(transports != null && users != null){
-      TransportHistory? postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-      if(postedTransport != null){
-        User? postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
-      
-        if(postedTransportOwner != null){
-          return postedTransportOwner.userName;
-        }
-      }
+        posts = listPostUseCase.Execute();
     }
-    return "";
-  }
 
-  // Obtiene el userName del dueño del transporte ofertado involucrado
-  public string getOfferTarget(ResolvedExchange exchange) {
-    TransportHistory offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
-    User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId);
-    return postedTransportOwner.userName;
-  }
+    // Obtiene el userName del dueño del post involucrado
+    public string getPostTarget(ResolvedExchange exchange) {
+        if(transports != null && users != null){
+          TransportHistory? postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
+          if(postedTransport != null){
+            User? postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
+      
+            if(postedTransportOwner != null){
+              return postedTransportOwner.userName;
+            }
+          }
+        }
+        return "";
+    }
 
-  // Obtiene la patente del transporte ofrecido
-  public string getOfferedTransport(ResolvedExchange exchange) {
-    TransportHistory offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
-    return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
-  }
+    // Obtiene el userName del dueño del transporte ofertado involucrado
+    public string getOfferTarget(ResolvedExchange exchange) {
+        TransportHistory offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId) ?? throw new Exception("transport not found");
+        User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId) ?? throw new Exception("user not found");
+        return postedTransportOwner.userName;
+    }
 
-  // Obtiene la patente del transporte publicado
-  public string getPostedTransport(ResolvedExchange exchange) {
-    TransportHistory postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-    return $"{postedTransport.type} {postedTransport.model} {postedTransport.plate}";
-  }
+    // Obtiene la patente del transporte ofrecido
+    public string getOfferedTransport(ResolvedExchange exchange) {
+        TransportHistory offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId) ?? throw new Exception("transport not found");
+        return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
+    }
+
+    // Obtiene la patente del transporte publicado
+    public string getPostedTransport(ResolvedExchange exchange) {
+        TransportHistory postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId) ?? throw new Exception("transport not found");
+        return $"{postedTransport.type} {postedTransport.model} {postedTransport.plate}";
+    }
 }

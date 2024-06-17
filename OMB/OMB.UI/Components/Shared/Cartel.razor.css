@@ -1,0 +1,11 @@
+﻿.alert {
+    position: relative;
+}
+
+.alert .btn {
+    position: absolute;
+    right: 0;
+    top: 25%;
+    display: flex;
+    align-items: center;
+}

@@ -109,58 +109,66 @@
     getImages();
   }
 
-  public void getImages() {
-    foreach (var exchange in exchanges) {
-      int transportId = exchange.transportePosteadoId;
-      int offTrans = exchange.transporteOfertadoId;
+    public void getImages() {
+        foreach (var exchange in exchanges)
+        {
+            int transportId = exchange.transportePosteadoId;
+            int offTrans = exchange.transporteOfertadoId;
 
-      if(isVehicle(offTrans)){
-        imgOffer.Add(vehicleImages.Find(img => img.VehicleId == offTrans).Image);
-      }
-      else{
-        imgOffer.Add(shipImages.Find(img => img.ShipId == offTrans).Image);
-      }
+            // Obtener la imagen para el transporte ofertado
+            byte[] offImage = getImage(offTrans, isVehicle(offTrans));
+            imgOffer.Add(offImage);
 
-      if (isVehicle(transportId)) {
-        images.Add(vehicleImages.Find(img => img.VehicleId == transportId).Image);
-      } else {
-        images.Add(shipImages.Find(img => img.ShipId == transportId).Image);
-      }
+            // Obtener la imagen para el transporte posteado
+            byte[] mainImage = getImage(transportId, isVehicle(transportId));
+            images.Add(mainImage);
+        }
     }
-  }
+
+    private byte[] getImage(int transportId, bool isVehicle) {
+        if (isVehicle)
+        {
+            var vehicleImage = vehicleImages.Find(img => img.VehicleId == transportId);
+            return vehicleImage?.Image ?? new byte[0];
+        }
+        else
+        {
+            var shipImage = shipImages.Find(img => img.ShipId == transportId);
+            return shipImage?.Image ?? new byte[0];
+        }
+    }
 
   public bool isVehicle (int transportId) {
 		return !shipListUseCase.Execute().Any(ship => ship.Id == transportId);
 	}
 
-  // Obtiene el userName del dueño del post involucrado
-  public string getPostTarget(UnresolvedExchange exchange) {
-    Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-    User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
-    return postedTransportOwner.userName;
-  }
+    // Obtiene el userName del dueño del post involucrado
+    public string getPostTarget(UnresolvedExchange exchange) {
+        Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId) ?? throw new Exception("transport not found");
+        User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId) ?? throw new Exception("sede not found");
+        return postedTransportOwner.userName;
+    }
 
-  // Obtiene el userName del dueño del transporte ofertado involucrado
-  public string getOfferTarget(UnresolvedExchange exchange) {
-    Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
-    User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId);
-    return postedTransportOwner.userName;
-  }
+    // Obtiene el userName del dueño del transporte ofertado involucrado
+    public string getOfferTarget(UnresolvedExchange exchange) {
+        Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId) ?? throw new Exception("transport not found");
+        User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId) ?? throw new Exception("sede not found");
+        return postedTransportOwner.userName;
+    }
 
-  // Obtiene la patente del transporte ofrecido
-  public string getOfferedTransport(UnresolvedExchange exchange) {
-    Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
-    return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
-  }
+    // Obtiene la patente del transporte ofrecido
+    public string getOfferedTransport(UnresolvedExchange exchange) {
+        Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId) ?? throw new Exception("transport not found");
+        return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
+    }
 
-  // Obtiene la patente del transporte publicado
-  public string getPostedTransport(UnresolvedExchange exchange) {
-    Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-    Post post = posts.Find(post => post.TransportId == postedTransport.Id);
-    return $"{postedTransport.type} {postedTransport.model} {postedTransport.plate}";
-  }
+    // Obtiene la patente del transporte publicado
+    public string getPostedTransport(UnresolvedExchange exchange) {
+        Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId) ?? throw new Exception("transport not found");
+        return $"{postedTransport.type} {postedTransport.model} {postedTransport.plate}";
+    }
 
-  public void browseToExchange(UnresolvedExchange exchange) {
-    navegador.NavigateTo($"exchange/{exchange.Id}", true);
-  }
+    public void browseToExchange(UnresolvedExchange exchange) {
+        navegador.NavigateTo($"exchange/{exchange.Id}", true);
+    }
 }

@@ -17,6 +17,11 @@ public class UnresolvedExchange : Exchange
     this.transportePosteadoId = transportePosteadoId;
     this.state = "OffererStart";   // OffererStart | OffererChooses | OwnerChooses | Accepted | (posiblemente un Canceled tambien)
     }
+    public UnresolvedExchange() {
+    this.transporteOfertadoId = 0;
+    this.transportePosteadoId = 0;
+    this.state = "OffererStart";
+    }
 
     public override IClonable Clone() {
     return new UnresolvedExchange(this.transportePosteadoId, this.transporteOfertadoId) { Id = this.Id, fechaYHora = this.fechaYHora, state = this.state, sedeId = this.sedeId };

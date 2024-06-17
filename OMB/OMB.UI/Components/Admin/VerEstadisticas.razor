@@ -10,6 +10,7 @@
 @using Microsoft.AspNetCore.Components
 @using System.Collections.Generic
 @inject resolvedExchangeListUseCase resolvedExchangeListUseCase
+@inject listSedesUseCase listSedesUseCase
 @using QuestPDF.Fluent
 @using QuestPDF.Helpers
 @using QuestPDF.Infrastructure
@@ -143,13 +144,15 @@
                     
                 }
             };
-        
-        foreach (string color in new[] { "Sede 1", "Sede 2", "Sede 3", "Sede 4"})
+        List<Sede> sedes = listSedesUseCase.Execute();
+        List<int> data = new List<int>();
+        foreach (Sede s in sedes)
         {
-            _barConfig.Data.Labels.Add(color);
+            _barConfig.Data.Labels.Add(s.name);
+            data.Add(resolvedExchanges.Where(e => e.sede.Id == s.Id).Count());
         }
 
-        var barData = new BarDataset<int> (new List<int> {400, 100, 200, 300})
+        var barData = new BarDataset<int> (data)
         {
             Label="Intercambios",
             BackgroundColor = ColorUtil.ColorHexString(0x3a, 0x0c, 0xa3),

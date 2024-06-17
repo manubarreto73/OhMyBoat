@@ -11,16 +11,8 @@
 
 <DialogoError @ref=dialogo/>
 
-@if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
-    <div class="alert alert-info">
-        @cartelito
-        <button class="btn" @onclick="() => setFalse()" >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-            </svg>
-        </button>
-    </div>
-}
+<Cartel />
+
 <div class="container-de-containers">
     <div class="publicaciones-container">
         @if(posts.Count() == 0) {
@@ -43,7 +35,7 @@
             }
         }
     </div>
-    <div class="filtros">
+    <div class="ayudasdebusqueda">
         <div>
             <p>@posts.Count resultados</p>
         </div>
@@ -90,8 +82,6 @@
     List<string> _descripciones = new List<string>();
 
     DialogoError dialogo = null!;
-    string? cartelito;
-    bool mostrarCartel;
 
     [Parameter]
     public string? filtroParam { get; set; }
@@ -100,7 +90,7 @@
     
     public string? busqueda;
 
-    protected override async Task OnParametersSetAsync() {
+    protected override void OnParametersSet() {
         filtrosAplicados = new List<string>();
         if (!string.IsNullOrEmpty(filtroParam)) {
             foreach (string filtro in filtroParam.Split("&")) {
@@ -134,26 +124,35 @@
 
         // Generamos la lista de fotos y descripciones para ambos tipos de post
         getPhotosAndDescriptions();
-
-        var result  = await sessionStorage.GetAsync<string>("cartel?");
-        cartelito = result.Success ? result.Value : null;
-        mostrarCartel = true;
-        await sessionStorage.DeleteAsync("cartel?");
     }
 
     private void getPosts() {
         posts = new List<Post>();
 
-        foreach (Post post in allPosts) { // Lo implemente de otra forma
-            Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
-            User user = users.Find(u => u.Id == transport.UserId);
+        foreach (Post post in allPosts) {
+            // Buscar el transporte asociado al post
+            Transport? transport = transports.FirstOrDefault(trans => trans.Id == post.getTransportId());
+            if (transport == null) {
+                throw new Exception("transport not found");
+            }
+
+            // Buscar el usuario asociado al transporte
+            User? user = users.FirstOrDefault(u => u.Id == transport.UserId);
+            if (user == null) {
+                throw new Exception("user not found");
+            }
 
             // Si el tipo de transporte no concuerda con el filtro, no se agrega
-            if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(transport.type)) continue;
+            if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(transport.type)) {
+                continue;
+            }
 
             // Si existe un criterio de búsqueda y el post no lo contiene, no se agrega
-            if (!string.IsNullOrEmpty(busqueda) && !contieneBusqueda(post)) continue;
+            if (!string.IsNullOrEmpty(busqueda) && !contieneBusqueda(post, transport)) {
+                continue;
+            }
 
+            // Añadir el post si no está pausado y si el usuario es un empleado o el usuario no es el mismo
             if (!post.paused && (isEmployee || user.Id != userId)) {
                 posts.Add(post);
             }
@@ -162,54 +161,28 @@
         busqueda = "";
     }
 
-    private bool esFiltro(string tipo) {
-        if (string.IsNullOrEmpty(filtroParam)) return false;
-        return filtroParam.Contains(tipo, StringComparison.OrdinalIgnoreCase);
-    }
-
-    private bool contieneBusqueda(Post post) {
-        return (!string.IsNullOrEmpty(busqueda) && post.Title.Contains(busqueda));
-    }
-
-    private void aplicarBusqueda () {
-        getPosts();
-
-        // Reordenamos los posts
-        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
-
-        // Generamos la lista de fotos y descripciones para ambos tipos de post
-        getPhotosAndDescriptions();
-
-        StateHasChanged();
-    }
-
-    private int cantidadTipo(string tipo) {
-        int cant = 0;
-
-        foreach (Post post in allPosts) {
-            Transport transport = transports.Find(trans => trans.Id == post.getTransportId());
-            if (transport.type == tipo) cant++;
-        }
-
-        return cant;
-    }
-
     private void getPhotosAndDescriptions() {
         _descripciones = new List<string>();
         _images = new List<byte[]>();
 
         foreach (var post in posts) {
-            string descripcion = transports.Find(T => T.Id == post.getTransportId()).description;
-            _descripciones.Add(descripcion);
+            var transport = transports.FirstOrDefault(T => T.Id == post.getTransportId());
+            if (transport != null) {
+                string descripcion = transport.description;
+                _descripciones.Add(descripcion);
 
-            byte[]? image = (0 != shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).Count()) ? shipImages.Where(imagen => imagen.ShipId == post.getTransportId()).First().Image : vehicleImages.Where(imagen => imagen.VehicleId == post.getTransportId()).First().Image;
-            _images.Add(image);
+                var shipImage = shipImages.FirstOrDefault(imagen => imagen.ShipId == post.getTransportId());
+                var vehicleImage = vehicleImages.FirstOrDefault(imagen => imagen.VehicleId == post.getTransportId());
+                byte[]? image = shipImage != null ? shipImage.Image : vehicleImage?.Image;
+
+                if (image != null) {
+                    _images.Add(image);
+                }
+            }
         }
     }
 
-    private void setFalse () {
-        this.mostrarCartel = false;
-    }
+    //Método para el redireccionamiento a la publicación
 
     private async Task browseToPost(Post p) {
         try {
@@ -226,9 +199,25 @@
         }
     }
 
-    private bool IsVehicle(Post post) {
-        Transport transport = transports.Find(trans => trans.Id == post.TransportId);
-        return (transport.type == "Ciclomotor" || transport.type == "Auto" || transport.type == "Camioneta");
+    //Métodos para la búsqueda entre publicaciones
+
+    private bool contieneBusqueda(Post post, Transport transport) {
+        return (!string.IsNullOrEmpty(busqueda) && ( post.Title.Contains(busqueda) || transport.description.Contains(busqueda) || transport.model.Contains(busqueda) ));
+    }
+
+    private void aplicarBusqueda () {
+        getPosts();
+        posts = posts.OrderBy(_ => Guid.NewGuid()).ToList();
+        getPhotosAndDescriptions();
+
+        StateHasChanged();
+    }
+
+    //Métodos para el manejo de los filtros
+
+    private int cantidadTipo(string tipo) {
+        List<int> transportesPost = posts.Select(post => post.TransportId).ToList();
+        return transports.Where(transport => transport.type == tipo && transportesPost.Contains(transport.Id)).Count();
     }
 
     private void filtrar(string filtro) {
@@ -240,9 +229,25 @@
     }
 
     private void eliminarFiltro(string filtro) {
+        if (string.IsNullOrEmpty(filtroParam)) {
+            return;
+        }
         List<string> filtros = filtroParam.Split("&").ToList();
         filtros.Remove(filtro);
 
         navegador.NavigateTo($"/{String.Join("&", filtros)}", true);
+    }
+
+    private bool esFiltro(string tipo) {
+        if (string.IsNullOrEmpty(filtroParam)) 
+            return false;
+        return filtroParam.Contains(tipo, StringComparison.OrdinalIgnoreCase);
+    }
+
+    //Métodos auxiliares
+
+    private bool IsVehicle(Post post) {
+        var transport = transports.Find(trans => trans.Id == post.TransportId);
+        return transport != null && (transport.type == "Ciclomotor" || transport.type == "Auto" || transport.type == "Camioneta");
     }
 }

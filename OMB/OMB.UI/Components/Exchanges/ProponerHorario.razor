@@ -28,7 +28,7 @@
                         <label>Sede</label>
                         <select @bind=nombreSede class="form-select">
                             <option value="" style="display:none"></option>
-                            @foreach (string? nombre in sedes.Select(sede => sede.name).ToList())
+                            @foreach (string? nombre in sedes.Where(sede => sede.isActive).Select(sede => sede.name).ToList())
                             {
                                 @if (nombre != null)
                                 {
@@ -57,8 +57,8 @@
     string nombreSede = "";
 
     public void Cargar(UnresolvedExchange exchangeparam) {
-    exchange = exchangeparam;
-    sedes = listSedesUseCase.Execute();
+        exchange = exchangeparam;
+        sedes = listSedesUseCase.Execute();
         sede = sedes.Find(sede => sede.Id == exchangeparam.sedeId) ?? throw new Exception("sede not found");
         fechaExchange = exchangeparam.fechaYHora.Date;
         horaExchange = new DateTime(0001, 1, 1, exchangeparam.fechaYHora.Hour, exchangeparam.fechaYHora.Minute, exchangeparam.fechaYHora.Second);
@@ -67,7 +67,7 @@
     }
 
     public void Aceptar() {
-        
+
         DateOnly date = new DateOnly(fechaExchange.Year, fechaExchange.Month, fechaExchange.Day);
         TimeOnly time = new TimeOnly(horaExchange.Hour, horaExchange.Minute);
         DateTime dateTime = new DateTime(date, time);

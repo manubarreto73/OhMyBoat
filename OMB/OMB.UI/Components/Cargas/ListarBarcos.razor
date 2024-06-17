@@ -78,7 +78,7 @@
 
 @code {
     int userId;
-    
+
     List<Ship> _ships = new List<Ship>();
     List<ShipImage> _allImages = new List<ShipImage>();
     List<byte[]> _images = new List<byte[]>();
@@ -89,57 +89,57 @@
     VisualizarBarcoCargado visualizarBarco = null!;
 
     protected override async Task OnInitializedAsync() {
-      var result = await sessionStorage.GetAsync<int>("userId");
-      userId = result.Success ? result.Value : 0;
+        var result = await sessionStorage.GetAsync<int>("userId");
+        userId = result.Success ? result.Value : 0;
 
-      GetBarcosCargados();
+        GetBarcosCargados();
     }
 
     private bool intercambiandose(Ship ship){
-      return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == ship.Id) || (e.transporteOfertadoId == ship.Id))).Count() > 0;
+        return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == ship.Id) || (e.transporteOfertadoId == ship.Id))).Count() > 0;
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar
     public void Cargar() {
-      GetBarcosCargados();
-      StateHasChanged();
+        GetBarcosCargados();
+        StateHasChanged();
     }
 
     private void GetBarcosCargados() {
 
-      _ships = shipListUseCase.Execute();
-      _ships = _ships.FindAll(ship => ship.UserId == userId);
+        _ships = shipListUseCase.Execute();
+        _ships = _ships.FindAll(ship => ship.UserId == userId);
 
-      GetImagenesBarcos();
+        GetImagenesBarcos();
     }
 
     private void GetImagenesBarcos() {
-      _allImages = listShipImagesUseCase.Execute();
-      _images = new List<byte[]>();
+        _allImages = listShipImagesUseCase.Execute();
+        _images = new List<byte[]>();
 
-      foreach (var barco in _ships) {
-        var imagen = _allImages.Find(imagen => imagen.ShipId == barco.Id);
-        byte[] image = imagen?.Image ?? Array.Empty<byte>();
-        _images.Add(image);
-      }
+        foreach (var barco in _ships) {
+            var imagen = _allImages.Find(imagen => imagen.ShipId == barco.Id);
+            byte[] image = imagen?.Image ?? Array.Empty<byte>();
+            _images.Add(image);
+        }
     }
 
     private void confirmarEliminacion(Ship barco) {
-      barcoAEliminar = barco;
-      dialogo.Mostrar("¿Seguro qué deseas eliminar el barco?");
+        barcoAEliminar = barco;
+        dialogo.Mostrar("¿Seguro qué deseas eliminar el barco?");
     }
 
     private void eliminarBarco() {
-      List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == barcoAEliminar.Id).ToList();
-      foreach(Offer offer in ofertas){
-        offer.transportePosteadoId = 1;
-        modifyOfferUseCase.Execute(offer);
-      }
-      deleteShipUseCase.Execute(barcoAEliminar.Id);
-      GetBarcosCargados();
+        List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == barcoAEliminar.Id).ToList();
+        foreach(Offer offer in ofertas){
+            offer.transportePosteadoId = 1;
+            modifyOfferUseCase.Execute(offer);
+        }
+        deleteShipUseCase.Execute(barcoAEliminar.Id);
+        GetBarcosCargados();
     }
 
     public void VisualizarBarco(Ship barco) {
-      visualizarBarco.Cargar(barco);
+        visualizarBarco.Cargar(barco);
     }
 }

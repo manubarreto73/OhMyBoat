@@ -80,7 +80,7 @@
 
 @code {
     int userId;
-    
+
     List<Vehicle> _vehicles = new List<Vehicle>();
     List<VehicleImage> _allImages = new List<VehicleImage>();
     List<byte[]> _images = new List<byte[]>();
@@ -92,56 +92,56 @@
     VisualizarVehiculoCargado visualizarVehiculo = null!;
 
     protected override async Task OnInitializedAsync() {
-      var result = await sessionStorage.GetAsync<int>("userId");
-      userId = result.Success ? result.Value : 0;
-      GetVehiculosCargados();
+        var result = await sessionStorage.GetAsync<int>("userId");
+        userId = result.Success ? result.Value : 0;
+        GetVehiculosCargados();
     }
 
     // Cada vez que se abre el modal se debe llamar a Cargar
     public void Cargar() {
-      GetVehiculosCargados();
-      StateHasChanged();
+        GetVehiculosCargados();
+        StateHasChanged();
     }
 
     private bool intercambiandose(Vehicle vehicle){
-      return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == vehicle.Id) || (e.transporteOfertadoId == vehicle.Id))).Count() > 0;
+        return unresolvedExchangeListUseCase.Execute().Where(e => ((e.transportePosteadoId == vehicle.Id) || (e.transporteOfertadoId == vehicle.Id))).Count() > 0;
     }
 
     private void GetVehiculosCargados() {
-      _vehicles = vehicleListUseCase.Execute();
-      _vehicles = _vehicles.FindAll(vehiculo => vehiculo.UserId == userId);
+        _vehicles = vehicleListUseCase.Execute();
+        _vehicles = _vehicles.FindAll(vehiculo => vehiculo.UserId == userId);
 
-      GetImagenesVehiculos();
+        GetImagenesVehiculos();
     }
 
     private void GetImagenesVehiculos() {
-      _allImages = listVehicleImagesUseCase.Execute();
-      _images = new List<byte[]>();
+        _allImages = listVehicleImagesUseCase.Execute();
+        _images = new List<byte[]>();
 
-      foreach (var vehiculo in _vehicles) {
-        var imagen = _allImages.Find(imagen => imagen.VehicleId == vehiculo.Id);
-        byte[] image = imagen?.Image ?? Array.Empty<byte>();
-        _images.Add(image);
-      }
+        foreach (var vehiculo in _vehicles) {
+            var imagen = _allImages.Find(imagen => imagen.VehicleId == vehiculo.Id);
+            byte[] image = imagen?.Image ?? Array.Empty<byte>();
+            _images.Add(image);
+        }
     }
 
     private void confirmarEliminacion(Vehicle vehiculo) {
-      vehicleAux = vehiculo;
-      dialogoConfirmacion.Mostrar("¿Seguro qué deseas eliminar el vehiculo?");
+        vehicleAux = vehiculo;
+        dialogoConfirmacion.Mostrar("¿Seguro qué deseas eliminar el vehiculo?");
     }
 
     private void eliminarVehiculo() {
-      List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == vehicleAux.Id).ToList();
-      foreach(Offer offer in ofertas){
-        offer.transportePosteadoId = 1;
-        modifyOfferUseCase.Execute(offer);
-      }
+        List<Offer> ofertas = offerListUseCase.Execute().Where(o => o.transportePosteadoId == vehicleAux.Id).ToList();
+        foreach(Offer offer in ofertas){
+            offer.transportePosteadoId = 1;
+            modifyOfferUseCase.Execute(offer);
+        }
 
-      deleteVehicleUseCase.Execute(vehicleAux.Id);
-      GetVehiculosCargados();
+        deleteVehicleUseCase.Execute(vehicleAux.Id);
+        GetVehiculosCargados();
     }
 
     public void VisualizarVehiculo(Vehicle vehiculo) {
-      visualizarVehiculo.Cargar(vehiculo);
+        visualizarVehiculo.Cargar(vehiculo);
     }
 }

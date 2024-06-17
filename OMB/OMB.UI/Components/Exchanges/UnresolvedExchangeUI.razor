@@ -245,7 +245,7 @@
             actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId)) ?? throw new Exception("exchange not found");
             if (actualExchange == null)
                 throw new Exception("Intercambio no encontrado");
-            
+
             // Obtener la sede
             sede = listSedesUseCase.Execute().Where(sede => sede.Id == actualExchange.sedeId).SingleOrDefault();
             if (sede == null)
@@ -259,7 +259,7 @@
 
             // Load the info after actualExchange is initialized
             loadInfo();
-            }
+        }
     }
 
     private void loadInfo() { //cargar info de transportes y los usuarios
@@ -322,13 +322,13 @@
     }
 
     private bool isVehicle (int id) {
-		return !shipListUseCase.Execute().Any(S => S.Id == id);
-	}
+        return !shipListUseCase.Execute().Any(S => S.Id == id);
+    }
 
     private bool iAmOwner() {
         return owner.Id == loggedUserId;
     }
-    
+
     private bool iAmOfferer() {
         return offerer.Id == loggedUserId;
     }
@@ -344,7 +344,7 @@
     private bool isAccepted() {
         return actualExchange.state == "Accepted";
     }
-    
+
     private void confirmarAccept() {
         dialogoAccept.Mostrar("¿Seguro que deseas aceptar el intercambio?");
     }
@@ -361,17 +361,19 @@
         User user = getUser();
         string title = getTitle();
         await emails.SendEmail(
-			"¡Intercambio aceptado!", // Subject
-			user.mail, // Mail
-			"¡Aceptaron tu intercambio!", // Titulo
+            "¡Intercambio aceptado!", // Subject
+            user.mail, // Mail
+            "¡Aceptaron tu intercambio!", // Titulo
 			$@"
 			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu intercambio de <b>{title}</b> fue aceptado</p>
 			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para ver mayor información</p>
 			" // Cuerpo
-		);
+        );
     }
 
-    public void Try(UnresolvedExchange exchange) {
+    public void Try(UnresolvedExchange? exchange) {
+        if (exchange == null)
+            throw new Exception("no se debería llegar acá de todas formas");
         proponerHorario.Cargar(exchange);
     }
 

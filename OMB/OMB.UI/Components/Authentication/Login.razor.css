@@ -1,3 +1,60 @@
+body {
+    background-color: #f8f9fa; /* Color de fondo */
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding-top: 50px;
+}
+
+.card {
+    border: 2px solid #000; /* Borde negro */
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.h3 {
+    font-size: 1.5rem; /* Tamaño de fuente más pequeño */
+    margin-bottom: 1.5rem; /* Espacio inferior */
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
 .form-control {
-    margin-bottom: 10px;
-   }
+    height: 50px;
+}
+
+.btn-black {
+    background-color: #000; /* Botón negro */
+    color: #f8f9fa; /* Texto blanco */
+    height: 50px; /* Altura igualada */
+    width: 150px;
+    font-size: 16px; /* Tamaño de fuente */
+    margin-bottom: 10px; /* Espacio inferior entre botones */
+}
+
+.btn-block {
+    width: 100%; /* Botones ocupan todo el ancho */
+}
+
+.btn-black:hover {
+    opacity: 0.8; /* Opacidad al pasar el mouse */
+}
+
+/* Estilos opcionales para el enlace de "Olvidaste tu contraseña?" */
+.forgot-password {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #007bff; /* Color azul, similar a los enlaces */
+    text-decoration: none;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}

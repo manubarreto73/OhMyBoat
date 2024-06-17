@@ -10,37 +10,45 @@
 
 <DialogoError @ref="dialogo"/>
 
-<h1>Ingresá tus datos y registrate ya!</h1>
-
-<form>
-    <div class="form-group">
-        <input placeholder="Dirección de correo electrónico" @bind="user.mail" class="form-control">
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card border-dark">
+                <div class="card-body">
+                    <h1 class="h3 mb-4 text-center">Registrate</h1>
+                    <form>
+                        <div class="form-group">
+                            <input placeholder="Dirección de correo electrónico" @bind="user.mail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Nombre" @bind="user.name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Apellido" @bind="user.surname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" @bind="user.birthDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Numero de telefono" @bind="user.number" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Nombre de usuario" @bind="user.userName" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Contraseña" @bind="user.password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Confirmar contraseña" @bind="password2" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-black btn-block" @onclick="Aceptar" @onclick:preventDefault >Aceptar</button>
+                        <a href="login" class="btn btn-link mt-3">Ya tenés una cuenta?</a>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <input placeholder="Nombre" @bind="user.name" class="form-control">
-    </div>
-    <div class="form-group">
-        <input placeholder="Apellido" @bind="user.surname" class="form-control">
-    </div>
-    <div class="form-group">
-        <input type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" max="@((DateTime.Today.Year).ToString())-01-01" @bind="user.birthDate" class="form-control">
-    </div>
-    <div class="form-group">
-        <input placeholder="Numero de telefono" @bind="user.number" class="form-control">
-    </div>
-    <div class="form-group">
-        <input placeholder="Nombre de usuario" @bind="user.userName" class="form-control">
-    </div>
-    <div class="form-group">
-        <input type="password" placeholder="Contraseña" @bind="user.password" class="form-control">
-    </div>
-    <div class="form-group">
-        <input type="password" placeholder="Confirmar contraseña" @bind="password2" class="form-control">
-    </div>
-   <button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault>Aceptar</button>
-   <a href="login">Ya tenés una cuenta?</a>
-    
-</form>
+</div>
 
 @code {
     User user = new User();

@@ -8,18 +8,29 @@
 
 <DialogoError @ref=dialogo/>
 
-<h1>Ingresá tus datos para iniciar sesión!</h1>
-
-<form>
-    <div class="form-group">
-        <input placeholder="Correo" @bind="mail" class="form-control">
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card border-dark">
+                <div class="card-body">
+                    <h1 class="h3 mb-4 text-center">Iniciar sesión</h1>
+                    <form>
+                        <div class="form-group">
+                            <input type="text" placeholder="Correo" @bind="mail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <button type="submit" class="btn btn-black btn-sm" @onclick="() => navegarAlRegistro()" >Registrarse</button>
+                            <button type="submit" class="btn btn-black btn-sm" @onclick="() => Aceptar()" >Iniciar sesión</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
-    </div>
-   <button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault>Iniciar sesión</button>
-    <!-- <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Olvidaste tu contraseña?</a> -->
-</form>
+</div>
 
 
 @code {
@@ -32,8 +43,10 @@
         await sessionStorage.SetAsync("isEmployee", isEmployee);
         await sessionStorage.SetAsync("cartel?", "Haz iniciado sesión con exito");
     }
-    
+
     async Task Aceptar(){
+
+        Console.WriteLine("llegue");
 
         if ((string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password))) {
             dialogo.Mostrar("Complete todos los campos para iniciar sesión");
@@ -74,5 +87,9 @@
 
         await Save(false, user.Id);
         navegador.NavigateTo("/", true);
+    }
+
+    private void navegarAlRegistro() {
+        navegador.NavigateTo("register", true);
     }
 }

@@ -209,7 +209,7 @@
     Emails emails = null!;
 
     [Parameter] public int exchangeId { get; set; }
-    UnresolvedExchange actualExchange;
+    UnresolvedExchange actualExchange = new UnresolvedExchange();
     Sede? sede;
 
     User owner = new User();
@@ -242,7 +242,7 @@
             isEmployee = getIsEmployee .Success ? getIsEmployee.Value : false;
 
             // get Exchange from its Id
-            actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId));
+            actualExchange = await Task.Run(() => unresolvedExchangeListUseCase.Execute().Find(e => e.Id == exchangeId)) ?? throw new Exception("exchange not found");
             if (actualExchange == null)
                 throw new Exception("Intercambio no encontrado");
             
@@ -264,8 +264,8 @@
 
     private void loadInfo() { //cargar info de transportes y los usuarios
         List<Transport> transports = listTransportUseCase.Execute();  // lista de transportes para conseguir los transportes del owner y offerer
-        ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault();
-        offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault();
+        ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault() ?? throw new Exception("transport not found");
+        offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault() ?? throw new Exception("transport not found");
 
         // Busco la primer imágen de cada transporte
         imgOwner = getImage(ownerTransport.Id);
@@ -276,8 +276,8 @@
         getDetailsOfferer(offererTransport.Id);
 
         List<User> users = userListUseCase.Execute();   // lista de usuarios para conseguir sus infos a través de sus transportes.
-        owner = users.Where(u => u.Id == ownerTransport.UserId).SingleOrDefault();
-        offerer = users.Where(u => u.Id == offererTransport.UserId).SingleOrDefault();
+        owner = users.Where(u => u.Id == ownerTransport.UserId).SingleOrDefault() ?? throw new Exception("user not found");
+        offerer = users.Where(u => u.Id == offererTransport.UserId).SingleOrDefault() ?? throw new Exception("user not found");
 
         // aviso que cambia el estado, osea que se consiguieron los datos para poder renderizar el html
         StateHasChanged();
@@ -288,27 +288,36 @@
         else return "No";
     }
 
-    private byte[] getImage(int transportId) {
-        if (isVehicle(transportId)) {
-            return listVehicleImagesUseCase.Execute().Find(img => img.VehicleId == transportId).Image;
-        } else {
-            return listShipImagesUseCase.Execute().Find(img => img.ShipId == transportId).Image;
+    private byte[] getImage(int transportId)
+    {
+        var vehicleImages = listVehicleImagesUseCase.Execute();
+        var shipImages = listShipImagesUseCase.Execute();
+
+        if (isVehicle(transportId))
+        {
+            var vehicleImage = vehicleImages.FirstOrDefault(img => img.VehicleId == transportId);
+            return vehicleImage?.Image ?? new byte[0]; // Devuelve la imagen si se encuentra, de lo contrario devuelve un array vacío
+        }
+        else
+        {
+            var shipImage = shipImages.FirstOrDefault(img => img.ShipId == transportId);
+            return shipImage?.Image ?? new byte[0]; // Devuelve la imagen si se encuentra, de lo contrario devuelve un array vacío
         }
     }
 
     private void getDetailsOwner(int transportId) {
         if (isVehicle(transportId)) {
-            ownerVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId);
+            ownerVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId) ?? throw new Exception("vehicle not found");
         } else {
-            ownerShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId);
+            ownerShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId) ?? throw new Exception("ship not found");
         }
     }
 
     private void getDetailsOfferer(int transportId) {
         if (isVehicle(transportId)) {
-            offererVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId);
+            offererVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId) ?? throw new Exception("vehicle not found");
         } else {
-            offererShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId);
+            offererShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId) ?? throw new Exception("ship not found");
         }
     }
 
@@ -351,7 +360,7 @@
         // Envia mail al otro involucrado
         User user = getUser();
         string title = getTitle();
-        emails.SendEmail(
+        await emails.SendEmail(
 			"¡Intercambio aceptado!", // Subject
 			user.mail, // Mail
 			"¡Aceptaron tu intercambio!", // Titulo
@@ -379,11 +388,15 @@
     }
 
     private string getTitle() {
-        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id);
+        if (ownerTransport == null)
+            throw new Exception("No se debería llegar acá de todas formas");
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id) ?? throw new Exception("post not found");
         return post.Title;
     }
 
     private async Task cancel() {
+        if (ownerTransport == null || offererTransport == null)
+            throw new Exception("No se debería llegar acá de todas formas");
         // borro el intercambio actual
         deleteUnresolvedExchangeUseCase.Execute(exchangeId);
         // consigo la lista de posts de los vehiculos y seteo su paused a false (osea, NO pausados)
@@ -392,10 +405,10 @@
         postsACambiar.ForEach(post => modifyPostUseCase.Execute(post));
         
         // para el titulo del mail
-        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id);
+        Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id) ?? throw new Exception("post not found");
         // Envia mail al otro involucrado
         User user = getUser();
-        emails.SendEmail(
+        await emails.SendEmail(
 			"Intercambio cancelado", // Subject
 			user.mail, // Mail
 			"Intercambio cancelado", // Titulo
@@ -410,23 +423,23 @@
         Navegador.NavigateTo("/", true);
     }
 
-    public void HorarioPropuesto() {
+    public async Task HorarioPropuesto() {
         StateHasChanged();
         mostrarCartel = true;
-        cartelito = "Horario propuesto con exito";
+        cartelito = "Horario propuesto con éxito";
 
         // Envia mail al otro involucrado
         User user = getUser();
         string title = getTitle();
-        emails.SendEmail(
-			"¡Horario propuesto!", // Subject
-			user.mail, // Mail
-			"Recibiste una propuesta de horario", // Titulo
-			$@"
-			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu intercambio de <b>{title}</b> recibió una propuesta de horario</p>
-			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para ver la propuesta</p>
-			" // Cuerpo
-		);
+        await emails.SendEmail(
+            "¡Horario propuesto!", // Asunto
+            user.mail, // Destinatario
+            "Recibiste una propuesta de horario", // Título
+                $@"
+            <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu intercambio de <b>{title}</b> recibió una propuesta de horario</p>
+            <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para ver la propuesta</p>
+            " // Cuerpo
+        );
     }
 
     private void setFalse () {

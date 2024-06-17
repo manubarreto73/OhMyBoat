@@ -95,7 +95,7 @@
 
     [Parameter]
     public string? filtroParam { get; set; }
-    List<Sede> sedes;
+    List<Sede> sedes = new List<Sede>();
     List<string> filtrosAplicados = new List<string>();
 
     protected override void OnInitialized() {
@@ -116,7 +116,7 @@
         //Dejo solo las que pasen el filtro
         List<UnresolvedExchange> intercambiosAMostrar = new List<UnresolvedExchange>();
         foreach (UnresolvedExchange exchange in exchanges) {
-            Sede sede = sedes.Find(sede => sede.Id == exchange.sedeId);
+            Sede sede = sedes.Find(sede => sede.Id == exchange.sedeId) ?? throw new Exception("sede not found");
             if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(sede.name))
                 continue;
         intercambiosAMostrar.Add(exchange);
@@ -136,25 +136,28 @@
     return filtroParam.Contains(sede, StringComparison.OrdinalIgnoreCase);
     }
 
-  public void getImages() {
-    foreach (var exchange in exchanges) {
-      int transportId = exchange.transportePosteadoId;
-      int offTrans = exchange.transporteOfertadoId;
+    public void getImages() {
+        foreach (var exchange in exchanges) {
+            int transportId = exchange.transportePosteadoId;
+            int offTrans = exchange.transporteOfertadoId;
 
-      if(isVehicle(offTrans)){
-        imgOffer.Add(vehicleImages.Where(img => img.VehicleId == offTrans).FirstOrDefault(new VehicleImage(1, new byte[1])).Image);
-      }
-      else{
-        imgOffer.Add(shipImages.Where(img => img.ShipId == offTrans).FirstOrDefault(new ShipImage(1, new byte[1])).Image);
-      }
+            if(isVehicle(offTrans)){
+                imgOffer.Add(vehicleImages.Where(img => img.VehicleId == offTrans).FirstOrDefault(new VehicleImage(1, new byte[1])).Image);
+            }
+            else{
+                imgOffer.Add(shipImages.Where(img => img.ShipId == offTrans).FirstOrDefault(new ShipImage(1, new byte[1])).Image);
+            }
 
-      if (isVehicle(transportId)) {
-        images.Add(vehicleImages.Find(img => img.VehicleId == transportId).Image);
-      } else {
-        images.Add(shipImages.Find(img => img.ShipId == transportId).Image);
-      }
+            if (isVehicle(transportId)) {
+                var vehicleImage = vehicleImages.FirstOrDefault(img => img.VehicleId == transportId);
+                images.Add(vehicleImage != null ? vehicleImage.Image : new byte[1]);
+            } 
+            else {
+                var shipImage = shipImages.FirstOrDefault(img => img.ShipId == transportId);
+                images.Add(shipImage != null ? shipImage.Image : new byte[1]);
+            }
+        }
     }
-  }
 
   public bool isVehicle (int transportId) {
 		return !shipListUseCase.Execute().Any(ship => ship.Id == transportId);
@@ -162,27 +165,27 @@
 
   // Obtiene el userName del dueño del post involucrado
   public string getPostTarget(UnresolvedExchange exchange) {
-    Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
-    User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId);
+    Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId) ?? throw new Exception("transport not found");
+    User postedTransportOwner = users.Find(user => user.Id == postedTransport.UserId) ?? throw new Exception("sede not found");
     return postedTransportOwner.userName;
   }
 
   // Obtiene el userName del dueño del transporte ofertado involucrado
   public string getOfferTarget(UnresolvedExchange exchange) {
-    Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
-    User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId);
+    Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId) ?? throw new Exception("transport not found");
+    User postedTransportOwner = users.Find(user => user.Id == offeredTransport.UserId) ?? throw new Exception("sede not found");
     return postedTransportOwner.userName;
   }
 
   // Obtiene la patente del transporte ofrecido
   public string getOfferedTransport(UnresolvedExchange exchange) {
-    Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId);
+    Transport offeredTransport = transports.Find(transport => transport.Id == exchange.transporteOfertadoId) ?? throw new Exception("transport not found");
     return $"{offeredTransport.type} {offeredTransport.model} {offeredTransport.plate}";
   }
 
   // Obtiene la patente del transporte publicado
   public string getPostedTransport(UnresolvedExchange exchange) {
-    Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId);
+    Transport postedTransport = transports.Find(transport => transport.Id == exchange.transportePosteadoId) ?? throw new Exception("transport not found");
     return $"{postedTransport.type} {postedTransport.model} {postedTransport.plate}";
   }
 
@@ -191,7 +194,7 @@
     }
 
 	private int cantidadTipo(string tipo) {
-		Sede sede = listSedesUseCase.Execute().Where(S => S.name == tipo).SingleOrDefault();
+        Sede sede = listSedesUseCase.Execute().Where(S => S.name == tipo).SingleOrDefault() ?? throw new Exception("sede not found");
         return exchanges.Where(E => E.sedeId == sede.Id).Count();
     }
 
@@ -205,6 +208,10 @@
     }
 
     private void eliminarFiltro(string filtro) {
+        if (string.IsNullOrEmpty(filtroParam)) {
+            navegador.NavigateTo("/listarintercambios", true);
+            return;
+        }
         List<string> filtros = filtroParam.Split("&").ToList();
         filtros.Remove(filtro);
 
@@ -212,7 +219,8 @@
     }
 
     private string nombreSede(UnresolvedExchange exchange) {
-        return sedes.Find(sede => sede.Id == exchange.sedeId).name;
+        var sede = sedes.FirstOrDefault(s => s.Id == exchange.sedeId);
+        return sede != null ? sede.name : "Sede no encontrada";
     }
 
 }

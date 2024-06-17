@@ -25,16 +25,8 @@
 <DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
 
-@if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
-    <div class="alert alert-info">
-        @cartelito
-        <button class="btn" @onclick="() => setFalse()" >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-            </svg>
-        </button>
-    </div>
-}
+<Cartel />
+
 @if (ownerTransport != null && offererTransport != null) {  
     <body>
         <div class="exchange-container">
@@ -184,14 +176,11 @@
 @code {
     [Parameter] public int? exchangeId { get; set; }
 
-    string cartelito;
-    bool mostrarCartel;
+    UnresolvedExchange actualExchange = new UnresolvedExchange();
+    Sede sede = new Sede();
 
-    UnresolvedExchange actualExchange;
-    Sede sede;
-
-    Transport ownerTransport;
-    Transport offererTransport;
+    Transport? ownerTransport;
+    Transport? offererTransport;
 
     Vehicle ownerVehicle = new Vehicle();
     Vehicle offererVehicle = new Vehicle();
@@ -202,45 +191,56 @@
     byte[] imgOwner = new byte[0];
     byte[] imgOfferer = new byte[0];
 
-    User owner;
-    User offerer;
+    User owner = new User();
+    User offerer = new User();
 
     DialogoConfirmacion dialogoAccept = null!;
     DialogoConfirmacion dialogoCancel = null!;
 
-    protected override async Task OnInitializedAsync () {
-    // get Exchange from its Id
-    var unresolvedExchangeList = await Task.Run(() => unresolvedExchangeListUseCase.Execute());
-    actualExchange = unresolvedExchangeList.Find(e => e.Id == exchangeId);
-    sede = listSedesUseCase.Execute().Where(sede => sede.Id == actualExchange.sedeId).SingleOrDefault();
-    // get info del cartelito
-        var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
-        cartelito = getCartelito.Success ? getCartelito.Value : "";
-        mostrarCartel = true;
-        await sessionStorage.DeleteAsync("cartel?");
+    protected override async Task OnInitializedAsync() {
+        // Inicializa las variables para evitar warnings
+        actualExchange = new UnresolvedExchange();
+        sede = new Sede();
+
+        var unresolvedExchangeList = await Task.Run(() => unresolvedExchangeListUseCase.Execute());
+        actualExchange = unresolvedExchangeList.Find(e => e.Id == exchangeId) ?? new UnresolvedExchange();
+
+        // Maneja el caso cuando actualExchange no se encuentra
+        if (actualExchange != null) {
+            sede = listSedesUseCase.Execute().Where(s => s.Id == actualExchange.sedeId).SingleOrDefault() ?? new Sede();
+        }
+
         // Load the info after actualExchange is initialized
         loadInfo();
     }
 
-    private void loadInfo() { //cargar info de transportes y los usuarios
-        List<Transport> transports = listTransportUseCase.Execute();  // lista de transportes para conseguir los transportes del owner y offerer
-        ownerTransport = transports.Where(t => t.Id == actualExchange.transportePosteadoId).SingleOrDefault();
-        offererTransport = transports.Where(t => t.Id == actualExchange.transporteOfertadoId).SingleOrDefault();
-        if (ownerTransport == null || offererTransport == null)
-            throw new Exception("Transportes nulos");
-        // Busco la primer imágen de cada transporte
+    private void loadInfo() {
+        List<Transport> transports = listTransportUseCase.Execute();
+
+        // Obtener transportes del owner y offerer
+        ownerTransport = transports.FirstOrDefault(t => t.Id == actualExchange.transportePosteadoId);
+        offererTransport = transports.FirstOrDefault(t => t.Id == actualExchange.transporteOfertadoId);
+
+        // Verificar que los transportes no sean nulos
+        if (ownerTransport == null || offererTransport == null) {
+            throw new Exception("transport not found");
+        }
+
+        // Obtener la primera imagen de cada transporte
         imgOwner = getImage(ownerTransport.Id);
         imgOfferer = getImage(offererTransport.Id);
 
-        // Busco el resto de datos dependiendo de si son barcos o vehículos
+        // Obtener detalles adicionales dependiendo del tipo de transporte (Vehicle o Ship)
         getDetailsOwner(ownerTransport.Id);
         getDetailsOfferer(offererTransport.Id);
 
-        List<User> users = userListUseCase.Execute();   // lista de usuarios para conseguir sus infos a través de sus transportes.
-        owner = users.Where(u => u.Id == ownerTransport.UserId).SingleOrDefault();
-        offerer = users.Where(u => u.Id == offererTransport.UserId).SingleOrDefault();
+        List<User> users = userListUseCase.Execute();
 
-        // aviso que cambia el estado, osea que se consiguieron los datos para poder renderizar el html
+        // Obtener información de los usuarios a través de sus transportes
+        owner = users.FirstOrDefault(u => u.Id == ownerTransport.UserId) ?? throw new Exception("user not found");
+        offerer = users.FirstOrDefault(u => u.Id == offererTransport.UserId) ?? throw new Exception("user not found");
+
+        // Notificar que el estado ha cambiado, lo que puede ser necesario para actualizar la interfaz de usuario
         StateHasChanged();
     }
 
@@ -249,31 +249,40 @@
         else return "No";
     }
 
-    private void setFalse () {
-        this.mostrarCartel = false;
-    }
-
     private byte[] getImage(int transportId) {
+        byte[] defaultImage = new byte[0]; // Imagen por defecto si no se encuentra ninguna
+
         if (isVehicle(transportId)) {
-            return listVehicleImagesUseCase.Execute().Find(img => img.VehicleId == transportId).Image;
-        } else {
-            return listShipImagesUseCase.Execute().Find(img => img.ShipId == transportId).Image;
+            var vehicleImage = listVehicleImagesUseCase.Execute().Find(img => img.VehicleId == transportId);
+            if (vehicleImage != null)
+            {
+                return vehicleImage.Image;
+            }
         }
+        else {
+            var shipImage = listShipImagesUseCase.Execute().Find(img => img.ShipId == transportId);
+            if (shipImage != null)
+            {
+                return shipImage.Image;
+            }
+        }
+
+        return defaultImage; // Retornar la imagen por defecto si no se encontró ninguna imagen válida
     }
 
     private void getDetailsOwner(int transportId) {
         if (isVehicle(transportId)) {
-            ownerVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId);
+            ownerVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId) ?? throw new Exception("vehicle not found");
         } else {
-            ownerShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId);
+            ownerShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId) ?? throw new Exception("ship not found");
         }
     }
 
     private void getDetailsOfferer(int transportId) {
         if (isVehicle(transportId)) {
-            offererVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId);
+            offererVehicle = vehicleListUseCase.Execute().Find(vehicle => vehicle.Id == transportId) ?? throw new Exception("vehicle not found");
         } else {
-            offererShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId);
+            offererShip = shipListUseCase.Execute().Find(ship => ship.Id == transportId) ?? throw new Exception("ship not found");
         }
     }
 
@@ -311,14 +320,14 @@
     }
 
     public void deletePost(int id) {
-        Post post = listPostUseCase.Execute().Where(P => P.TransportId == id).SingleOrDefault();
+        Post? post = listPostUseCase.Execute().Where(P => P.TransportId == id).SingleOrDefault();
         if (post != null) {
             deletePostUseCase.Execute(post.Id);
         }
     }
 
     public void unpausePost(int id) {
-        Post post = listPostUseCase.Execute().Where(P => P.TransportId == id).SingleOrDefault();
+        Post? post = listPostUseCase.Execute().Where(P => P.TransportId == id).SingleOrDefault();
         if (post != null) {
             post.paused = false;
             modifyPostUseCase.Execute(post);
@@ -326,6 +335,8 @@
     }
 
     public void accept () {
+        if (ownerTransport == null || offererTransport == null)
+            throw new Exception("No se debería llegar acá de todas formas");
         //Borro los post de los vehiculos
         deletePost(ownerTransport.Id);
         deletePost(offererTransport.Id);
@@ -346,6 +357,8 @@
     }
 
     public void cancel () {
+        if (ownerTransport == null || offererTransport == null)
+            throw new Exception("No se debería llegar acá de todas formas");
         //Despauso los post
         unpausePost(ownerTransport.Id);
         unpausePost(offererTransport.Id);

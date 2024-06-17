@@ -28,7 +28,7 @@
 @code {
     
     List<User> listaClientes = new List<User>();
-    List<Transport> listaTransportes;
+    List<Transport> listaTransportes = new List<Transport>();
 
     protected override void OnInitialized() {
 
@@ -41,10 +41,7 @@
     }
 
     protected void eliminarAlDefault() {
-        User notFound = listaClientes.Where(user => user.Id == 1).SingleOrDefault();
-        if (notFound == null) {
-            throw new Exception("Usuario no encontrado");
-        }
+        User notFound = listaClientes.SingleOrDefault(user => user.Id == 1) ?? throw new Exception("Usuario no encontrado");
         listaClientes.Remove(notFound);
     }
 

@@ -32,6 +32,7 @@ public class SedeRepository : ISedeRepository {
         exists.name = sede.name;
         exists.longitude = sede.longitude;
         exists.latitude = sede.latitude;
+        exists.isActive = sede.isActive;
         context.SaveChanges();
       }
     }
@@ -48,6 +49,6 @@ public class SedeRepository : ISedeRepository {
   }
 
   private Sede Clone(Sede sede){
-    return new Sede(sede.name, sede.latitude, sede.longitude){Id = sede.Id};
+    return new Sede(sede.name, sede.latitude, sede.longitude){Id = sede.Id, isActive = sede.isActive};
   }
 }

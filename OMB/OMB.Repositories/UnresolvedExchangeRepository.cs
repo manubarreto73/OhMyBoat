@@ -26,7 +26,7 @@ public class UnresolvedExchangeRepository : IUnresolvedExchangeRepository {
             var exists = context.UnresolvedExchanges.Where(U => U.Id == unresolvedExchange.Id).SingleOrDefault();
             if (exists != null) {
                 exists.fechaYHora = unresolvedExchange.fechaYHora;
-                exists.sede = unresolvedExchange.sede;
+                exists.sedeId = unresolvedExchange.sedeId;
                 exists.state = unresolvedExchange.state;
                 context.SaveChanges();
             }

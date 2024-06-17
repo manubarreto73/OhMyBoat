@@ -18,6 +18,7 @@
 @inject vehicleListUseCase vehicleListUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
+@inject listSedesUseCase listSedesUseCase
 
 @rendermode InteractiveServer
 
@@ -106,7 +107,7 @@
                         <h3>Horario:</h3>
                         <p>@actualExchange.fechaYHora</p>
                         <h3>Sede:</h3>
-                        <p>@actualExchange.sede</p>
+                        <p>@sede.name</p>
                     </div>
                 </div>
                 <div class="buttons">
@@ -187,6 +188,7 @@
     bool mostrarCartel;
 
     UnresolvedExchange actualExchange;
+    Sede sede;
 
     Transport ownerTransport;
     Transport offererTransport;
@@ -207,10 +209,11 @@
     DialogoConfirmacion dialogoCancel = null!;
 
     protected override async Task OnInitializedAsync () {
-        // get Exchange from its Id
-        var unresolvedExchangeList = await Task.Run(() => unresolvedExchangeListUseCase.Execute());
-        actualExchange = unresolvedExchangeList.Find(e => e.Id == exchangeId);
-        // get info del cartelito
+    // get Exchange from its Id
+    var unresolvedExchangeList = await Task.Run(() => unresolvedExchangeListUseCase.Execute());
+    actualExchange = unresolvedExchangeList.Find(e => e.Id == exchangeId);
+    sede = listSedesUseCase.Execute().Where(sede => sede.Id == actualExchange.sedeId).SingleOrDefault();
+    // get info del cartelito
         var getCartelito  = await sessionStorage.GetAsync<string>("cartel?");
         cartelito = getCartelito.Success ? getCartelito.Value : "";
         mostrarCartel = true;
@@ -304,7 +307,7 @@
     public void agregarIntercambio(bool happen) {
         int offerTransportId = cargarAlHistorial(actualExchange.transporteOfertadoId);
         int postedTransportId = cargarAlHistorial(actualExchange.transportePosteadoId);
-        addResolvedExchangeUseCase.Execute(new ResolvedExchange(postedTransportId, offerTransportId, happen));
+        addResolvedExchangeUseCase.Execute(new ResolvedExchange(sede.Id, postedTransportId, offerTransportId, happen));
     }
 
     public void deletePost(int id) {

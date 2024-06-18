@@ -47,8 +47,6 @@
 
     async Task Aceptar(){
 
-        Console.WriteLine("llegue");
-
         if ((string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password))) {
             dialogo.Mostrar("Complete todos los campos para iniciar sesión");
             return;

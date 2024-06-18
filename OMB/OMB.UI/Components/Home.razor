@@ -11,63 +11,68 @@
 
 <DialogoError @ref=dialogo/>
 
-<Cartel />
+@if (shouldDisplay) {
 
-<div class="container-de-containers">
-    <div class="publicaciones-container">
-        @if(posts.Count() == 0) {
-            <h1>No existen publicaciones</h1>
-        } 
-        else {
-            <h1 class="publicaciones-title">Publicaciones</h1>
-            int i = 0; @* Lo uso para iterar sobre las fotos *@
-            @foreach (var p in posts){
-                <div class="publicacion" @onclick="async () => await browseToPost(p)">
-                    <div class="img">
-                        <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))"/>
-                    </div>
-                    <div class="publicacion-info">
-                        <h3>@p.Title</h3>
-                        <h6>@_descripciones[i]</h6>
-                    </div>
-                </div>
-                i++; @* Incremento i para seguir iterando *@
+    <Cartel />
+
+    <div class="container-de-containers">
+        <div class="publicaciones-container">
+            @if (posts.Count() == 0) {
+                <h1>No existen publicaciones</h1>
             }
-        }
-    </div>
-    <div class="ayudasdebusqueda">
-        <div>
-            <p>@posts.Count resultados</p>
-        </div>
-        <form style="padding:0;margin-bottom:1rem;" onsubmit="return false">
-            <input style="width: 100%;" type="text" placeholder="Buscar publicación..." @bind="busqueda">
-            <button class="btn btn-primary" @onclick="()=>aplicarBusqueda()">
-                Buscar
-                <i class="bi bi-search"></i>
-            </button>
-        </form>
-        @if (filtrosAplicados.Count != 0) {
-            <div class="filtro-aplicados">
-                @foreach (string filtro in filtrosAplicados) {
-                    <div @onclick="()=>eliminarFiltro(filtro)" class="filtro-aplicado">
-                        @filtro
-                        <div class="eliminar-filtro"></div>
+            else {
+                <h1 class="publicaciones-title">Publicaciones</h1>
+                int i = 0; @* Lo uso para iterar sobre las fotos *@
+                @foreach (var p in posts) {
+                    <div class="publicacion" @onclick="async () => await browseToPost(p)">
+                        <div class="img">
+                            <img src="@string.Format("data:image/jpeg;base64,{0}", Convert.ToBase64String(_images[i]))" />
+                        </div>
+                        <div class="publicacion-info">
+                            <h3>@p.Title</h3>
+                            <h6>@_descripciones[i]</h6>
+                        </div>
                     </div>
+                    i++; @* Incremento i para seguir iterando *@
+                }
+            }
+        </div>
+        <div class="ayudasdebusqueda">
+            <div>
+                <p>@posts.Count resultados</p>
+            </div>
+            <form style="padding:0;margin-bottom:1rem;" onsubmit="return false">
+                <input style="width: 100%;" type="text" placeholder="Buscar publicación..." @bind="busqueda">
+                <button class="btn btn-primary" @onclick="()=>aplicarBusqueda()">
+                    Buscar
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+            @if (filtrosAplicados.Count != 0) {
+                <div class="filtro-aplicados">
+                    @foreach (string filtro in filtrosAplicados) {
+                        <div @onclick="()=>eliminarFiltro(filtro)" class="filtro-aplicado">
+                            @filtro
+                            <div class="eliminar-filtro"></div>
+                        </div>
+                    }
+                </div>
+            }
+            <div class="filtro">
+                <h4 class="titulo-filtro">Tipo de transporte</h4>
+                @foreach (string tipo in tiposTransporte) {
+                    @if (!esFiltro(tipo)) {
+                        <p @onclick="()=>filtrar(tipo)">@tipo<span class="cantidad-tipo">(@cantidadTipo(tipo))</span></p>
+                    }
                 }
             </div>
-        }
-        <div class="filtro">
-            <h4 class="titulo-filtro">Tipo de transporte</h4>
-            @foreach (string tipo in tiposTransporte) {
-                @if (!esFiltro(tipo)) {
-                    <p @onclick="()=>filtrar(tipo)">@tipo<span class="cantidad-tipo">(@cantidadTipo(tipo))</span></p>
-                }
-            }
         </div>
     </div>
-</div>
+}
 
 @code {
+    private bool shouldDisplay = false;
+
     int userId;
     private bool isEmployee = true;
 
@@ -87,7 +92,7 @@
     public string? filtroParam { get; set; }
     List<string> tiposTransporte = new List<string> {"Auto", "Camioneta", "Ciclomotor", "Velero", "Crucero", "Lancha", "Catamaran"};
     List<string> filtrosAplicados = new List<string>();
-    
+
     public string? busqueda;
 
     protected override void OnParametersSet() {
@@ -116,7 +121,7 @@
         allPosts = listPostUseCase.Execute();
         shipImages = listShipImagesUseCase.Execute();
         vehicleImages = listVehicleImagesUseCase.Execute();
-        
+
         getPosts();
 
         // Reordenamos los posts
@@ -124,6 +129,8 @@
 
         // Generamos la lista de fotos y descripciones para ambos tipos de post
         getPhotosAndDescriptions();
+
+        shouldDisplay = true;
     }
 
     private void getPosts() {

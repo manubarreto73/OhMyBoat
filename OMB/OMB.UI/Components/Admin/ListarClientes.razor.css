@@ -1,29 +1,39 @@
-/* Estilos personalizados para la tabla de clientes */
 body {
-  font-family: Arial, sans-serif;
+    background-color: #f0f2f5; /* Fondo claro para contraste */
+    font-family: 'Arial', sans-serif;
 }
 
-h3 {
-  color: #333;
+.container {
+    background-color: #ffffff; /* Fondo blanco para la tabla */
+    border-radius: 0.5rem; /* Bordes redondeados */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Sombra para destacar */
 }
 
 .table {
-  margin-top: 20px;
+    margin-bottom: 0;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
-.table thead th {
-  color: #fff;
-  background-color: #343a40;
+    .table thead th {
+        background-color: #000000; /* Color de encabezado */
+        color: #ffffff; /* Color de texto de encabezado */
+        border-top: none;
+    }
+
+.table-bordered th, .table-bordered td {
+    border: none; /* Elimina el borde predeterminado */
+    border-bottom: 1px solid #dee2e6; /* Añade un borde inferior */
 }
 
-.table-hover tbody tr:hover {
-  background-color: #f5f5f5;
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05); /* Color de fondo de filas impares */
 }
 
-.badge-success {
-  background-color: #28a745;
+.clickable-row {
+    cursor: pointer; /* Cambia el cursor para indicar que es clicable */
 }
 
-.badge-danger {
-  background-color: #dc3545;
-}
+    .clickable-row:hover {
+        background-color: #e9ecef; /* Color diferente al pasar el ratón */
+    }

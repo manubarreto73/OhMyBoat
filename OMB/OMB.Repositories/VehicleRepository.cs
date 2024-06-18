@@ -39,7 +39,7 @@ public class VehicleRepository : IVehicleRepository{
         List<VehicleImage> images = new List<VehicleImage>();
         using(OMBContext context = new OMBContext()){
             var exists = context.Vehicles.Include(S => S.VehicleImages).Where(V => V.Id == vehicleId).SingleOrDefault();
-            if(exists != null){
+            if(exists != null && exists.VehicleImages != null){
                 images = exists.VehicleImages;
             }
         }

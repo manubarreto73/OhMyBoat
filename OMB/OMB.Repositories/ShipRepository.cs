@@ -41,7 +41,7 @@ public class ShipRepository : IShipRepository {
         List<ShipImage> images = new List<ShipImage>();
         using(OMBContext context = new OMBContext()){
             var exists = context.Ships.Include(S => S.ShipImages).Where(S => S.Id == shipId).SingleOrDefault();
-            if(exists != null){
+            if(exists != null && exists.ShipImages != null){
                 images = exists.ShipImages;
             }
         }

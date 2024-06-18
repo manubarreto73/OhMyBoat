@@ -34,7 +34,7 @@ public class UserRepository : IUserRepository {
         List<Transport> transports = new List<Transport>();
         using(OMBContext context = new OMBContext()){
             var exists = context.Users.Include(U => U.Transports).Where(U => U.Id == userId).SingleOrDefault();
-            if(exists != null){
+            if(exists != null && exists.Transports != null){
                 transports = exists.Transports;
             }
         }

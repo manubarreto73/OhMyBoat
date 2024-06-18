@@ -4,56 +4,60 @@
 @inject ProtectedSessionStorage sessionStorage
 @inject IWebHostEnvironment Environment
 
-<div class="page">
-    <main>
-        <div class="top-row px-4">
-            @if (isEmployee && userId != 1) {
-                <a class="navbar-brand" style="cursor:pointer;" href="homeemployee">
-                    Oh My Boat!
-                    <img src="Oh_My_Boat_logo_4.jpg" alt="">
-                </a>
-            }
-            else {
-                <a class="navbar-brand" style="cursor:pointer;" @onclick="() => NavigateToHome()">
-                    Oh My Boat!
-                    <img src="Oh_My_Boat_logo_4.jpg" alt="">
-                </a>
-            }
-            <div class="searchBar">
-                <SearchBar />
-            </div>
-            @if (userId == 0) {
-                <div class="d-flex" style="gap:.8rem;height:40px">
-                    <a href="login" style="text-decoration:none;" class="btn black_btn">Iniciar Sesión</a>
-                    <a href="register" style="text-decoration:none;" class="btn black_btn">Registrarse</a>
+@if (shouldDisplay) {
+
+    <div class="page">
+        <main>
+            <div class="top-row px-4">
+                @if (isEmployee && userId != 1) {
+                    <a class="navbar-brand" style="cursor:pointer;" href="homeemployee">
+                        Oh My Boat!
+                        <img src="Oh_My_Boat_logo_4.jpg" alt="">
+                    </a>
+                }
+                else {
+                    <a class="navbar-brand" style="cursor:pointer;" @onclick="() => NavigateToHome()">
+                        Oh My Boat!
+                        <img src="Oh_My_Boat_logo_4.jpg" alt="">
+                    </a>
+                }
+                <div class="searchBar">
+                    <SearchBar />
                 </div>
-            }
-            else {
-                <div>
-                    @if (isEmployee) {
-                        if (userId == 1) {
-                            <MenuPerfilAdmin />
+                @if (userId == 0) {
+                    <div class="d-flex" style="gap:.8rem;height:40px">
+                        <a href="login" style="text-decoration:none;" class="btn black_btn">Iniciar Sesión</a>
+                        <a href="register" style="text-decoration:none;" class="btn black_btn">Registrarse</a>
+                    </div>
+                }
+                else {
+                    <div>
+                        @if (isEmployee) {
+                            if (userId == 1) {
+                                <MenuPerfilAdmin />
+                            }
+                            else {
+                                <MenuPerfilEmployee />
+                            }
                         }
                         else {
-                            <MenuPerfilEmployee />
+                            <MenuPerfil OnAbiertoVehiculo="CerrarCartelVehiculo" OnAbiertoBarco="CerrarCartelBarco" OnListarPublicaciones="AbrirListarPublicaciones" />
                         }
-                    }
-                    else {
-                        <MenuPerfil OnAbiertoVehiculo="CerrarCartelVehiculo" OnAbiertoBarco="CerrarCartelBarco" OnListarPublicaciones="AbrirListarPublicaciones" />
-                    }
-                </div>
-            }
-        </div>
+                    </div>
+                }
+            </div>
 
-        <CargarVehiculo @ref="cargarVehiculo" />
-        <CargarBarco  @ref="cargarBarco" />
-        <ListarPublicacionesPropias @ref="listarPublicaciones" />
+            <CargarVehiculo @ref="cargarVehiculo" />
+            <CargarBarco @ref="cargarBarco" />
+            <ListarPublicacionesPropias @ref="listarPublicaciones" />
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+            <article class="content px-4">
+                @Body
+            </article>
+        </main>
+    </div>
+
+}
 
 <div id="blazor-error-ui">
     Ha ocurrido un error
@@ -62,8 +66,9 @@
 </div>
 
 @code {
-    int userId;
-    bool isEmployee;
+    private bool shouldDisplay = false;
+    private int userId;
+    private bool isEmployee;
 
     ListarPublicacionesPropias listarPublicaciones = null!;
     CargarVehiculo cargarVehiculo = null!;
@@ -75,8 +80,9 @@
             isEmployee = result .Success ? result.Value : false;
             var result2 = await sessionStorage.GetAsync<int>("userId");
             userId = result2.Success ? result2.Value : 0;
-            
-            // le aviso a blazor que se tiene que re-renderizar la pagina
+
+            shouldDisplay = true;
+
             StateHasChanged();
         }
     }

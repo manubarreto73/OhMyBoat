@@ -3,9 +3,8 @@
 @inject listTransportUseCase transportListUseCase
 @inject NavigationManager navegador
 
-<h3 class="text-center my-4">Lista de Clientes</h3>
-<div class="container">
-    <table class="table table-striped table-hover">
+<div class="container my-5 p-3 shadow-sm rounded bg-white">
+    <table class="table table-striped table-hover table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th>Username</th>
@@ -14,8 +13,8 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (User cliente in listaClientes) {
-                <tr @onclick="() => redirigirAlPerfil(cliente)" >
+            @foreach (var cliente in listaClientes) {
+                <tr @onclick="() => redirigirAlPerfil(cliente)" class="clickable-row">
                     <td>@cliente.userName</td>
                     <td>@cliente.mail</td>
                     <td>@cantidadPublicaciones(cliente)</td>

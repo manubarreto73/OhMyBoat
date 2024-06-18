@@ -1,3 +1,68 @@
+body {
+    background-color: #f8f9fa; /* Color de fondo */
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding-top: 50px;
+}
+
+.card {
+    border: 2px solid #000; /* Borde negro */
+}
+
+.card-body {
+    padding: 2rem;
+}
+
+.h3 {
+    font-size: 1.5rem; /* Tamaño de fuente más pequeño */
+    margin-bottom: 1.5rem; /* Espacio inferior */
+    text-align: center; /* Alinear el título al centro */
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
 .form-control {
-    margin-bottom: 10px;
-   }
+    height: 50px;
+}
+
+.btn-black {
+    background-color: #000; /* Botón negro */
+    color: #f8f9fa; /* Texto blanco */
+    height: 40px; /* Altura más pequeña */
+    font-size: 16px; /* Tamaño de fuente */
+    margin-bottom: 10px; /* Espacio inferior entre botones */
+}
+
+.btn-block {
+    width: 100%; /* Botones ocupan todo el ancho */
+}
+
+.btn-black:hover {
+    opacity: 0.8; /* Opacidad al pasar el mouse */
+}
+
+.btn-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    color: #007bff; /* Color azul, similar a los enlaces */
+    text-decoration: none;
+}
+
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+.advertencia {
+    color: red;
+    display: flex;
+    align-items: center; /* Centrar verticalmente */
+    font-weight: bold; /* Opcional, para dar más énfasis al texto */
+    text-align: left; /* Asegurar que el texto esté centrado si hay múltiples líneas */
+    margin-bottom: 20px; /* Ajusta el valor según el espacio que necesites */
+}

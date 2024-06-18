@@ -41,6 +41,9 @@
                         <div class="form-group">
                             <input type="password" placeholder="Confirmar contraseña" @bind="password2" class="form-control">
                         </div>
+                        <div class="advertencia">
+                            @textoAdvertencia
+                        </div>
                         <button type="submit" class="btn btn-black btn-block" @onclick="Aceptar" @onclick:preventDefault >Aceptar</button>
                         <a href="login" class="btn btn-link mt-3">Ya tenés una cuenta?</a>
                     </form>
@@ -55,6 +58,8 @@
     String password2 = "";
     User? newUser;
     DialogoError dialogo = null!;
+
+    private string textoAdvertencia = " ";
 
     protected override void OnInitialized() {
         user.birthDate = DateOnly.FromDateTime(DateTime.Today);
@@ -73,21 +78,25 @@
         if (string.IsNullOrEmpty(user.userName) || string.IsNullOrEmpty(user.name) || string.IsNullOrEmpty(user.surname) || 
         string.IsNullOrEmpty(user.mail) || string.IsNullOrEmpty(user.password) || string.IsNullOrEmpty(password2) || 
         string.IsNullOrEmpty(user.number)) {
-            dialogo.Mostrar("Complete todos los campos para registrarse");
+            textoAdvertencia = "Complete todos los campos";
+            StateHasChanged();
             return;
         }
         if ((user.birthDate > DateOnly.FromDateTime(DateTime.Today)) || (DateOnly.FromDateTime(DateTime.Today) < user.birthDate.AddYears(18))) {
-            dialogo.Mostrar("Usted debe ser mayor de edad para crear una cuenta");
+            textoAdvertencia = "Debe ser mayor de edad para crear una cuenta";
+            StateHasChanged();
             return;
         }
 
         if (user.password.Length < 8) {
-            dialogo.Mostrar("La contraseña debe tener como mínimo 8 caracteres");
+            textoAdvertencia = "La clave debe tener 8 caracteres como mínimo";
+            StateHasChanged();
             return;
         }
 
         if (user.password != password2) {
-            dialogo.Mostrar("Las contraseñas ingresadas no coinciden");
+            textoAdvertencia = "Las contraseñas ingresadas no coinciden";
+            StateHasChanged();
             return;
         }
 
@@ -96,12 +105,13 @@
         }
         catch (Exception ex) {
             if (ex.Message == "Mail already in use!") {
-                dialogo.Mostrar("El mail ingresado ya corresponde con una cuenta");
+                textoAdvertencia = "El mail ingresado ya corresponde con una cuenta";
+                StateHasChanged();
                 return;
             }
             if (ex.Message == "This username's already taken!") {
-                //dialogo.Mostrar("El nombre de usuario ya se encuentra en uso, podrías probar con " + user.userName + "777");
-                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso.");
+                textoAdvertencia = "Debe ser mayor de edad para crear una cuenta";
+                StateHasChanged();
                 return;
             }
         }

@@ -54,6 +54,15 @@ body {
     text-decoration: none;
 }
 
-    .btn-link:hover {
-        text-decoration: underline;
-    }
+.btn-link:hover {
+    text-decoration: underline;
+}
+
+.advertencia {
+    color: red;
+    display: flex;
+    align-items: center; /* Centrar verticalmente */
+    font-weight: bold; /* Opcional, para dar más énfasis al texto */
+    text-align: left; /* Asegurar que el texto esté centrado si hay múltiples líneas */
+    margin-bottom: 20px; /* Ajusta el valor según el espacio que necesites */
+}

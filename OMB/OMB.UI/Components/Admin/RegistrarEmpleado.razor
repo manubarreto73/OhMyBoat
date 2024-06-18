@@ -9,15 +9,41 @@
 
 <DialogoError @ref="dialogo"/>
 
-<h1>Ingrese los datos para registrar a un nuevo empleado</h1>
-
-<input placeholder="Dirección de correo electrónico" @bind="employee.mail" class="form-control">
-<input placeholder="Nombre" @bind="employee.name" class="form-control">
-<input placeholder="Apellido" @bind="employee.surname" class="form-control">
-<input type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" max="@((DateTime.Today.Year).ToString())-01-01" @bind="employee.birthDate" class="form-control">
-<input placeholder="Numero de telefono" @bind="employee.number" class="form-control">
-<input placeholder="Nombre de usuario" @bind="employee.userName" class="form-control">
-<button class="btn btn-primary" @onclick="Aceptar">Aceptar</button>
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card border-dark">
+                <div class="card-body">
+                    <h1 class="h3 mb-4 text-center">Registrar empleado</h1>
+                    <form>
+                        <div class="form-group">
+                            <input placeholder="Dirección de correo electrónico" @bind="employee.mail" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Nombre" @bind="employee.name" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Apellido" @bind="employee.surname" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" @bind="employee.birthDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Numero de telefono" @bind="employee.number" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input placeholder="Nombre de usuario" @bind="employee.userName" class="form-control">
+                        </div>
+                        <div class="advertencia">
+                            @textoAdvertencia
+                        </div>
+                        <button type="submit" class="btn btn-black btn-block" @onclick="Aceptar" @onclick:preventDefault>Aceptar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <Emails @ref=emails/>
 
@@ -26,6 +52,8 @@
     Employee? newEmployee;
     DialogoError dialogo = null!;
     Emails emails = null!;
+
+    private string textoAdvertencia = " ";
     
     public async Task Save() {
         if (newEmployee != null) {
@@ -49,7 +77,7 @@
         await Save();
         
         // Manda mail al empleado
-        emails.SendEmail(
+        Task.Run(() => emails.SendEmail(
             "¡Contraseña creada!", // Subject
             employee.mail, // Mail
             "¡Contraseña creada con éxito!", // Titulo
@@ -59,7 +87,7 @@
             <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Email: {employee.mail}</p>
             <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Contraseña: {employee.password}</p>
             " // Cuerpo
-        );
+        )).GetAwaiter().GetResult();
         
         navegador.NavigateTo("/homeemployee");
         
@@ -68,11 +96,13 @@
     bool validarDatos() {
         if (string.IsNullOrEmpty(employee.userName) || string.IsNullOrEmpty(employee.name) || string.IsNullOrEmpty(employee.surname) || 
         string.IsNullOrEmpty(employee.mail) || string.IsNullOrEmpty(employee.number)) {
-            dialogo.Mostrar("Complete todos los campos antes de registrar al empleado");
+            textoAdvertencia = "Complete todos los campos";
+            StateHasChanged();
             return false;
         }
         if ((employee.birthDate > DateOnly.FromDateTime(DateTime.Today)) || (DateOnly.FromDateTime(DateTime.Today) < employee.birthDate.AddYears(18))) {
-            dialogo.Mostrar("El empleado debe ser mayor de edad para crear la cuenta");
+            textoAdvertencia = "El empleado debe ser mayor de edad para crear la cuenta";
+            StateHasChanged();
             return false;
         }
         return true;
@@ -84,11 +114,13 @@
         }
         catch (Exception ex) {
             if (ex.Message == "Mail already in use!") {
-                dialogo.Mostrar("El mail ingresado ya corresponde con una cuenta");
+                textoAdvertencia = "El mail ingresado ya corresponde con una cuenta";
+                StateHasChanged();
                 return true;
             }
             if (ex.Message == "This username's already taken!") {
-                dialogo.Mostrar("El nombre de usuario ya se encuentra en uso.");
+                textoAdvertencia = "El nombre de usuario ya se encuentra en uso.";
+                StateHasChanged();
                 return true;
             }
         }

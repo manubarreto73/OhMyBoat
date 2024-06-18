@@ -8,20 +8,36 @@
 
 <DialogoError @ref=dialogo/>
 
-<h1>Cambiar clave</h1>
-
-<form>
-    <div class="form-group">
-        <input type="password" placeholder="Clave actual" @bind="claveActual" class="form-control">
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-8">
+                <div class="card border-dark">
+                    <div class="card-body">
+                        <h1 class="h3 mb-4 text-center">Cambiar contraseña</h1>
+                        <form>
+                            <div class="form-group">
+                                <input type="password" placeholder="Clave actual" @bind="claveActual" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" placeholder="Nueva clave" @bind="nuevaClaveUno" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" placeholder="Repite la nueva clave" @bind="nuevaClaveDos" class="form-control">
+                            </div>
+                            <div class="advertencia">
+                                @textoAdvertencia
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <button type="submit" class="btn btn-black btn-sm" @onclick="Aceptar" @onclick:preventDefault>Aceptar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <input type="password" placeholder="Nueva clave" @bind="nuevaClaveUno" class="form-control">
-    </div>
-    <div class="form-group">
-        <input type="password" placeholder="Repite la nueva clave" @bind="nuevaClaveDos" class="form-control">
-    </div>
-    <button class="btn btn-primary" @onclick="Aceptar" @onclick:preventDefault >Aceptar</button>
-</form>
+</body>
 
 @code {
     String claveActual = "";
@@ -30,6 +46,8 @@
     int userId;
     User? usuario;
     DialogoError dialogo = null!;
+
+    private string textoAdvertencia = " ";
 
     public async Task Read() {
         var result = await sessionStorage.GetAsync<int>("userId");
@@ -40,7 +58,8 @@
     async Task Aceptar() {
 
         if (string.IsNullOrEmpty(claveActual) || string.IsNullOrEmpty(nuevaClaveUno) || string.IsNullOrEmpty(nuevaClaveDos)) {
-            dialogo.Mostrar("Debe completar todos los campos");
+            textoAdvertencia = "Complete todos los campos";
+            StateHasChanged();
             return;
         }
 
@@ -51,17 +70,20 @@
         }
 
         if (usuario.password != claveActual) {
-            dialogo.Mostrar("La clave ingresada es incorrecta");
+            textoAdvertencia = "La clave ingresada es incorrecta";
+            StateHasChanged();
             return;
         }
 
         if (nuevaClaveUno.Length < 8) {
-            dialogo.Mostrar("La contraseña debe tener como mínimo 8 dígitos");
+            textoAdvertencia = "La contraseña debe tener como mínimo 8 caracteres";
+            StateHasChanged();
             return;
         }
 
         if (nuevaClaveUno != nuevaClaveDos) {
-            dialogo.Mostrar("La nuevas claves ingresadas no coincide");
+            textoAdvertencia = "La nuevas claves ingresadas no coincide";
+            StateHasChanged();
             return;
         }
 

@@ -5,9 +5,10 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject ProtectedSessionStorage sessionStorage
-<body>
+
 <DialogoError @ref=dialogo/>
 
+<body>
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="col-md-8">
@@ -20,6 +21,9 @@
                         </div>
                         <div class="form-group">
                             <input type="password" placeholder="Contraseña" @bind="password" class="form-control">
+                        </div>
+                        <div class="advertencia">
+                            @textoAdvertencia
                         </div>
                         <div class="d-flex justify-content-between mb-3">
                             <button type="button" class="btn btn-black btn-sm" @onclick="() => navegarAlRegistro()" >Registrarse</button>
@@ -39,6 +43,8 @@
     string password = "";
     DialogoError dialogo = null!;
 
+    private string textoAdvertencia = " ";
+
     async Task Save(bool isEmployee, int userId) {
         await sessionStorage.SetAsync("userId", userId);
         await sessionStorage.SetAsync("isEmployee", isEmployee);
@@ -48,7 +54,8 @@
     async Task Aceptar(){
 
         if ((string.IsNullOrEmpty(mail) || string.IsNullOrEmpty(password))) {
-            dialogo.Mostrar("Complete todos los campos para iniciar sesión");
+            textoAdvertencia = "Complete todos los campos";
+            StateHasChanged();
             return;
         }
 
@@ -56,7 +63,8 @@
 
         if (employee != null) {
             await esEmpleado(employee);
-        } else {
+        } 
+        else {
             User? user = userListUseCase.Execute().Find(user => user.mail == mail && user.password == password);
             await esCliente(user);
         }
@@ -75,12 +83,14 @@
     async Task esCliente(User? user) {
 
         if (user == null) {
-            dialogo.Mostrar("El mail y la contraseña ingresada no corresponden a un usuario registrado, intente nuevamente");    
+            textoAdvertencia = "Los datos ingresados no corresponden a un usuario registrado";
+            StateHasChanged();  
             return;
         }
 
         if (user.banned) {
-            dialogo.Mostrar("Tu cuenta se encuentra baneada");
+            textoAdvertencia = "Tu cuenta se encuentra baneada";
+            StateHasChanged();
             return;
         }
 

@@ -77,7 +77,7 @@
         await Save();
         
         // Manda mail al empleado
-        Task.Run(() => emails.SendEmail(
+        emails.SendEmail(
             "¡Contraseña creada!", // Subject
             employee.mail, // Mail
             "¡Contraseña creada con éxito!", // Titulo
@@ -87,7 +87,7 @@
             <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Email: {employee.mail}</p>
             <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Contraseña: {employee.password}</p>
             " // Cuerpo
-        )).GetAwaiter().GetResult();
+        );
         
         navegador.NavigateTo("/homeemployee");
         

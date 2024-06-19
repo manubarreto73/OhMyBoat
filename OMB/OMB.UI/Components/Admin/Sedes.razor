@@ -268,7 +268,7 @@
 
     private void EnviarMail(User user) {
         // Manda mail al empleado
-        Task.Run(() => emails.SendEmail(
+        emails.SendEmail(
           "¡Sede mofificada!", // Subject
           user.mail, // Mail
           "Se modificó la sede de tu intercambio", // Titulo
@@ -276,7 +276,7 @@
           <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Se cambió la sede de uno de tus intercambios</p>
           <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Entrá a la página para seleccionar una nueva</p>
           " // Cuerpo
-        )).GetAwaiter().GetResult();
+        );
     }
 
     private void Modificar() {

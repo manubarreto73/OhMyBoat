@@ -150,7 +150,7 @@
 		User ofertante = getUser(offer.transporteOfertadoId);
 		string titulo = getTitle(offer.transportePosteadoId);
 
-		Task.Run(() => emails.SendEmail(
+		emails.SendEmail(
 			"¡Oferta aceptada!", // Subject
 			ofertante.mail, // Mail
 			"¡Oferta aceptada!", // Titulo
@@ -158,7 +158,7 @@
 			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu oferta a <b>{titulo}</b> ha sido aceptada!</p>
 			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Ya podés entrar a la página para concretar el horario de intercambio</p>
 			" // Cuerpo
-        )).GetAwaiter().GetResult();
+        );
 
 		Navegador.NavigateTo("listarmisintercambios/", true);
 	}
@@ -171,7 +171,7 @@
 		User ofertante = getUser(offer.transporteOfertadoId);
 		string titulo = getTitle(offer.transportePosteadoId);
 
-        Task.Run(() => emails.SendEmail(
+        emails.SendEmail(
 			"Oferta rechazada", // Subject
 			ofertante.mail, // Mail
 			"Oferta rechazada", // Titulo
@@ -179,7 +179,7 @@
 			<p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Tu oferta a <b>{titulo}</b> ha sido rechazada</p>
 			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para seguir buscando el transporte de tus sueños</p>
 			" // Cuerpo
-        )).GetAwaiter().GetResult();
+        );
 
 		if (isVehicle(offer.transportePosteadoId)) {
 			Navegador.NavigateTo("vehiclepost/" + offer.transportePosteadoId, true);	

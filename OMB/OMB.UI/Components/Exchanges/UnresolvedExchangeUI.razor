@@ -360,7 +360,7 @@
         // Envia mail al otro involucrado
         User user = getUser();
         string title = getTitle();
-        await emails.SendEmail(
+        emails.SendEmail(
             "¡Intercambio aceptado!", // Subject
             user.mail, // Mail
             "¡Aceptaron tu intercambio!", // Titulo
@@ -410,7 +410,7 @@
         Post post = listPostUseCase.Execute().Find(post => post.TransportId == ownerTransport.Id) ?? throw new Exception("post not found");
         // Envia mail al otro involucrado
         User user = getUser();
-        await emails.SendEmail(
+        emails.SendEmail(
 			"Intercambio cancelado", // Subject
 			user.mail, // Mail
 			"Intercambio cancelado", // Titulo
@@ -433,7 +433,7 @@
         // Envia mail al otro involucrado
         User user = getUser();
         string title = getTitle();
-        await emails.SendEmail(
+        emails.SendEmail(
             "¡Horario propuesto!", // Asunto
             user.mail, // Destinatario
             "Recibiste una propuesta de horario", // Título

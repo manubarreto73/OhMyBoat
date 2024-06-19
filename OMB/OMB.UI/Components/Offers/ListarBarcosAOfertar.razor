@@ -128,7 +128,7 @@
       User user = getUser();
       string title = getTitle();
       // Manda mail al dueño
-      Task.Run(() => emails.SendEmail(
+      emails.SendEmail(
         "¡Tenés una oferta!", // Subject
         user.mail, // Mail
         "¡Te hicieron una oferta!", // Titulo
@@ -136,7 +136,7 @@
         <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>¡Tu publicación <b>{title}</b> recibió una oferta!</p>
         <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podeés ingresar a la página para ver la oferta</p>
         " // Cuerpo
-        )).GetAwaiter().GetResult();
+        );
 
       GetBarcosCargados();
     }

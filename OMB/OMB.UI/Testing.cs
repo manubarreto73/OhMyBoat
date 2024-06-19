@@ -19,13 +19,13 @@ public class Testing{
         using(OMBContext context = new OMBContext()){
         if(context.Users.Count() == 0){
             context.Users.Add(new User("-", "-", "Usuario No Disponible", "-", "auxiliar@gmail.com", "221123123", birthDate)); //1
-            context.Users.Add(new User("Manu", "Barreto", "manubarreto", "manuel123", "manubarretoamaya@gmail.com", "221123123", birthDate)); //2  PONER MAIL DE MANU DE VERDAD
+            context.Users.Add(new User("Manu", "Barreto", "manubarreto", "manuel123", "manuel@gmail.com", "221123123", birthDate)); //2
             context.Users.Add(new User("Luis", "González", "luisgonzalez", "luiss123", "luisgonzalez@gmail.com", "221456456", birthDate)); //3
             context.Users.Add(new User("María", "Rodríguez", "mariarodriguez", "maria123", "mariarodriguez@gmail.com", "221789789", birthDate)); //4
             context.Users.Add(new User("Pedro", "Martínez", "pedromartinez", "pedro123", "pedromartinez@gmail.com", "221987654", birthDate)); //5
             context.Users.Add(new User("Ana", "Sánchez", "anasanchez", "anasan123", "anasanchez@gmail.com", "221654321", birthDate)); //6
             context.Users.Add(new User("Lucía", "Fernández", "luciafernandez", "lucia123", "luciafernandez@gmail.com", "221111222", birthDate)); //7
-            context.Users.Add(new User("Joaquín", "Malchansky", "joaco", "123123123", "joacomk8@gmail.com", "221333444", birthDate)); //8
+            context.Users.Add(new User("Joaquín", "Malchansky", "joaco", "123123123", "joaquin@gmail.com", "221333444", birthDate)); //8
             context.Users.Add(new User("Ivy", "Daguerre", "ivy", "123123123", "elmaildeivy@gmail.com", "221555666", birthDate)); //9
         }
         context.SaveChanges();

@@ -349,7 +349,7 @@
         dialogoAccept.Mostrar("¿Seguro que deseas aceptar el intercambio?");
     }
 
-    private async Task accept() {
+    private void accept() {
         actualExchange.state = "Accepted";
         modifyUnresolvedExchangeUseCase.Execute(actualExchange);
 
@@ -426,6 +426,10 @@
     }
 
     public async Task HorarioPropuesto() {
+        // Obtener la sede de vuelta para que se actualice
+        sede = listSedesUseCase.Execute().Where(sede => sede.Id == actualExchange.sedeId).SingleOrDefault();
+        if (sede == null)
+            throw new Exception("Sede no encontrada");
         StateHasChanged();
         mostrarCartel = true;
         cartelito = "Horario propuesto con éxito";

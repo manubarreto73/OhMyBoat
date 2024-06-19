@@ -27,7 +27,7 @@
                     <div class="form-group">
                         <label>Sede</label>
                         <select @bind=nombreSede class="form-select">
-                            <option value="" style="display:none"></option>
+                            <option value=@sede.name style="display:none">@sede.name</option>
                             @foreach (string? nombre in sedes.Where(sede => sede.isActive).Select(sede => sede.name).ToList())
                             {
                                 @if (nombre != null)
@@ -73,8 +73,9 @@
         DateTime dateTime = new DateTime(date, time);
         exchange.fechaYHora = dateTime;
         exchange.state = getNextState(exchange);
-        sede = sedes.Find(sede => sede.name == nombreSede) ?? throw new Exception("sede not found");
-        exchange.sedeId = sede.Id;
+        Sede? sede = sedes.Find(sede => sede.name == nombreSede);
+        if (sede != null)
+            exchange.sedeId = sede.Id;
         modifyUnresolvedExchangeUseCase.Execute(exchange);
 
         HorarioPropuesto();

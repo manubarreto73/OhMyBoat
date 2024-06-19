@@ -15,26 +15,35 @@
         }
     };
 
-    Plotly.newPlot(id, data, layout);
+    var config = {
+        displayModeBar: false // This will hide the mode bar
+    }
+
+    Plotly.newPlot(id, data, layout, config);
 };
 
 window.renderPlotlyPieChart = function (id, values, labels, title, xSize, ySize) {
     var data = [{
         values: values,
         labels: labels,
-        type: "pie",
+        type: 'pie',
+        hoverinfo: 'label+value',
+        textinfo: "label+percent",
+        textposition: "outside",
+        hovertemplate: "%{value}&nbsp;" + "Intercambios %{label}" + "<extra></extra>"
     }];
 
     var layout = {
         title: title,
         height: xSize,
         width: ySize,
-        hoverinfo: "label+percent",
-        hovertemplate:
-            ""
     };
 
-    Plotly.newPlot(id, data, layout);
+    var config = {
+        displayModeBar: false // This will hide the mode bar
+    }
+
+    Plotly.newPlot(id, data, layout, config);
 };
 
 window.exportPlotlyChartToPdf = function (chartId1, chartId2) {
@@ -46,9 +55,8 @@ window.exportPlotlyChartToPdf = function (chartId1, chartId2) {
     Promise.all([promise1, promise2])
         .then(function ([imgData1, imgData2]) {
             const pdf = new jsPDF();
-            pdf.addImage(imgData1, 'PNG', 10, 10, 190, 100);
-            pdf.addPage();
-            pdf.addImage(imgData2, 'PNG', 10, 10, 190, 100);
+            pdf.addImage(imgData1, 'PNG', 30, 20, 120, 67);
+            pdf.addImage(imgData2, 'PNG', 10, 100, 170, 100);
             pdf.save('charts.pdf');
         });
 };

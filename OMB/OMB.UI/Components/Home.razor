@@ -77,7 +77,8 @@
     private bool isEmployee = true;
 
     List<Post> allPosts = new List<Post>(); // Primera lista con todos los posts
-    List<Post> posts = new List<Post>(); // Lista con los posts después del filtrado
+    List<Post> postsAux = new List<Post>(); //lista auxiliar para no contar en los filtros los que no se deben
+    List<Post> posts = new List<Post>(); // Lista con los posts después de todos los filtros (busqueda, pausados, propios, filtros)
     List<Transport> transports = new List<Transport>(); // All transports
     List<User> users = new List<User>(); // All users
 
@@ -149,20 +150,24 @@
                 throw new Exception("user not found");
             }
 
-            // Si el tipo de transporte no concuerda con el filtro, no se agrega
-            if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(transport.type)) {
-                continue;
-            }
-
             // Si existe un criterio de búsqueda y el post no lo contiene, no se agrega
             if (!string.IsNullOrEmpty(busqueda) && !contieneBusqueda(post, transport)) {
                 continue;
             }
 
             // Añadir el post si no está pausado y si el usuario es un empleado o el usuario no es el mismo
-            if (!post.paused && (isEmployee || user.Id != userId)) {
-                posts.Add(post);
+            if (post.paused || !(isEmployee || user.Id != userId)) {
+                continue;
             }
+
+            postsAux.Add(post);
+
+            // Si el tipo de transporte no concuerda con el filtro, no se agrega
+            if (!string.IsNullOrEmpty(filtroParam) && !esFiltro(transport.type)) {
+                continue;
+            }
+
+            posts.Add(post);
         }
 
         @* busqueda = ""; *@
@@ -223,7 +228,7 @@
     //Métodos para el manejo de los filtros
 
     private int cantidadTipo(string tipo) {
-        List<int> transportesPost = posts.Select(post => post.TransportId).ToList();
+        List<int> transportesPost = postsAux.Select(post => post.TransportId).ToList();
         return transports.Where(transport => transport.type == tipo && transportesPost.Contains(transport.Id)).Count();
     }
 

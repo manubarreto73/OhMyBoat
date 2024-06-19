@@ -9,9 +9,9 @@ public class Testing{
     public static void Initialize(){
         using(OMBContext context = new OMBContext()){
         if(context.Sedes.Count() == 0) {
-            context.Sedes.Add(new Sede("Sede 1", -34.83293595689235, -57.8829434918476));
-            context.Sedes.Add(new Sede("Sede 2", -34.82872143387457, -57.95478334351441));
-            context.Sedes.Add(new Sede("Sede 3", -34.85655905691365, -57.83745271400811));
+            context.Sedes.Add(new Sede("La plata", -34.83293595689235, -57.8829434918476));
+            context.Sedes.Add(new Sede("Berisso", -34.82872143387457, -57.95478334351441));
+            context.Sedes.Add(new Sede("Masachusets", -34.85655905691365, -57.83745271400811));
         }
         context.SaveChanges();
         }
@@ -197,6 +197,46 @@ public class Testing{
                 }
                 context.SaveChanges();
             }
+        }
+
+        using(OMBContext context = new OMBContext()){
+        if(context.VehiclesHistory.Count() == 0){
+            context.Add(new VehicleHistory(1, "-", "-", "-", "Lo lamentamos, este vehiculo fue eliminado", 0, 0));
+            context.Add(new VehicleHistory(2, "Auto", "ABC123", "En buen estado", "Fiat Pulse", 90000, 3));
+            context.Add(new VehicleHistory(2, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
+            context.Add(new VehicleHistory(2, "Camioneta", "GHI789", "Excelente estado", "GR Yaris", 110000, 5));
+            context.Add(new VehicleHistory(2, "Auto", "JKL012", "Con cambio automático", "Ford Kuga Hibrida", 80000, 5));
+            context.Add(new VehicleHistory(2, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
+            context.Add(new VehicleHistory(2, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
+            context.Add(new VehicleHistory(8, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
+            context.Add(new VehicleHistory(8, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
+            context.SaveChanges();
+        }
+        
+        if(context.ShipsHistory.Count() == 0){
+            context.Add(new ShipHistory(1, "-", "-", "-", "Lo lamentamos, este vehiculo fue eliminado", 0, 0, 0, true));
+            context.Add(new ShipHistory(2, "Crucero", "ABC123", "Capacidad maxima de 150 personas", "Antares 9 OB", 15, 20, 25, true));
+            context.Add(new ShipHistory(2, "Velero", "DBE030", "Muy veloz", "Oceanis 461", 10, 15, 20, false));
+            context.Add(new ShipHistory(2, "Catamaran", "XFK535", "Apto para aguas agitadas, buena cobertura", "First 40.7", 20, 25, 30, true));
+            context.Add(new ShipHistory(2, "Lancha", "LKM792", "Modelo clásico y resistente, buena capacidad de carga", "242 GTO", 5, 10, 15, false));
+            context.Add(new ShipHistory(2, "Crucero", "RTS222", "Es un modelo muy seguro, y muy fácil de conducir, ideal para principiantes", "188 JOY", 2, 3, 4, true));
+            context.Add(new ShipHistory(2, "Velero", "VYW323", "Espacio para dos personas, muy cómodo y muy rápido", "Cranchi Endurance 33", 4, 3, 2, false));
+            context.Add(new ShipHistory(8, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
+            context.Add(new ShipHistory(8, "Lancha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
+            context.SaveChanges();
+        }
+        }
+
+        using(OMBContext context = new OMBContext()){
+            if(context.ResolvedExchanges.Count() == 0){
+                Random random = new Random();
+                for (int i = 0; i < 100; i++) {
+                    int randomNumber = random.Next(2);
+                    bool randomBoolean = randomNumber == 0 ? false : true;
+                    context.Add(new ResolvedExchange((int)random.NextInt64(3) + 1, (int)random.NextInt64(18) + 1, (int)random.NextInt64(18) + 1, randomBoolean));
+                }
+            }
+            context.SaveChanges();
         }
         #pragma warning restore CA1416
     }

@@ -1,0 +1,78 @@
+﻿@page "/estadisticas"
+@using Microsoft.JSInterop
+@inject IJSRuntime JS
+@inject resolvedExchangeListUseCase resolvedExchangeListUseCase
+@inject listSedesUseCase sedesListUseCase
+
+<div id="intercambios"></div>
+<div id="sedes"></div>
+<button @onclick="ExportToPdf">Descargar PDF</button>
+
+@code {
+    private listElement[] exchanges = new listElement[7] { new listElement("Auto"), new listElement("Camioneta"), new listElement("Ciclomotor"), new listElement("Crucero"), new listElement("Velero"), new listElement("Lancha"), new listElement("Catamaran") };
+    List<ResolvedExchange> resolvedExchanges = new List<ResolvedExchange>();
+
+    class listElement {
+        public string type {
+            get; set;
+        }
+        public int exchanges {
+            get; set;
+        }
+        public listElement(string type) {
+            this.type = type;
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
+        if (firstRender) {
+            resolvedExchanges = resolvedExchangeListUseCase.Execute();
+
+            inicializarIntercambiosResueltos();
+
+            inicializarIntercambiosPorSede();
+
+            inicializarListaTransportes();
+
+        }
+    }
+
+    // GRÁFICO INTERCAMBIOS RESUELTOS Y NO RESUELTOS
+    protected async void inicializarIntercambiosResueltos() {
+        int concreted = resolvedExchanges.Where(r => r.happen).Count();
+        int total = resolvedExchanges.Count();
+
+        var yData = new[] { "Concretados", "No concretados" };
+        var xData = new[] { concreted, total-concreted };
+
+        await JS.InvokeVoidAsync("renderPlotlyPieChart", "intercambios", xData, yData, "Intercambios", 400, 500);
+    }
+
+    // GRÁFICO INTERCAMBIOS POR SEDE
+    protected async void inicializarIntercambiosPorSede() {
+        List<Sede> sedes = sedesListUseCase.Execute();
+        List<string> names = new List<string>();
+        List<int> amounts = new List<int>();
+        foreach (Sede s in sedes) {
+            names.Add(s.name);
+            amounts.Add(resolvedExchanges.Where(e => e.sede.Id == s.Id).Count());
+        }
+
+        await JS.InvokeVoidAsync("renderPlotlyBarChart", "sedes", names.ToArray(), amounts.ToArray(), "Por Sede", 400, 500);
+
+    }
+
+    // LISTA DE TRANSPORTES MÁS USADOS
+    private void inicializarListaTransportes() {
+        for (int i = 0; i < 7; i++) {
+            exchanges[i].exchanges = resolvedExchanges.Where(r => r.transporteOfertado.type == exchanges[i].type).Count();
+            exchanges[i].exchanges += resolvedExchanges.Where(r => r.transportePosteado.type == exchanges[i].type).Count();
+        }
+        exchanges = exchanges.OrderByDescending(t => t.exchanges).ToArray();
+    }
+
+    // EXPORTAR A PDF
+    private async Task ExportToPdf() {
+        await JS.InvokeVoidAsync("exportPlotlyChartToPdf", "intercambios", "sedes");
+    }
+}

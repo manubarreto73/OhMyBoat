@@ -218,7 +218,7 @@
     }
 
     private int cantidadTipo(string tipo) {
-        Sede sede = listSedesUseCase.Execute().Where(S => S.name == tipo).SingleOrDefault() ?? throw new Exception("sede not found");
+        Sede sede = sedes.Where(S => S.name == tipo).SingleOrDefault() ?? throw new Exception("sede not found");
         return exchanges.Where(E => E.sedeId == sede.Id).Count();
     }
 

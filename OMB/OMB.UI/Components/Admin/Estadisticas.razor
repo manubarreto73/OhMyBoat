@@ -13,9 +13,12 @@
     <p><strong>Intercambios por sede</strong></p>
     <p id="sedes"></p>
 </div>
+<div>
+    <p><strong>Intercambios por sede</strong></p>
+    <p id="tipos"></p>
+</div>
 
 @code {
-    private listElement[] exchanges = new listElement[7] { new listElement("Auto"), new listElement("Camioneta"), new listElement("Ciclomotor"), new listElement("Crucero"), new listElement("Velero"), new listElement("Lancha"), new listElement("Catamaran") };
     List<ResolvedExchange> resolvedExchanges = new List<ResolvedExchange>();
 
     class listElement {
@@ -69,16 +72,38 @@
     }
 
     // LISTA DE TRANSPORTES MÁS USADOS
-    private void inicializarListaTransportes() {
-        for (int i = 0; i < 7; i++) {
-            exchanges[i].exchanges = resolvedExchanges.Where(r => r.transporteOfertado.type == exchanges[i].type).Count();
-            exchanges[i].exchanges += resolvedExchanges.Where(r => r.transportePosteado.type == exchanges[i].type).Count();
+    private async void inicializarListaTransportes() {
+        var tipos = new[] { "Auto", "Camioneta", "Ciclomotor", "Crucero", "Velero", "Lancha", "Catamaran" };
+
+        List<int> valoresList = new List<int>();
+        foreach (string tipo in tipos) {
+            valoresList.Add(resolvedExchanges.Where(r => r.transporteOfertado.type == tipo).Count() + resolvedExchanges.Where(r => r.transportePosteado.type == tipo).Count());
         }
-        exchanges = exchanges.OrderByDescending(t => t.exchanges).ToArray();
+
+        var valores = valoresList.ToArray();
+
+        //Si chicos, si, es el algoritmo de ordenación de CADP
+        int i, j, p, item;
+        string nombre;
+        for (i = 0; i < 6; i++) {
+            p = i;
+            for (j = i+1; j < 7; j++) {
+                if (valores[j] < valores[p])
+                    p = j;
+                item = valores[p];
+                valores[p] = valores[i];
+                valores[i] = item;
+                nombre = tipos[p];
+                tipos[p] = tipos[i];
+                tipos[i] = nombre;
+            }
+        }
+
+        await JS.InvokeVoidAsync("renderPlotlyHorizontalBarChart", "tipos", tipos, valores, "Intercambios por tipo", 400, 500);
     }
 
     // EXPORTAR A PDF
     private async Task ExportToPdf() {
-        await JS.InvokeVoidAsync("exportPlotlyChartToPdf", "intercambios", "sedes");
+        await JS.InvokeVoidAsync("exportPlotlyChartToPdf", DateTime.Now.ToString("dd/MM/yyyy"));
     }
 }

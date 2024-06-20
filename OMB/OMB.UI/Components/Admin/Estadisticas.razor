@@ -6,17 +6,27 @@
 <button class="btn btn-black btn-sm" @onclick="ExportToPdf">Descargar PDF</button>
 <br>
 <div class="chart-container">
-    <p><strong>Intercambios concretados <br> a no concretados</strong></p>
-    <p id="intercambios"></p>
+    <table>
+        <thead>
+            <th><strong>Intercambios concretados <br> a no concretados</strong></th>
+            <th><strong>Intercambios por sede</strong></th>
+        </thead>
+        <tbody>
+            <tr>
+            <td><p id="intercambios"></p></td>
+            <td><p id="sedes"></p></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
-<div class="bar-container">
-    <p><strong>Intercambios por sede</strong></p>
-    <p id="sedes"></p>
+<div class="chart-container">
+<p>hola</p>
 </div>
 <div>
     <p><strong>Intercambios por sede</strong></p>
     <p id="tipos"></p>
 </div>
+
 
 @code {
     List<ResolvedExchange> resolvedExchanges = new List<ResolvedExchange>();

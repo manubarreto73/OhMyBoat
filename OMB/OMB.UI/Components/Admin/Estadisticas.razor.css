@@ -1,12 +1,33 @@
-.chart-container, .bar-container {
+.chart-container {
     width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
     max-width: 600px; /* Ancho máximo para evitar que se extiendan demasiado */
-    margin: 0 auto; /* Centra horizontalmente */
+    float: left; /* Centra horizontalmente */
     text-align: center; /* Centra el contenido */
     margin-bottom: 40px; /* Espacio entre los contenedores de gráficos */
 }
+
+.bar-container{
+  width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
+  max-width: 600px; /* Ancho máximo para evitar que se extiendan demasiado */
+  float: right; /* Centra horizontalmente */ /* Centra el contenido */
+  margin-bottom: 40px; /* Espacio entre los contenedores de gráficos */
+}
+
 table{
     margin: 0 auto;
+}
+
+.btn-black {
+  background-color: #000; 
+  color: #f8f9fa;
+  height: 50px;
+  width: 150px;
+  font-size: 16px; 
+  margin-bottom: 10px;
+}
+
+.btn-black:hover {
+  opacity: 0.8;
 }
 
 .titulo{

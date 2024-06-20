@@ -3,33 +3,16 @@
 @inject IJSRuntime JS
 @inject resolvedExchangeListUseCase resolvedExchangeListUseCase
 @inject listSedesUseCase sedesListUseCase
+<button class="btn btn-black btn-sm" @onclick="ExportToPdf">Descargar PDF</button>
+<br>
 <div class="chart-container">
-<div id="intercambios"></div>
+    <p><strong>Intercambios concretados <br> a no concretados</strong></p>
+    <p id="intercambios"></p>
 </div>
 <div class="bar-container">
-<div id="sedes"></div>
+    <p><strong>Intercambios por sede</strong></p>
+    <p id="sedes"></p>
 </div>
-<div class="container">
-  <p class="titulo"><strong><small>Tipo de transporte más intercambiado</small></strong></p>
-  <ul class="responsive-table">
-    <li class="table-header">
-      <div class="col col-1">Tipo:</div>
-      <div class="col col-2">@exchanges[0].type</div>
-      <div class="col col-3">Intercambios:</div>
-      <div class="col col-4">@exchanges[0].exchanges</div>
-    </li>
-    @for(int i = 1; i < 7; i++){
-        <li class="table-row">
-        <div class="col col-1" data-label="Job Id">Tipo:</div>
-        <div class="col col-2" data-label="Customer Name">@exchanges[i].type</div>
-        <div class="col col-3" data-label="Amount">Intercambios:</div>
-        <div class="col col-4" data-label="Payment Status">@exchanges[i].exchanges</div>
-        </li>
-    }
-  </ul>
-  <button @onclick="ExportToPdf">Descargar PDF</button>
-</div>
-
 
 @code {
     private listElement[] exchanges = new listElement[7] { new listElement("Auto"), new listElement("Camioneta"), new listElement("Ciclomotor"), new listElement("Crucero"), new listElement("Velero"), new listElement("Lancha"), new listElement("Catamaran") };
@@ -68,7 +51,7 @@
         var yData = new[] { "Concretados", "No concretados" };
         var xData = new[] { concreted, total-concreted };
 
-        await JS.InvokeVoidAsync("renderPlotlyPieChart", "intercambios", xData, yData, "Intercambios", 400, 500);
+        await JS.InvokeVoidAsync("renderPlotlyPieChart", "intercambios", xData, yData, "Intercambios", 400, 650);
     }
 
     // GRÁFICO INTERCAMBIOS POR SEDE

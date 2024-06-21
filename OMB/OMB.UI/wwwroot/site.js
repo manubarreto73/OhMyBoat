@@ -2,6 +2,10 @@
     var data = [{
         x: xData,
         y: yData,
+        width: 0.3,
+        text: yData.map(String),
+        textposition: 'auto',
+        hoverinfo: 'none',
         type: "bar",
         marker: {
             color: '#03045e'  // Orange color
@@ -59,9 +63,12 @@ window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize
         x: xData,
         y: yData,
         type: "bar",
+        text: xData.map(String),
+        textposition: 'auto',
+        hoverinfo: 'none',
         orientation: "h",
         marker: {
-            color: '#03045e'  // Orange color
+            color: ['#caf0f8','#ade8f4','#90e0ef','#48cae4','#00b4d8','#0096c7','#0077b6']  // Orange color
         }
     }];
 

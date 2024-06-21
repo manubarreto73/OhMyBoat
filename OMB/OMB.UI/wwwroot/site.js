@@ -35,7 +35,8 @@ window.renderPlotlyPieChart = function (id, values, labels, title, xSize, ySize)
         type: 'pie',
         hoverinfo: 'label+value',
         textinfo: "label+value+percent",
-        textposition: "outside",
+        textposition: "auto",
+        
         texttemplate: "<b>%{label} <br> %{percent}</b> (%{value})",
         hovertemplate: "%{value}&nbsp;" + "Intercambios %{label}" + "<extra></extra>",
         marker: {
@@ -43,19 +44,20 @@ window.renderPlotlyPieChart = function (id, values, labels, title, xSize, ySize)
         }
     }];
 
-    var layout = {
+    var layoutPie = {
         height: xSize,
         width: ySize,
         font: {
-            size: 13  // set the size of the text in the chart
-        }
+            size: 10  // set the size of the text in the chart
+        },
+        showlegend: false
     };
 
     var config = {
         displayModeBar: false // This will hide the mode bar
     }
 
-    Plotly.newPlot(id, data, layout, config);
+    Plotly.newPlot(id, data, layoutPie, config);
 };
 
 window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize, ySize) {
@@ -90,18 +92,19 @@ window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize
 
 window.exportPlotlyChartToPdf = function (fecha) {
     const { jsPDF } = window.jspdf;
-
-    const promise1 = Plotly.toImage('intercambios', { format: 'png', width: 650, height: 700*0.65, scale:3 });
-    const promise2 = Plotly.toImage('sedes', { format: 'png', width: 650, height: 700 * 0.65, scale: 3 });
-    const promise3 = Plotly.toImage('tipos', { format: 'png', width: 650, height: 700 * 0.65, scale: 3 });
+    let num = 1.1;
+    const promise1 = Plotly.toImage('intercambios', { format: 'png', width: 650*num, height: 400*num, scale:3 });
+    const promise2 = Plotly.toImage('sedes', { format: 'png', width: 500*num, height: 400*num, scale: 3 });
+    const promise3 = Plotly.toImage('tipos', { format: 'png', width: 500*num, height: 400*num, scale: 3 });
 
     Promise.all([promise1, promise2, promise3])
         .then(function ([imgData1, imgData2, imgData3]) {
             const pdf = new jsPDF();
-            pdf.addImage(imgData1, 'PNG', 52, 20, 120, 75);
-            pdf.addImage(imgData2, 'PNG', 19, 100, 170, 100);
+            let n = 0.18;
+            pdf.addImage(imgData1, 'PNG', 0, 20, 650*n, 400*n);
+            pdf.addImage(imgData2, 'PNG', 106, 20, 500*n, 400*n);
+            pdf.addImage(imgData3, 'PNG', 62, 100, 500*n, 400*n);
             pdf.addPage();
-            pdf.addImage(imgData3, 'PNG', 52, 20, 120, 75);
             pdf.save('OhMyBoat-estadísticas' + fecha + '.pdf');
         });
 };

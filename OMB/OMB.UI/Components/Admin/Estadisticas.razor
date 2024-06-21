@@ -20,11 +20,16 @@
     </table>
 </div>
 <div class="chart-container">
-<p>hola</p>
-</div>
-<div>
-    <p><strong>Intercambios por sede</strong></p>
-    <p id="tipos"></p>
+    <table>
+        <thead>
+            <th><strong>Intercambios por sede</strong></th>
+        </thead>
+        <tbody>
+            <tr>
+                <td><p id="tipos"></p></td>
+            </tr>
+        </tbody>
+    </table>
 </div>
 
 
@@ -83,17 +88,21 @@
 
     // LISTA DE TRANSPORTES MÁS USADOS
     private async void inicializarListaTransportes() {
-        var tipos = new[] { "Auto", "Camioneta", "Ciclomotor", "Crucero", "Velero", "Lancha", "Catamaran" };
-
-        List<int> valoresList = new List<int>();
-        foreach (string tipo in tipos) {
+        //var tipos = new[] { "Auto", "Camioneta", "Ciclomotor", "Crucero", "Velero", "Lancha", "Catamaran" };
+        //List<int> valoresList = new List<int>();
+        listElement[] exchanges = new listElement[7]{new listElement("Auto"), new listElement("Camioneta"), new listElement("Ciclomotor"), new listElement("Crucero"), new listElement("Velero"), new listElement("Lancha"), new listElement("Catamaran")};
+        /*foreach (string tipo in tipos) {
             valoresList.Add(resolvedExchanges.Where(r => r.transporteOfertado.type == tipo).Count() + resolvedExchanges.Where(r => r.transportePosteado.type == tipo).Count());
+        }*/
+        for(int i = 0; i < 7; i++){
+            exchanges[i].exchanges = resolvedExchanges.Where(r => r.transporteOfertado.type == exchanges[i].type).Count();
+            exchanges[i].exchanges += resolvedExchanges.Where(r => r.transportePosteado.type == exchanges[i].type).Count();
         }
 
-        var valores = valoresList.ToArray();
+        //var valores = valoresList.OrderByDescending(t => t.exchanges).ToArray();
 
         //Si chicos, si, es el algoritmo de ordenación de CADP
-        int i, j, p, item;
+        /*int i, j, p, item;
         string nombre;
         for (i = 0; i < 6; i++) {
             p = i;
@@ -107,9 +116,11 @@
                 tipos[p] = tipos[i];
                 tipos[i] = nombre;
             }
-        }
-
-        await JS.InvokeVoidAsync("renderPlotlyHorizontalBarChart", "tipos", tipos, valores, "Intercambios por tipo", 400, 500);
+        } Manu x q*/
+        exchanges = exchanges.OrderBy(t => t.exchanges).ToArray();
+        var tipos = exchanges.Select(n => n.type);
+        var valores = exchanges.Select(n => n.exchanges);
+        await JS.InvokeVoidAsync("renderPlotlyHorizontalBarChart", "tipos", valores, tipos, "Intercambios por tipo", 400, 500);
     }
 
     // EXPORTAR A PDF

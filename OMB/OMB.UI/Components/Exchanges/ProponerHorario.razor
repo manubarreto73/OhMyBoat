@@ -27,7 +27,7 @@
                     <div class="form-group">
                         <label>Sede</label>
                         <select @bind=nombreSede class="form-select">
-                            <option value=@sede.name style="display:none">@sede.name</option>
+                            <!--<option value=@sede.name style="display:none">@sede.name</option> esta línea permite proponer sedes baneadas, borrarla no rompe nada, pero ahora no importa que sede pongas te pone "La Plata", sospecho tiene que ver con que es la default (id 1 hardcodeada en la clase base), pero tmp podemos sacarla fácil de ahí. Me voy, rindo OO2-->
                             @foreach (string? nombre in sedes.Where(sede => sede.isActive).Select(sede => sede.name).ToList())
                             {
                                 @if (nombre != null)

@@ -236,9 +236,15 @@
     }
 
     private void Eliminar() {
-        deleteSedeUseCase.Execute(sede.Id);
-        EnviarMails();
-        navegador.NavigateTo("/sedes", true);
+        var exchanges = unresolvedExchangeListUseCase.Execute().Where(e => e.sedeId == sede.Id && e.state == "Accepted").ToList();
+        if(exchanges.Count() == 0){
+          deleteSedeUseCase.Execute(sede.Id);
+          EnviarMails();
+          navegador.NavigateTo("/sedes", true);
+        }
+        else{
+          dialogo.Mostrar("Esta sede tiene intercambios programados, inténtelo nuevamente más tarde.");
+        }
     }
 
     // Envia mails a todos los intercambios no resueltos que tienen la sede eliminada seleccionada

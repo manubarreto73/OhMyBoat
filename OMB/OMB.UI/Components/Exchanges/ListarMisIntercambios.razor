@@ -9,6 +9,7 @@
 @inject shipListUseCase shipListUseCase
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
+@inject listSedesUseCase listSedesUseCase
 
 @if (shouldDisplay) {
 
@@ -70,6 +71,7 @@
     List<Transport> transports = new List<Transport>();
     List<Post> posts = new List<Post>();
     List<User> users = new List<User>();
+    List<Sede> sedes = new List<Sede>();
 
     List<VehicleImage> vehicleImages = new List<VehicleImage>();
     List<ShipImage> shipImages = new List<ShipImage>();
@@ -80,6 +82,7 @@
     protected override async Task OnInitializedAsync() {
         // Inicializo en exchanges las ofertas hechas por el usuario loggeado
         // Se supone que acá solo llegan los clientes loggeados
+        sedes = listSedesUseCase.Execute();
         var getLoggedUser = await sessionStorage.GetAsync<int>("userId");
         loggedUserId = getLoggedUser.Success ? getLoggedUser.Value : 0;
 
@@ -98,10 +101,10 @@
     private string getState(UnresolvedExchange exchange){
         string aux = exchange.state;
         if(!isOwner(exchange)){
-            return (aux == "OffererStart") ? "Esperando recibir una propuesta" : (aux == "OffererChooses") ? "Te han ofrecido un horario" : (aux == "OwnerChooses") ? "Tu propuesta está siendo evaluada" : $"Intercambio programado para el {exchange.fechaYHora} en la {exchange.sede}";
+            return (aux == "OffererStart") ? "Esperando recibir una propuesta" : (aux == "OffererChooses") ? "Te han ofrecido un horario" : (aux == "OwnerChooses") ? "Tu propuesta está siendo evaluada" : $"Intercambio programado para el {exchange.fechaYHora} en la sede {sedes.FirstOrDefault(s => s.Id == exchange.sedeId).name}";
         }
         else{
-            return (aux == "OffererStart") ? "Propone un horario para intercambiar" : (aux == "OffererChooses") ? "Tu propuesta está siendo evaluada" : (aux == "OwnerChooses") ? "Te han ofrecido un horario" : $"Intercambio programado para el {exchange.fechaYHora} en la {exchange.sede}";
+            return (aux == "OffererStart") ? "Propone un horario para intercambiar" : (aux == "OffererChooses") ? "Tu propuesta está siendo evaluada" : (aux == "OwnerChooses") ? "Te han ofrecido un horario" : $"Intercambio programado para el {exchange.fechaYHora} en la sede {sedes.FirstOrDefault(s => s.Id == exchange.sedeId).name}";
         }
     }
 

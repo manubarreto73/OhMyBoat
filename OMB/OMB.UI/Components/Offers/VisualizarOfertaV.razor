@@ -114,9 +114,11 @@
 	}
 
 	private void pausePost (int transportId) {
-		Post post = listPostUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault() ?? throw new Exception("post not found");
-		post.paused = true;
-		modifyPostUseCase.Execute(post);
+		Post post = listPostUseCase.Execute().Where(P => P.TransportId == transportId).SingleOrDefault();
+		if(post != null){
+			post.paused = true;
+			modifyPostUseCase.Execute(post);
+		}
 	}
 
 	private void borrarOfertas (int transportId) {

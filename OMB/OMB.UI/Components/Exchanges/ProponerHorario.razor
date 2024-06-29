@@ -5,6 +5,8 @@
 
 @rendermode InteractiveServer
 
+<DialogoError @ref="dialogo"/>
+
 <div class="modal fade" id="proponerHorarioModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
     <div class="modal-content">
@@ -27,7 +29,7 @@
                     <div class="form-group">
                         <label>Sede</label>
                         <select @bind=nombreSede class="form-select">
-                            <!--<option value=@sede.name style="display:none">@sede.name</option> esta línea permite proponer sedes baneadas, borrarla no rompe nada, pero ahora no importa que sede pongas te pone "La Plata", sospecho tiene que ver con que es la default (id 1 hardcodeada en la clase base), pero tmp podemos sacarla fácil de ahí. Me voy, rindo OO2-->
+                            <option value="" style="display:none"></option> <!--esta línea permite proponer sedes baneadas, borrarla no rompe nada, pero ahora no importa que sede pongas te pone "La Plata", sospecho tiene que ver con que es la default (id 1 hardcodeada en la clase base), pero tmp podemos sacarla fácil de ahí. Me voy, rindo OO2-->
                             @foreach (string? nombre in sedes.Where(sede => sede.isActive).Select(sede => sede.name).ToList())
                             {
                                 @if (nombre != null)
@@ -49,6 +51,7 @@
 </div>
 
 @code {
+    DialogoError dialogo = null!;
     UnresolvedExchange exchange = new UnresolvedExchange();
     DateTime fechaExchange = new DateTime();
     DateTime horaExchange = new DateTime();
@@ -67,7 +70,7 @@
     }
 
     public void Aceptar() {
-
+        if(nombreSede != ""){
         DateOnly date = new DateOnly(fechaExchange.Year, fechaExchange.Month, fechaExchange.Day);
         TimeOnly time = new TimeOnly(horaExchange.Hour, horaExchange.Minute);
         DateTime dateTime = new DateTime(date, time);
@@ -79,6 +82,10 @@
         modifyUnresolvedExchangeUseCase.Execute(exchange);
 
         HorarioPropuesto();
+        }
+        else{
+            dialogo.Mostrar("Por favor elija una sede");
+        }
     }
 
     public string getFechaExchange() {

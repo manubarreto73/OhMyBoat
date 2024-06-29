@@ -19,6 +19,7 @@
 
 <DialogoConfirmacion @ref="dialogoAccept" OnConfirmado="accept"/>
 <DialogoConfirmacion @ref="dialogoCancel" OnConfirmado="cancel"/>
+<DialogoError @ref="dialogo"/>
 
 @if (!string.IsNullOrEmpty(cartelito) && mostrarCartel) {
     <div class="alert alert-info">
@@ -206,6 +207,7 @@
 @code {
     DialogoConfirmacion dialogoAccept = null!;      // dos dialogos para las dos posibles confirmaciones
     DialogoConfirmacion dialogoCancel = null!;         // para cada confirmacion tengo que hacer un onConfirmado distinto
+    DialogoError dialogo = null!;
     Emails emails = null!;
 
     [Parameter] public int exchangeId { get; set; }
@@ -350,6 +352,7 @@
     }
 
     private void accept() {
+        if(listSedesUseCase.Execute().Where(s => s.Id == actualExchange.sedeId).SingleOrDefault().isActive){
         actualExchange.state = "Accepted";
         modifyUnresolvedExchangeUseCase.Execute(actualExchange);
 
@@ -369,6 +372,9 @@
 			<p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Podés entrar a la página para ver mayor información</p>
 			" // Cuerpo
         );
+        }else{
+            dialogo.Mostrar("Esta sede ya no está en funcionamiento. Podés sugerir una nueva ubicación.");
+        }
     }
 
     public void Try(UnresolvedExchange? exchange) {

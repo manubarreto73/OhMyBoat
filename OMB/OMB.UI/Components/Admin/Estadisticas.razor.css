@@ -1,16 +1,39 @@
+.container {
+    display: flex;
+    justify-content: space-between; /* Espacio entre el botón y el formulario */
+    align-items: center;
+}
+
+.form-fechas {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto; /* Centrar el formulario */
+    gap: 10px; /* Espacio entre los campos de fecha */
+}
+
+.form-group {
+    display: flex;
+    gap: 50px; /* Espacio entre los campos de entrada */
+}
+
+.labels {
+    font-weight: bold; /* Texto en negrita */
+    margin-right: 5px; /* Espacio entre la etiqueta y el campo de fecha */
+    display: flex;
+    align-items: center; /* Alinear el texto verticalmente al centro */
+}
+
 .chart-container {
   width: 100%; /* Ajusta el ancho al 100% del contenedor padre */
   height: 400px;
   max-width: 600px; /* Ancho máximo para evitar que se extiendan demasiado */ /* Centra horizontalmente */
   text-align: center; /* Centra el contenido */
   margin-bottom: 10%; /* Espacio entre los contenedores de gráficos */
-  
 }
 
 table{
 position: absolute;
 left: 50%;
-
 transform: translateX(-50%);
 }
 
@@ -25,4 +48,17 @@ margin-bottom: 10px;
 
 .btn-black:hover {
 opacity: 0.8;
+}
+
+.containertexto {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+}
+
+.centered-text {
+    font-weight: bold; /* Hace que el texto sea negrita */
+    font-size: 32px; /* Ajusta el tamaño del texto */
 }

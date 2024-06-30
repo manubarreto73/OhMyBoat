@@ -3,18 +3,29 @@
 @inject IJSRuntime JS
 @inject resolvedExchangeListUseCase resolvedExchangeListUseCase
 @inject listSedesUseCase sedesListUseCase
-<button class="btn btn-black btn-sm" @onclick="ExportToPdf">Descargar PDF</button>
+
+<div class="container">
+    <button class="btn btn-black btn-sm" @onclick="ExportToPdf">Descargar PDF</button>
+    <form class="form-fechas">
+        <div class="form-group">
+            <label class="labels" for="from">Desde:</label>
+            <input id="from" type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" @bind="from" class="form-control">
+            <label class="labels" for="to">Hasta:</label>
+            <input id="to" type="date" min="@((DateTime.Today.Year - 120).ToString())-01-01" @bind="to" class="form-control">
+        </div>
+    </form>
+</div>
 <br>
 <div class="chart-container">
     <table>
         <thead>
-            <th><strong>Intercambios concretados <br> a no concretados</strong></th>
-            <th><strong>Intercambios por sede</strong></th>
+        <th><strong>Intercambios concretados <br> a no concretados</strong></th>
+        <th><strong>Intercambios por sede</strong></th>
         </thead>
         <tbody>
             <tr>
-            <td><p id="intercambios"></p></td>
-            <td><p id="sedes"></p></td>
+                <td><p id="intercambios"></p></td>
+                <td><p id="sedes"></p></td>
             </tr>
         </tbody>
     </table>
@@ -22,7 +33,7 @@
 <div class="chart-container">
     <table>
         <thead>
-            <th><strong>Tipos de transporte más intercambiados</strong></th>
+        <th><strong>Tipos de transporte más intercambiados</strong></th>
         </thead>
         <tbody>
             <tr>
@@ -32,9 +43,11 @@
     </table>
 </div>
 
-
 @code {
     List<ResolvedExchange> resolvedExchanges = new List<ResolvedExchange>();
+
+    DateOnly from = DateOnly.FromDateTime(DateTime.Now.AddYears(-120));
+    DateOnly to = DateOnly.FromDateTime(DateTime.Now);
 
     class listElement {
         public string type {
@@ -49,16 +62,14 @@
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender) {
-        if (firstRender) {
-            resolvedExchanges = resolvedExchangeListUseCase.Execute();
+        resolvedExchanges = resolvedExchangeListUseCase.Execute().Where(exchange => DateOnly.FromDateTime(exchange.fechaYHora) >= from && DateOnly.FromDateTime(exchange.fechaYHora) <= to).ToList();
 
-            inicializarIntercambiosResueltos();
+        inicializarIntercambiosResueltos();
 
-            inicializarIntercambiosPorSede();
+        inicializarIntercambiosPorSede();
 
-            inicializarListaTransportes();
-
-        }
+        inicializarListaTransportes();
+       
     }
 
     // GRÁFICO INTERCAMBIOS RESUELTOS Y NO RESUELTOS

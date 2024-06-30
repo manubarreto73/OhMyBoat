@@ -4,7 +4,7 @@
         y: yData,
         width: 0.3,
         text: yData.map(String),
-        textposition: 'auto',
+        textposition: 'outside',
         hoverinfo: 'none',
         type: "bar",
         marker: {
@@ -15,6 +15,9 @@
     var layout = {
         height: xSize,
         width: ySize,
+        yaxis: {
+            range: [0, Math.max(...yData)+5] // Ensures y-axis starts at 0 and ends at a value above the highest y value
+        },
         config: {
             displayModeBar: false,
             displaylogo: false
@@ -36,7 +39,7 @@ window.renderPlotlyPieChart = function (id, values, labels, title, xSize, ySize)
         hoverinfo: 'label+value',
         textinfo: "label+value+percent",
         textposition: "auto",
-        
+
         texttemplate: "<b>%{label} <br> %{percent}</b> (%{value})",
         hovertemplate: "%{value}&nbsp;" + "Intercambios %{label}" + "<extra></extra>",
         marker: {
@@ -50,7 +53,22 @@ window.renderPlotlyPieChart = function (id, values, labels, title, xSize, ySize)
         font: {
             size: 10  // set the size of the text in the chart
         },
-        showlegend: false
+        showlegend: false,
+        shapes: [
+            {
+                type: 'circle',
+                xref: 'paper',
+                yref: 'paper',
+                x0: 0.275,
+                y0: 0,
+                x1: 0.725,
+                y1: 1,
+                line: {
+                    color: 'black',
+                    width: 2
+                }
+            }
+        ],
     };
 
     var config = {
@@ -66,7 +84,7 @@ window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize
         y: yData,
         type: "bar",
         text: xData.map(String),
-        textposition: 'auto',
+        textposition: 'outside',
         hoverinfo: 'none',
         orientation: "h",
         marker: {
@@ -77,6 +95,9 @@ window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize
     var layout = {
         height: xSize,
         width: ySize,
+        xaxis: {
+            range: [0, xData[6]+5] // Ensures y-axis starts at 0 and ends at a value above the highest y value
+        },
         config: {
             displayModeBar: false,
             displaylogo: false

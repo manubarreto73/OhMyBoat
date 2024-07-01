@@ -5,9 +5,6 @@
 @inject modifySedeUseCase modifySedeUseCase
 @inject deleteSedeUseCase deleteSedeUseCase
 @inject unresolvedExchangeListUseCase unresolvedExchangeListUseCase
-@inject listTransportUseCase listTransportUseCase
-@inject userListUseCase userListUseCase
-@inject modifyUnresolvedExchangeUseCase modifyUnresolvedExchangeUseCase
 @inject IJSRuntime JS
 
 <DialogoError @ref="dialogo"/>
@@ -18,7 +15,7 @@
   <div id="map" style="height: 500px; width: 100%; margin: auto;"></div>
 </div>
 
-<div class="modal fade" id="visualizarSedeModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div id="visualizarSedeModal" class="modal hide" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -45,12 +42,12 @@
   </div>
 </div>
 
-<div class="modal fade" id="agregarSedeModal" tabindex="-1" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="agregarSedeModal" tabindex="-1"  data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar sede</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close" @onclick="EliminarMarcador" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <form>
         <div class="modal-body form-body">
@@ -60,7 +57,7 @@
           </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal" @onclick="cancelar">Cancelar</button>
+            <button type="button" class="btn btn-danger" @onclick="EliminarMarcador" data-bs-dismiss="modal">Cancelar</button>
             <button type="button" class="btn btn-success" @onclick="AgregarSede">Agregar</button>
         </div>
       </form>
@@ -71,7 +68,8 @@
 <Emails @ref=emails/>
 
 <script type="text/javascript">
-    let agregado = false; // Boolean para no agregar más de una sede a la vez
+    var agregado = false; // Boolean para no agregar más de una sede a la vez
+    var crearSede;
 
     var map = L.map('map').setView([-34.8765, -57.9069], 12);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -82,7 +80,7 @@
     map.on("click", createMarker);
 
     // Icono gris usado cuando se crea un marcador o se está moviendo uno
-    const newIcon = L.Icon.extend({
+    var newIcon = L.Icon.extend({
       options: {
         iconUrl: 'my-marker-icon.png',
         iconRetinaUrl: 'my-marker-icon-2x.png',
@@ -99,13 +97,18 @@
     // Crea el marcador para crear sedes
     function createMarker(e) {
       if (!agregado) {
-        const marker = L.marker(e.latlng, { draggable: true, icon: new newIcon() });
-        marker.on("click", cargarSede);
-        marker.addTo(map);
+        crearSede = L.marker(e.latlng, { draggable: true, icon: new newIcon() });
+        crearSede.on("click", cargarSede);
+        crearSede.addTo(map);
         agregado = true;
 
         cargarSede(e);
       }
+    }
+
+    function deleteMarker(e) {
+      crearSede.remove();
+      agregado = false;
     }
 
     // Detiene el dragging de todos los marcadores menos el movido y cambia el icono
@@ -129,14 +132,10 @@
 
       DotNet.invokeMethodAsync("OMB.UI", "SaveLatLng", lat, lng)
         .then(() => {
-          const modal = new bootstrap.Modal(document.getElementById('agregarSedeModal'), { keyboard: false });
+          const modal = new bootstrap.Modal(document.getElementById('agregarSedeModal'), { backdrop: 'static', keyboard: false });
           modal.show();
         })
         .catch(err => console.error("Error invoking method:", err));
-    }
-
-    function cancelar() {
-        agregado = false;
     }
 
     function mark(lat, long, name) {
@@ -239,50 +238,11 @@
         var exchanges = unresolvedExchangeListUseCase.Execute().Where(e => e.sedeId == sede.Id && e.state == "Accepted").ToList();
         if(exchanges.Count() == 0){
           deleteSedeUseCase.Execute(sede.Id);
-          EnviarMails();
           navegador.NavigateTo("/sedes", true);
         }
         else{
           dialogo.Mostrar("Esta sede tiene intercambios programados, inténtelo nuevamente más tarde.");
         }
-    }
-
-    // Envia mails a todos los intercambios no resueltos que tienen la sede eliminada seleccionada
-    private void EnviarMails() {
-        List<UnresolvedExchange> intercambios = unresolvedExchangeListUseCase.Execute().Where(exchange => exchange.sedeId == sede.Id).ToList();
-        List<Transport> transports = listTransportUseCase.Execute();
-        List<User> users = userListUseCase.Execute();
-        sedes = listSedesUseCase.Execute();
-
-        foreach (UnresolvedExchange intercambio in intercambios) {
-            // Cambio la sede del intercambio a otra activa
-            Sede sedeNueva = sedes.Find(s => s.isActive == true) ?? throw new Exception("No hay sedes activas");
-            intercambio.sedeId = sedeNueva.Id;
-            intercambio.state = "OffererChooses";
-            modifyUnresolvedExchangeUseCase.Execute(intercambio);
-
-            Transport posteado = transports.Find(t => t.Id == intercambio.transportePosteadoId) ?? throw new Exception("transporte no encontrado");
-            Transport ofertado = transports.Find(t => t.Id == intercambio.transporteOfertadoId) ?? throw new Exception("transporte no encontrado");
-
-            User dueño = users.Find(u => u.Id == posteado.UserId) ?? throw new Exception("user no encontrado");
-            User ofertante = users.Find(u => u.Id == ofertado.UserId) ?? throw new Exception("user no encontrado");
-
-            EnviarMail(dueño);
-            EnviarMail(ofertante);
-        }
-    }
-
-    private void EnviarMail(User user) {
-        // Manda mail al empleado
-        emails.SendEmail(
-          "¡Sede mofificada!", // Subject
-          user.mail, // Mail
-          "Se modificó la sede de tu intercambio", // Titulo
-          $@"
-          <p style='line-height: 140%;color: #f4f4f4;margin-bottom: 0;'>Se cambió la sede de uno de tus intercambios</p>
-          <p style='line-height: 140%;color: #f4f4f4;margin-top: 0;'>Entrá a la página para seleccionar una nueva</p>
-          " // Cuerpo
-        );
     }
 
     private void Modificar() {
@@ -319,6 +279,11 @@
         }
     }
 
+    private async Task EliminarMarcador() {
+      newName = "";
+      await JS.InvokeVoidAsync("deleteMarker");
+    }
+
     // Chequea contra todas las otras sedes si la ubicación elegida es válida
     private bool distanciaValida(Sede sede1) {
         foreach (Sede sede in sedes) {
@@ -353,10 +318,6 @@
     // Transforma grados a radianes
     private double degToRad(double deg) {
         return deg * (Math.PI / 180);
-    }
-
-    private async void cancelar() {
-        await JS.InvokeVoidAsync("cancelar");
     }
 
 }

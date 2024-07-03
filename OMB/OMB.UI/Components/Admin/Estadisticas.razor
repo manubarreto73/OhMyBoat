@@ -137,7 +137,40 @@
     }
 
     // EXPORTAR A PDF
-    private async Task ExportToPdf() {
-        await JS.InvokeVoidAsync("exportPlotlyChartToPdf", DateTime.Now.ToString("dd/MM/yyyy"));
-    }
+    private async Task ExportToPdf()
+{
+    // Data for Intercambios chart
+    int concreted = resolvedExchanges.Where(r => r.happen).Count();
+    int total = resolvedExchanges.Count();
+    var intercambiosData = new[]
+    {
+        new { label = "Concretados", value = concreted },
+        new { label = "No concretados", value = total - concreted }
+    };
+
+    // Data for Sedes chart
+    List<Sede> sedes = sedesListUseCase.Execute();
+    var sedesData = sedes.Select(s => new
+    {
+        label = s.name,
+        value = resolvedExchanges.Where(e => e.sede.Id == s.Id).Count()
+    }).ToArray();
+
+    // Data for Tipos chart
+    var tiposTransporte = new[] { "Auto", "Camioneta", "Ciclomotor", "Crucero", "Velero", "Lancha", "Catamaran" };
+    var tiposData = tiposTransporte.Select(tipo => new
+    {
+        label = tipo,
+        value = resolvedExchanges.Where(r => r.transporteOfertado.type == tipo).Count() +
+                resolvedExchanges.Where(r => r.transportePosteado.type == tipo).Count()
+    }).OrderByDescending(t => t.value).ToArray();
+
+    await JS.InvokeVoidAsync("exportPlotlyChartToPdf33", 
+        DateTime.Now.ToString("dd/MM/yyyy"), 
+        from.ToString("yyyy-MM-dd"), 
+        to.ToString("yyyy-MM-dd"), 
+        intercambiosData,
+        sedesData,
+        tiposData);
+}
 }

@@ -27,3 +27,7 @@
   height: 2px;
   background-color: black;
 }
+
+#map {
+  z-index: 0;
+}

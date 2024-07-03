@@ -135,7 +135,7 @@ window.exportPlotlyChartToPdf = function (fecha, text) {
             pdf.text('Intercambios por sede', 134, 30);
             pdf.text('Transportes más intercambiados', 78, 110);
             pdf.text(text, 20, 180);
-            pdf.text(fecha, 185 , 290);
+            pdf.text('Emitido el ' + fecha, 170 , 290);
             pdf.save('OhMyBoat-estadísticas' + fecha + '.pdf');});
         
 };

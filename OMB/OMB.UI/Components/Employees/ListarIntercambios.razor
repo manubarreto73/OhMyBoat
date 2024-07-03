@@ -10,6 +10,8 @@
 @inject listVehicleImagesUseCase listVehicleImagesUseCase
 @inject listShipImagesUseCase listShipImagesUseCase
 @inject listSedesUseCase listSedesUseCase
+@inject IJSRuntime JS
+@using System.Globalization
 
 <div class="container-de-containers">
 	<div class="exchanges-container">
@@ -45,7 +47,7 @@
 					</td>
 					</tr>
 					<tr @onclick="()=>browseToExchange(exchange)">
-					<td colspan="2">@($"Intercambio programado para el {exchange.fechaYHora} en la sede {@nombreSede(exchange)}")</td>
+					<td colspan="2">@($"Intercambio programado para el {exchange.fechaYHora.ToString("dd/MM/yyyy")} en la sede {@nombreSede(exchange)}")</td>
 					</tr>
 					i++;
 				}
@@ -80,10 +82,11 @@
             }
         </div>
         <div class="form-group mt-4">
-            <input type="date" min="@((DateTime.Today.Year - 40).ToString())-01-01" @bind="fechaFiltro" class="form-control">
+            <input type="date" name="begin" placeholder="dd-mm-yyyy" min="@((DateTime.Today.Year - 40).ToString())-01-01" @bind="fechaFiltro" class="form-control">
         </div>
     </div>
 </div>
+
 
 @code {
     List<UnresolvedExchange> exchanges = new List<UnresolvedExchange>();

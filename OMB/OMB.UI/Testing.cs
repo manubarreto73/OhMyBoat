@@ -11,7 +11,7 @@ public class Testing{
         if(context.Sedes.Count() == 0) {
             context.Sedes.Add(new Sede("La plata", -34.83293595689235, -57.8829434918476));
             context.Sedes.Add(new Sede("Berisso", -34.82872143387457, -57.95478334351441));
-            context.Sedes.Add(new Sede("Masachusets", -34.85655905691365, -57.83745271400811));
+            context.Sedes.Add(new Sede("CABA", -34.85655905691365, -57.83745271400811));
         }
         context.SaveChanges();
         }
@@ -44,7 +44,7 @@ public class Testing{
         if(context.Vehicles.Count() == 0){
             context.Add(new Vehicle(1, "-", "-", "-", "Lo lamentamos, este vehiculo fue eliminado", 0, 0));
             context.Add(new Vehicle(2, "Auto", "ABC123", "En buen estado", "Fiat Pulse", 90000, 3));
-            context.Add(new Vehicle(2, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
+            context.Add(new Vehicle(8, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
             context.Add(new Vehicle(2, "Camioneta", "GHI789", "Excelente estado", "GR Yaris", 110000, 5));
             context.Add(new Vehicle(2, "Auto", "JKL012", "Con cambio automático", "Ford Kuga Hibrida", 80000, 5));
             context.Add(new Vehicle(2, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
@@ -76,9 +76,9 @@ public class Testing{
             context.Add(new Post(4, "Toyota reluciente"));
             context.Add(new Post(5, "Auto familiar para viajar con la familia"));
             context.Add(new Post(6, "Resistente moto de largas distancias"));
-            context.Add(new Post(7, "Camioneta 4x4 todoterreno"));
-            context.Add(new Post(8, "A energía eléctrica, y con buenas luces"));
-            context.Add(new Post(12, "Oceanis 461 de altas velocidades"));
+            context.Add(new Post(7, "Camioneta 4x4 todoterreno"){paused=true});
+            context.Add(new Post(8, "A energía eléctrica, y con buenas luces"){paused=true});
+            context.Add(new Post(12, "Oceanis 461 de altas velocidades"){paused=true});
             context.Add(new Post(13, "Catamaran muy seguro"));
             context.Add(new Post(14, "Clasica lancha 242 GTO"));
             context.Add(new Post(15, "Espacioso crucero, seguridad asegurada"));
@@ -200,31 +200,46 @@ public class Testing{
         }
 
         using(OMBContext context = new OMBContext()){
-        if(context.VehiclesHistory.Count() == 0){
-            context.Add(new VehicleHistory(1, "-", "-", "-", "Lo lamentamos, este vehiculo fue eliminado", 0, 0));
+        if((context.VehiclesHistory.Count() == 0) && (context.ShipsHistory.Count() == 0)){
+            context.Add(new VehicleHistory(8, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
+            context.Add(new VehicleHistory(8, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
+            context.Add(new ShipHistory(8, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
+            context.Add(new ShipHistory(8, "Lancha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
             context.Add(new VehicleHistory(2, "Auto", "ABC123", "En buen estado", "Fiat Pulse", 90000, 3));
             context.Add(new VehicleHistory(2, "Ciclomotor", "DEF456", "Pocos kms", "Honda Accord Hybrid", 5000, 0));
             context.Add(new VehicleHistory(2, "Camioneta", "GHI789", "Excelente estado", "GR Yaris", 110000, 5));
             context.Add(new VehicleHistory(2, "Auto", "JKL012", "Con cambio automático", "Ford Kuga Hibrida", 80000, 5));
             context.Add(new VehicleHistory(2, "Ciclomotor", "MNO345", "A prueba de granizo y golpes leves", "Yamaha XTZ 250", 25000, 0));
             context.Add(new VehicleHistory(2, "Camioneta", "PQR678", "Buen motor, funciona con cualquier combustible", "Cruze RS", 95000, 5));
-            context.Add(new VehicleHistory(8, "Auto", "STU901", "Eléctrico, nuevo", "Nueva Saveiro", 120000, 3));
-            context.Add(new VehicleHistory(8, "Auto", "VWX234", "Gran capacidad de carga", "Nissan Versa", 70000, 5));
-            context.SaveChanges();
-        }
-        
-        if(context.ShipsHistory.Count() == 0){
-            context.Add(new ShipHistory(1, "-", "-", "-", "Lo lamentamos, este vehiculo fue eliminado", 0, 0, 0, true));
             context.Add(new ShipHistory(2, "Crucero", "ABC123", "Capacidad maxima de 150 personas", "Antares 9 OB", 15, 20, 25, true));
             context.Add(new ShipHistory(2, "Velero", "DBE030", "Muy veloz", "Oceanis 461", 10, 15, 20, false));
             context.Add(new ShipHistory(2, "Catamaran", "XFK535", "Apto para aguas agitadas, buena cobertura", "First 40.7", 20, 25, 30, true));
             context.Add(new ShipHistory(2, "Lancha", "LKM792", "Modelo clásico y resistente, buena capacidad de carga", "242 GTO", 5, 10, 15, false));
             context.Add(new ShipHistory(2, "Crucero", "RTS222", "Es un modelo muy seguro, y muy fácil de conducir, ideal para principiantes", "188 JOY", 2, 3, 4, true));
             context.Add(new ShipHistory(2, "Velero", "VYW323", "Espacio para dos personas, muy cómodo y muy rápido", "Cranchi Endurance 33", 4, 3, 2, false));
-            context.Add(new ShipHistory(8, "Catamaran", "POR175", "En buenas condiciones, motor de alta potencia con poco consumo de combustible", "Marinello Eden 18", 1, 2, 3, true));
-            context.Add(new ShipHistory(8, "Lancha", "QFT459", "Practicamente nuevo, ideal para salidas veraniegas", "Flyer 9 SUNdeck", 7, 6, 23, false));
             context.SaveChanges();
         }
+        }
+
+        using(OMBContext context = new OMBContext()){
+            if(context.Offers.Count() == 0){
+                context.Add(new Offer(8, 11){state="accepted"});
+                context.Add(new Offer(9, 12){state="accepted"});
+                context.Add(new Offer(7, 17){state="accepted"});
+                context.Add(new Offer(6, 18){state="accepted"});
+                context.Add(new Offer(5, 3));
+                context.SaveChanges();
+            }
+        }
+
+        using(OMBContext context = new OMBContext()){
+            if(context.UnresolvedExchanges.Count() == 0){
+                context.Add(new UnresolvedExchange(8, 11){state="Accepted", sedeId=1, fechaYHora=DateTime.Now.Date.AddDays(-3)});
+                context.Add(new UnresolvedExchange(9, 12){state="Accepted", sedeId=1, fechaYHora=DateTime.Now.Date.AddDays(-5)});
+                context.Add(new UnresolvedExchange(7, 17){state="Accepted", sedeId=2, fechaYHora=DateTime.Now.Date.AddDays(-7)});
+                context.Add(new UnresolvedExchange(6, 18));
+                context.SaveChanges();
+            }
         }
 
         using(OMBContext context = new OMBContext()){
@@ -233,7 +248,9 @@ public class Testing{
                 for (int i = 0; i < 100; i++) {
                     int randomNumber = random.Next(2);
                     bool randomBoolean = randomNumber == 0 ? false : true;
-                    context.Add(new ResolvedExchange((int)random.NextInt64(3) + 1, (int)random.NextInt64(18) + 1, (int)random.NextInt64(18) + 1, randomBoolean));
+                    int posted = (int)random.NextInt64(4) + 1;
+                    int offered = (int)random.NextInt64(6) + 11;
+                    context.Add(new ResolvedExchange((int)random.NextInt64(3) + 1, posted, offered, randomBoolean));
                 }
             }
             context.SaveChanges();

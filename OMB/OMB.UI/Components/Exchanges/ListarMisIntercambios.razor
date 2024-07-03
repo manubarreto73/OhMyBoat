@@ -101,10 +101,10 @@
     private string getState(UnresolvedExchange exchange){
         string aux = exchange.state;
         if(!isOwner(exchange)){
-            return (aux == "OffererStart") ? "Esperando recibir una propuesta" : (aux == "OffererChooses") ? "Te han ofrecido un horario" : (aux == "OwnerChooses") ? "Tu propuesta está siendo evaluada" : $"Intercambio programado para el {exchange.fechaYHora} en la sede {sedes.FirstOrDefault(s => s.Id == exchange.sedeId).name}";
+            return (aux == "OffererStart") ? "Esperando recibir una propuesta" : (aux == "OffererChooses") ? "Te han ofrecido un horario" : (aux == "OwnerChooses") ? "Tu propuesta está siendo evaluada" : $"Intercambio programado para el {exchange.fechaYHora.ToString("dd/MM/yyyy HH:mm")} en la sede {sedes.FirstOrDefault(s => s.Id == exchange.sedeId).name}";
         }
         else{
-            return (aux == "OffererStart") ? "Propone un horario para intercambiar" : (aux == "OffererChooses") ? "Tu propuesta está siendo evaluada" : (aux == "OwnerChooses") ? "Te han ofrecido un horario" : $"Intercambio programado para el {exchange.fechaYHora} en la sede {sedes.FirstOrDefault(s => s.Id == exchange.sedeId).name}";
+            return (aux == "OffererStart") ? "Propone un horario para intercambiar" : (aux == "OffererChooses") ? "Tu propuesta está siendo evaluada" : (aux == "OwnerChooses") ? "Te han ofrecido un horario" : $"Intercambio programado para el {exchange.fechaYHora.ToString("dd/MM/yyyy HH:mm")} en la sede {sedes.FirstOrDefault(s => s.Id == exchange.sedeId).name}";
         }
     }
 

@@ -126,13 +126,13 @@
         users = userListUseCase.Execute();
         transports = listTransportUseCase.Execute();
         sedes = listSedesUseCase.Execute();
-        
-        obtenerIntercambios();
 
         posts = listPostUseCase.Execute();
         vehicleImages = listVehicleImagesUseCase.Execute();
         shipImages = listShipImagesUseCase.Execute();
-        getImages();
+
+        obtenerIntercambios();
+        
     }
 
     private void obtenerIntercambios() {
@@ -150,6 +150,7 @@
 
         exchanges = intercambiosAMostrar;
         exchanges.Reverse();
+        getImages();
     }
 
     private bool esFiltro(string sede) {
@@ -164,6 +165,8 @@
     }
 
     public void getImages() {
+        imgOffer = new List<byte[]>();
+        images = new List<byte[]>();
         foreach (var exchange in exchanges) {
             int transportId = exchange.transportePosteadoId;
             int offTrans = exchange.transporteOfertadoId;
@@ -222,7 +225,7 @@
 
     private int cantidadTipo(string tipo) {
         Sede sede = sedes.Where(S => S.name == tipo).SingleOrDefault() ?? throw new Exception("sede not found");
-        return exchanges.Where(E => E.sedeId == sede.Id).Count();
+        return unresolvedExchangeListUseCase.Execute().Where(E => E.sedeId == sede.Id && E.state == "Accepted").Count();
     }
 
     private void filtrar(string filtro) {

@@ -1,6 +1,7 @@
 @page "/listarclientes"
 @inject userListUseCase userListUseCase
 @inject listTransportUseCase transportListUseCase
+@inject listPostUseCase postListUseCase
 @inject NavigationManager navegador
 
 <div class="container my-5 p-3 shadow-sm rounded bg-white">
@@ -25,9 +26,10 @@
 </div>
 
 @code {
-    
+
     List<User> listaClientes = new List<User>();
     List<Transport> listaTransportes = new List<Transport>();
+    List<Post> listaPosteos = new List<Post>();
 
     protected override void OnInitialized() {
 
@@ -35,8 +37,10 @@
 
         listaClientes = userListUseCase.Execute().OrderBy(user => user.userName).ToList();
 
+        listaPosteos = postListUseCase.Execute();
+
         eliminarAlDefault();
-        
+
     }
 
     protected void eliminarAlDefault() {
@@ -49,7 +53,12 @@
     }
 
     protected int cantidadPublicaciones (User user) {
-        return listaTransportes.Where(T => T.UserId == user.Id).Count();
+
+        return listaTransportes.Where(T => T.UserId == user.Id && isPost(T.Id)).Count();
+    }
+
+    protected bool isPost (int id) {
+        return this.listaPosteos.Find(P => P.TransportId == id) != null;
     }
 
 }

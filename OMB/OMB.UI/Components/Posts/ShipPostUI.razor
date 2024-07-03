@@ -66,14 +66,17 @@
       @if(isOwner && !actualPost.paused){
         <button class="btn btn-primary" @onclick="CargarOfertas" data-bs-toggle="modal" data-bs-target="#listarOfertasModal">Ver Ofertas</button>
       }
-      @if(actualPost.paused){
-        <div class="texto_pausa">
-          <p><i class='bx bxs-error'></i><strong>  Publicación Pausada </strong></p>
-        </div>
-      }
-	  @if(loggedUserId == 1 && isEmployee) {
-        <button class="btn btn-danger" @onclick="() => confirmarEliminarPost()">Eliminar post</button>
-      }
+      <div class="d-flex">
+        @if (actualPost.paused) {
+            <div class="texto_pausa">
+                <p><i class='bx bxs-error'></i><strong>  Publicación Pausada </strong></p>
+            </div>
+         }
+         @if (loggedUserId == 1 && isEmployee) {
+            <button class="btn btn-danger" @onclick="() => confirmarEliminarPost()">Eliminar post</button>
+        }
+      </div>
+      
     </div>
   </div>
 }

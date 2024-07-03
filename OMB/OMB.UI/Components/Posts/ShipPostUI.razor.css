@@ -51,6 +51,11 @@
   align-items: center;
   gap: 0.5rem;
   margin-left: 3rem;
+  margin-right: 3rem;
   font-weight: 200;
   color: rgb(255, 163, 163)
+}
+
+.texto_pausa p {
+    margin:0;
 }

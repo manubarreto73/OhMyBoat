@@ -9,6 +9,19 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15); /* Sombra para destacar */
 }
 
+.btn-black {
+    background-color: #000; 
+    color: #f8f9fa;
+    height: 50px;
+    width: 170px;
+    font-size: 16px; 
+    margin-bottom: 10px;
+    }
+    
+    .btn-black:hover {
+    opacity: 0.8;
+    }
+
 .table {
     margin-bottom: 0;
     border-collapse: separate;
@@ -23,7 +36,7 @@ body {
 
 .table-bordered th, .table-bordered td {
     border: none; /* Elimina el borde predeterminado */
-    border-bottom: 1px solid #dee2e6; /* Añade un borde inferior */
+    border-bottom: 1px solid #dee2e6; /* Aï¿½ade un borde inferior */
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
@@ -35,5 +48,5 @@ body {
 }
 
     .clickable-row:hover {
-        background-color: #e9ecef; /* Color diferente al pasar el ratón */
+        background-color: #e9ecef; /* Color diferente al pasar el ratï¿½n */
     }

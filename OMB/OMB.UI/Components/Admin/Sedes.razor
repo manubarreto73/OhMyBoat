@@ -246,7 +246,11 @@
     }
 
     private void Modificar() {
-        if (String.IsNullOrWhiteSpace(sede.name) || !distanciaValida(sede)) return;
+        if (String.IsNullOrWhiteSpace(sede.name)) {
+          dialogo.Mostrar("Debe ingresar un nombre a la nueva sede");
+          return;
+        }
+        if (!distanciaValida(sede)) return;
 
         try {
             modifySedeUseCase.Execute(sede);

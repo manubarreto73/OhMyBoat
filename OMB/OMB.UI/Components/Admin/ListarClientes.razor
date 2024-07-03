@@ -3,7 +3,7 @@
 @inject listTransportUseCase transportListUseCase
 @inject listPostUseCase postListUseCase
 @inject NavigationManager navegador
-
+<button class="btn btn-black btn-sm" @onclick="filtrarPorBan">@textoBotonBan</button>
 <div class="container my-5 p-3 shadow-sm rounded bg-white">
     <table class="table table-striped table-hover table-bordered">
         <thead class="thead-dark">
@@ -25,14 +25,30 @@
     </table>
 </div>
 
+
 @code {
 
     List<User> listaClientes = new List<User>();
     List<Transport> listaTransportes = new List<Transport>();
     List<Post> listaPosteos = new List<Post>();
+    string textoBotonBan = "Mostrar Baneados";
+    bool mostrandoBaneados;
+
+    protected void filtrarPorBan(){
+        listaClientes = userListUseCase.Execute().Where(u => u.banned == mostrandoBaneados).OrderBy(user => user.userName).ToList();
+        eliminarAlDefault();
+        if(textoBotonBan == "Mostrar baneados"){
+            textoBotonBan = "Mostrar no baneados";
+        }
+        else{
+            textoBotonBan = "Mostrar baneados";
+        }
+        mostrandoBaneados = !mostrandoBaneados;
+        StateHasChanged();
+    }
 
     protected override void OnInitialized() {
-
+        mostrandoBaneados = false;
         listaTransportes = transportListUseCase.Execute();
 
         listaClientes = userListUseCase.Execute().OrderBy(user => user.userName).ToList();
@@ -44,8 +60,9 @@
     }
 
     protected void eliminarAlDefault() {
-        User notFound = listaClientes.SingleOrDefault(user => user.Id == 1) ?? throw new Exception("Usuario no encontrado");
-        listaClientes.Remove(notFound);
+        User notFound = listaClientes.SingleOrDefault(user => user.Id == 1);
+        if(notFound != null){
+            listaClientes.Remove(notFound);}
     }
 
     protected void redirigirAlPerfil (User user) {

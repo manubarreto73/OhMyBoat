@@ -31,37 +31,51 @@
     Plotly.newPlot(id, data, layout, config);
 };
 
-window.renderPlotlyPieChart = function (id, values, labels, title, size) {
+window.renderPlotlyPieChart = function (id, values, labels, title, xSize, ySize) {
     var data = [{
         values: values,
         labels: labels,
         type: 'pie',
         hoverinfo: 'label+value',
-        textinfo: "label+percent",
-        textposition: "outside",
-        texttemplate: "<b>%{label}<br>%{percent}</b>",
-        hovertemplate: "%{value} Intercambios %{label}<extra></extra>",
+        textinfo: "label+value+percent",
+        textposition: "auto",
+
+        texttemplate: "<b>%{label} <br> %{percent}</b> (%{value})",
+        hovertemplate: "%{value}&nbsp;" + "Intercambios %{label}" + "<extra></extra>",
         marker: {
-            colors: ['#03045e', '#ff006e'],
-            line: {
-                color: 'rgba(0,0,0,0)',  // Borde transparente
-                width: 0  // Ancho de borde cero
-            }
+            colors: ['#03045e', '#ff006e']  // Orange color
         }
     }];
 
-    var layout = {
-        height: size,
-        width: size,
-        font: { size: 12 },
+    var layoutPie = {
+        height: xSize,
+        width: ySize,
+        font: {
+            size: 10  // set the size of the text in the chart
+        },
         showlegend: false,
-        margin: { l: 10, r: 10, t: 10, b: 10 },  // Ajustar márgenes
-        piecolorway: ['#03045e', '#ff006e']  // Asegurar colores consistentes
+        shapes: [
+            {
+                type: 'circle',
+                xref: 'paper',
+                yref: 'paper',
+                x0: 0.275,
+                y0: 0,
+                x1: 0.725,
+                y1: 1,
+                line: {
+                    color: 'black',
+                    width: 2
+                }
+            }
+        ],
     };
 
-    var config = { displayModeBar: false };
+    var config = {
+        displayModeBar: false // This will hide the mode bar
+    }
 
-    Plotly.newPlot(id, data, layout, config);
+    Plotly.newPlot(id, data, layoutPie, config);
 };
 
 window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize, ySize) {
@@ -95,4 +109,33 @@ window.renderPlotlyHorizontalBarChart = function (id, xData, yData, title, xSize
     }
 
     Plotly.newPlot(id, data, layout, config);
+};
+
+window.exportPlotlyChartToPdf = function (fecha, text) {
+    const { jsPDF } = window.jspdf;
+    let num = 1.1;
+    const promise1 = Plotly.toImage('intercambios', { format: 'png', width: 670*num, height: 400*num, scale:3 });
+    const promise2 = Plotly.toImage('sedes', { format: 'png', width: 500*num, height: 400*num, scale: 3 });
+    const promise3 = Plotly.toImage('tipos', { format: 'png', width: 500*num, height: 400*num, scale: 3 });
+
+    Promise.all([promise1, promise2, promise3])
+        .then(function ([imgData1, imgData2, imgData3]) {
+            const pdf = new jsPDF();
+            let n = 0.18;
+            pdf.addImage('Oh_My_Boat_logo_4.jpg', 'JPEG', 4, 0, 20, 20);
+            pdf.setFont('times');
+            pdf.setFontSize(16);
+            pdf.text('Estadísticas de Intercambios', 28, 10);
+            pdf.line(28, 14, 95, 14); 
+            pdf.addImage(imgData1, 'PNG', 0, 20, 650*n, 400*n);
+            pdf.addImage(imgData2, 'PNG', 106, 20, 500*n, 400*n);
+            pdf.addImage(imgData3, 'PNG', 62, 100, 500*n, 400*n);
+            pdf.setFontSize(10);
+            pdf.text('Intercambios concretados y no concretados', 29, 30);
+            pdf.text('Intercambios por sede', 134, 30);
+            pdf.text('Transportes más intercambiados', 78, 110);
+            pdf.text(text, 20, 180);
+            pdf.text(fecha, 185 , 290);
+            pdf.save('OhMyBoat-estadísticas' + fecha + '.pdf');});
+        
 };
